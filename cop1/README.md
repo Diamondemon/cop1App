@@ -1,6 +1,6 @@
 # cop1
 
-A new Flutter project.
+Cop1 application
 
 ## Getting Started
 
