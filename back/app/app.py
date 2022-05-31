@@ -1,3 +1,1 @@
-from app.api import build_app
-
-app = build_app()
+from app.api import app
