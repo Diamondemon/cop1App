@@ -1,7 +1,7 @@
 from fastapi import Depends, APIRouter
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 
-from app.login import login, decode_token
+from app.login import login, user_from_token
 from app.interfaces.main import BearerToken, User
 
 
@@ -17,5 +17,5 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends()) -> BearerToken
 
 
 @app.get("/users/me")
-async def read_users_me(current_user: User = Depends(decode_token)) -> User:
+async def read_users_me(current_user: User = Depends(user_from_token)) -> User:
     return current_user

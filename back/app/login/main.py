@@ -22,14 +22,19 @@ def login(form_data: OAuth2PasswordRequestForm) -> BearerToken:
         raise HTTPException(
             status_code=400, detail="Incorrect username or password")
 
-    return BearerToken(access_token=user.username)
+    return token_from_user(user)
 
 
 def test_password(user: UserInDB, password: str) -> bool:
     return True
 
 
-def decode_token(token) -> UserInDB:
+def token_from_user(user: UserInDB) -> BearerToken:
+    # This doesn't provide any security at all
+    return BearerToken(access_token=user.username)
+
+
+def user_from_token(token) -> UserInDB:
     # This doesn't provide any security at all
     user = db.get_user(token)
     if user is None:
