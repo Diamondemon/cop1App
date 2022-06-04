@@ -30,11 +30,8 @@ def user_from_token(token: BearerToken) -> UserInDB:
     if token.token_type != "bearer":
         raise unauthorized("Invalid authentication credentials")
     with DB as db:
-        user = db.get_user(token.access_token)
+        decoded_username = token.access_token
+        user = db.get_user(decoded_username)
     if user is None:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid authentication credentials",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
+        raise unauthorized("Invalid authentication credentials")
     return user
