@@ -13,8 +13,7 @@ def unauthorized(detail: str) -> HTTPException:
 
 def login(form_data: OAuth2PasswordRequestForm) -> BearerToken:
     user = get_user(form_data.username)
-    logger.info(f"Got user : {user}")
-    if not user:
+    if user is None:
         raise unauthorized("Unknown username.")
     if not check_password(user, form_data.password):
         raise unauthorized("Incorrect username or password")

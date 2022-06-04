@@ -1,17 +1,18 @@
 from app.database.utils import DB
 from app.database.tables import User as UserInDB
 from app.interfaces import UserCreationModel, UserCreationResponse
+from app.logger import logger
 
 
 def get_user(username: str) -> UserInDB | None:
     with DB:
         try:
-            user = UserInDB.select(
+            user = UserInDB.select().where(
                 UserInDB.username == username
             ).get()
         except:
             return None
-    return user
+        return user
 
 
 def create_user(user: UserCreationModel) -> UserCreationResponse:
