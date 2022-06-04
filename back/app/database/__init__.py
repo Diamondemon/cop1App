@@ -1,1 +1,1 @@
-from app.database.main import DB, UserInDB
+from app.database.main import DB, User as UserInDB

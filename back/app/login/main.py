@@ -9,11 +9,9 @@ def hash_password(password: str):
     return "fakehashed" + password
 
 
-db = DB()
-
-
 def login(form_data: OAuth2PasswordRequestForm) -> BearerToken:
-    user = db.get_user(form_data.username)
+    with DB as db:
+        user = db.get_user(form_data.username)
     if not user:
         raise HTTPException(
             status_code=400, detail="Incorrect username or password")
@@ -38,7 +36,8 @@ def user_from_token(token: BearerToken) -> UserInDB:
             detail="Invalid authentication credentials",
             headers={"WWW-Authenticate": "Bearer"},
         )
-    user = db.get_user(token.access_token)
+    with DB as db:
+        user = db.get_user(token.access_token)
     if user is None:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
