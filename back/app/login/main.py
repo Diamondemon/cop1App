@@ -25,18 +25,20 @@ def login(form_data: OAuth2PasswordRequestForm) -> BearerToken:
     return token_from_user(user)
 
 
-def test_password(user: UserInDB, password: str) -> bool:
-    return True
-
-
 def token_from_user(user: UserInDB) -> BearerToken:
     # This doesn't provide any security at all
     return BearerToken(access_token=user.username)
 
 
-def user_from_token(token) -> UserInDB:
+def user_from_token(token: BearerToken) -> UserInDB:
     # This doesn't provide any security at all
-    user = db.get_user(token)
+    if token.token_type != "bearer":
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid authentication credentials",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    user = db.get_user(token.access_token)
     if user is None:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
