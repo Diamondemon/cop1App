@@ -10,6 +10,10 @@ def unauthorized(detail: str) -> HTTPException:
     return HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=detail)
 
 
+def conflict(detail: str) -> HTTPException:
+    return HTTPException(status_code=status.HTTP_409_CONFLICT, detail=detail)
+
+
 def login(form_data: OAuth2PasswordRequestForm) -> BearerToken:
     user = get_user(form_data.username)
     if user is None:
@@ -37,8 +41,7 @@ def user_from_token(token: BearerToken) -> UserInDB:
 
 def create_user(user_input: UserCreationModel) -> UserCreationResponse:
     if get_user(user_input.username) is not None:
-        raise HTTPException(status_code=status.HTTP_409_CONFLICT,
-                            detail="Username already exists")
+        raise conflict("Username already exists")
     salt = randomword(100)
     create_db_user(
         username=user_input.username,
