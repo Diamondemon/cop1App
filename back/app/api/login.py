@@ -2,8 +2,7 @@ from venv import create
 from fastapi import Depends, APIRouter
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 
-from app.database import create_user
-from app.login import login
+from app.login import login, create_user
 from app.interfaces.main import BearerToken, User, UserCreationModel, UserCreationResponse
 from app.logger import logger
 

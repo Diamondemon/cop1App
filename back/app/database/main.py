@@ -1,7 +1,6 @@
 from app.database.utils import DB
 from app.database.tables import User as UserInDB
 from app.interfaces import UserCreationModel, UserCreationResponse
-from app.logger import logger
 
 
 def get_user(username: str) -> UserInDB | None:
@@ -15,13 +14,19 @@ def get_user(username: str) -> UserInDB | None:
         return user
 
 
-def create_user(user: UserCreationModel) -> UserCreationResponse:
+def create_user(
+    username: str,
+    hashed_password: str,
+    full_name: str,
+    email: str,
+    salt: str
+) -> UserCreationResponse:
     with DB:
-        user = UserInDB.create(
-            username=user.username,
-            hashed_password=user.password,
-            full_name="TODO",
-            email="TODO",
-            salt="TODO",
+        UserInDB.create(
+            username=username,
+            hashed_password=hashed_password,
+            full_name=full_name,
+            email=email,
+            salt=salt,
         )
     return UserCreationResponse()
