@@ -1,15 +1,26 @@
-from peewee import CharField  # type: ignore
-
-from app.database.utils import Table, DB
-
-
-class User(Table):
-    username = CharField()
-    full_name = CharField()
-    email = CharField()
-    hashed_password = CharField()
-    salt = CharField()
+from app.database.utils import DB
+from app.database.tables import User as UserInDB
+from app.interfaces import UserCreationModel, UserCreationResponse
 
 
-with DB as db:
-    db.create_tables([User])
+def get_user(username: str) -> UserInDB | None:
+    with DB:
+        try:
+            user = UserInDB.select(
+                UserInDB.username == username
+            ).get()
+        except:
+            return None
+    return user
+
+
+def create_user(user: UserCreationModel) -> UserCreationResponse:
+    with DB:
+        user = UserInDB.create(
+            username=user.username,
+            hashed_password=user.password,
+            full_name="TODO",
+            email="TODO",
+            salt="TODO",
+        )
+    return UserCreationResponse()
