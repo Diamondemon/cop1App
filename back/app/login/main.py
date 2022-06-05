@@ -1,46 +1,57 @@
 from fastapi.security import OAuth2PasswordRequestForm
-from app.interfaces import BearerToken
 from fastapi import HTTPException, status
 
-from app.database import DB, UserInDB
+from app.interfaces import BearerToken, UserCreationModel, UserCreationResponse
+from app.database import DB, UserInDB, get_user, create_db_user
+from app.login.crypto import check_password, randomword, hash_password, create_token, decode_token, InvalidToken
 
 
-def hash_password(password: str):
-    return "fakehashed" + password
+def unauthorized(detail: str) -> HTTPException:
+    return HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=detail)
 
 
-db = DB()
+def conflict(detail: str) -> HTTPException:
+    return HTTPException(status_code=status.HTTP_409_CONFLICT, detail=detail)
 
 
 def login(form_data: OAuth2PasswordRequestForm) -> BearerToken:
-    user = db.get_user(form_data.username)
-    if not user:
-        raise HTTPException(
-            status_code=400, detail="Incorrect username or password")
-    hashed_password = hash_password(form_data.password)
-    if not hashed_password == user.hashed_password:
-        raise HTTPException(
-            status_code=400, detail="Incorrect username or password")
-
+    user = get_user(form_data.username)
+    if user is None:
+        raise unauthorized("Unknown username.")
+    if not check_password(user, form_data.password):
+        raise unauthorized("Incorrect username or password")
     return token_from_user(user)
 
 
-def test_password(user: UserInDB, password: str) -> bool:
-    return True
-
-
 def token_from_user(user: UserInDB) -> BearerToken:
-    # This doesn't provide any security at all
-    return BearerToken(access_token=user.username)
+    return BearerToken(access_token=create_token(user.email))
 
 
-def user_from_token(token) -> UserInDB:
-    # This doesn't provide any security at all
-    user = db.get_user(token)
-    if user is None:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid authentication credentials",
-            headers={"WWW-Authenticate": "Bearer"},
+def user_from_token(token: BearerToken) -> str:
+    if token.token_type != "bearer":
+        raise unauthorized("Invalid authentication credentials")
+    try:
+        return decode_token(token.access_token)
+    except InvalidToken as e:
+        raise unauthorized(str(e))
+    except Exception as e:
+        raise unauthorized("Invalid authentication credentials")
+
+
+def create_user(user_input: UserCreationModel) -> UserCreationResponse:
+    if get_user(user_input.email) is not None:
+        raise conflict("Username already exists")
+    salt = randomword(100)
+    if create_db_user(
+        email=user_input.email,
+        phone=user_input.phone,
+        full_name=user_input.full_name,
+        hashed_password=hash_password(salt, user_input.password),
+        salt=salt
+    ):
+        return UserCreationResponse()
+    else:
+        return UserCreationResponse(
+            vaild=False,
+            message="Failed to create user"
         )
-    return user
