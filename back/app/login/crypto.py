@@ -92,12 +92,12 @@ class JsonToken:
         )
 
 
-def create_token(username: str) -> Token:
+def create_token(email: str) -> Token:
     """Create a token with 24h expiration."""
     expiration = datetime.now() + timedelta(hours=24)
     token = JsonToken(
         exp=int(expiration.timestamp()),
-        preferred_username=username
+        preferred_username=email
     )
     token_b64 = b64encode(token.json)
     signature = sign(token_b64)

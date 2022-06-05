@@ -9,9 +9,9 @@ class BearerToken(BaseModel):
 
 
 class User(BaseModel):
-    username: str
-    email: str | None = None
-    full_name: str | None = None
+    email: str
+    phone: str
+    full_name: str
 
 
 class UserCreationModel(BaseModel):

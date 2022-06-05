@@ -24,7 +24,7 @@ def login(form_data: OAuth2PasswordRequestForm) -> BearerToken:
 
 
 def token_from_user(user: UserInDB) -> BearerToken:
-    return BearerToken(access_token=create_token(user.username))
+    return BearerToken(access_token=create_token(user.email))
 
 
 def user_from_token(token: BearerToken) -> str:
@@ -44,8 +44,8 @@ def create_user(user_input: UserCreationModel) -> UserCreationResponse:
     salt = randomword(100)
     if create_db_user(
         email=user_input.email,
-        phone="TODO",
-        full_name="TODO",
+        phone=user_input.phone,
+        full_name=user_input.full_name,
         hashed_password=hash_password(salt, user_input.password),
         salt=salt
     ):

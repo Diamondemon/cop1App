@@ -2,11 +2,11 @@ from app.database.utils import DB
 from app.database.tables import User as UserInDB
 
 
-def get_user(username: str) -> UserInDB | None:
+def get_user(email: str) -> UserInDB | None:
     with DB:
         try:
             user = UserInDB.select().where(
-                UserInDB.username == username
+                UserInDB.email == email
             ).get()
         except:
             return None
