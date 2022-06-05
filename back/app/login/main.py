@@ -3,7 +3,7 @@ from fastapi import HTTPException, status
 
 from app.interfaces import BearerToken, UserCreationModel, UserCreationResponse
 from app.database import DB, UserInDB, get_user, create_user as create_db_user
-from app.login.crypto import check_password, randomword, hash_password
+from app.login.crypto import check_password, randomword, hash_password, create_token, decode_token, InvalidToken
 
 
 def unauthorized(detail: str) -> HTTPException:
@@ -24,19 +24,18 @@ def login(form_data: OAuth2PasswordRequestForm) -> BearerToken:
 
 
 def token_from_user(user: UserInDB) -> BearerToken:
-    # This doesn't provide any security at all
-    return BearerToken(access_token=user.username)
+    return BearerToken(access_token=create_token(user.username))
 
 
-def user_from_token(token: BearerToken) -> UserInDB:
-    # This doesn't provide any security at all
+def user_from_token(token: BearerToken) -> str:
     if token.token_type != "bearer":
         raise unauthorized("Invalid authentication credentials")
-    decoded_username = token.access_token
-    user = get_user(decoded_username)
-    if user is None:
+    try:
+        return decode_token(token.access_token)
+    except InvalidToken as e:
+        raise unauthorized(str(e))
+    except Exception as e:
         raise unauthorized("Invalid authentication credentials")
-    return user
 
 
 def create_user(user_input: UserCreationModel) -> UserCreationResponse:
