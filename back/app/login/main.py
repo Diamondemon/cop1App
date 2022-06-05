@@ -2,7 +2,7 @@ from fastapi.security import OAuth2PasswordRequestForm
 from fastapi import HTTPException, status
 
 from app.interfaces import BearerToken, UserCreationModel, UserCreationResponse
-from app.database import DB, UserInDB, get_user, create_user as create_db_user
+from app.database import DB, UserInDB, get_user, create_db_user
 from app.login.crypto import check_password, randomword, hash_password, create_token, decode_token, InvalidToken
 
 
@@ -39,14 +39,19 @@ def user_from_token(token: BearerToken) -> str:
 
 
 def create_user(user_input: UserCreationModel) -> UserCreationResponse:
-    if get_user(user_input.username) is not None:
+    if get_user(user_input.email) is not None:
         raise conflict("Username already exists")
     salt = randomword(100)
-    create_db_user(
-        username=user_input.username,
-        hashed_password=hash_password(salt, user_input.password),
+    if create_db_user(
+        email=user_input.email,
+        phone="TODO",
         full_name="TODO",
-        email="TODO",
+        hashed_password=hash_password(salt, user_input.password),
         salt=salt
-    )
-    return UserCreationResponse()
+    ):
+        return UserCreationResponse()
+    else:
+        return UserCreationResponse(
+            vaild=False,
+            message="Failed to create user"
+        )

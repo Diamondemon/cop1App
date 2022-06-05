@@ -15,7 +15,9 @@ class User(BaseModel):
 
 
 class UserCreationModel(BaseModel):
-    username: str
+    email: str
+    phone: str
+    full_name: str
     password: str
 
 

@@ -1,6 +1,5 @@
 from app.database.utils import DB
 from app.database.tables import User as UserInDB
-from app.interfaces import UserCreationModel, UserCreationResponse
 
 
 def get_user(username: str) -> UserInDB | None:
@@ -14,19 +13,19 @@ def get_user(username: str) -> UserInDB | None:
         return user
 
 
-def create_user(
-    username: str,
-    hashed_password: str,
-    full_name: str,
+def create_db_user(
     email: str,
+    phone: str,
+    full_name: str,
+    hashed_password: str,
     salt: str
-) -> UserCreationResponse:
+) -> bool:
     with DB:
         UserInDB.create(
-            username=username,
-            hashed_password=hashed_password,
-            full_name=full_name,
             email=email,
+            phone=phone,
+            full_name=full_name,
+            hashed_password=hashed_password,
             salt=salt,
         )
-    return UserCreationResponse()
+    return True
