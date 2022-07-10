@@ -1,9 +1,9 @@
-from fastapi.security import OAuth2PasswordRequestForm
 from fastapi import HTTPException, status
 
-from app.interfaces import BearerToken, UserCreationModel, UserCreationResponse
-from app.database import DB, UserInDB, get_user, create_db_user
+from app.interfaces import BearerToken, UserCreationModel, UserCreationResponse, UserResetModel, UserValidationResponse
+from app.database import DB, UserInDB, get_user, create_db_user, create_db_user, update_db_user_password
 from app.login.crypto import check_password, randomword, hash_password, create_token, decode_token, InvalidToken
+from app.sms import generate_and_send_token
 
 
 def unauthorized(detail: str) -> HTTPException:
@@ -14,24 +14,22 @@ def conflict(detail: str) -> HTTPException:
     return HTTPException(status_code=status.HTTP_409_CONFLICT, detail=detail)
 
 
-def login(form_data: OAuth2PasswordRequestForm) -> BearerToken:
-    user = get_user(form_data.username)
+def user_login(phone: str, code: str) -> BearerToken:
+    user = get_user(phone)
     if user is None:
         raise unauthorized("Unknown username.")
-    if not check_password(user, form_data.password):
+    if not check_password(user, code):
         raise unauthorized("Incorrect username or password")
     return token_from_user(user)
 
 
 def token_from_user(user: UserInDB) -> BearerToken:
-    return BearerToken(access_token=create_token(user.email))
+    return BearerToken(access_token=create_token(user.phone))
 
 
-def user_from_token(token: BearerToken) -> str:
-    if token.token_type != "bearer":
-        raise unauthorized("Invalid authentication credentials")
+def user_from_token(token: str) -> str:
     try:
-        return decode_token(token.access_token)
+        return decode_token(token)
     except InvalidToken as e:
         raise unauthorized(str(e))
     except Exception as e:
@@ -39,14 +37,15 @@ def user_from_token(token: BearerToken) -> str:
 
 
 def create_user(user_input: UserCreationModel) -> UserCreationResponse:
-    if get_user(user_input.email) is not None:
+    phone = user_input.phone
+    if get_user(phone) is not None:
         raise conflict("Username already exists")
     salt = randomword(100)
+    password = generate_and_send_token(phone)
+
     if create_db_user(
-        email=user_input.email,
-        phone=user_input.phone,
-        full_name=user_input.full_name,
-        hashed_password=hash_password(salt, user_input.password),
+        phone=phone,
+        hashed_password=hash_password(salt, password),
         salt=salt
     ):
         return UserCreationResponse()
@@ -55,3 +54,13 @@ def create_user(user_input: UserCreationModel) -> UserCreationResponse:
             vaild=False,
             message="Failed to create user"
         )
+
+
+def update_user_password(user_input: UserResetModel) -> UserValidationResponse:
+    user = get_user(user_input.phone)
+    if user is None:
+        raise conflict("Unknowned username")
+    salt = user.salt
+    password = generate_and_send_token(user.phone)
+    update_db_user_password(user.phone, hash_password(salt, password))
+    return UserValidationResponse()

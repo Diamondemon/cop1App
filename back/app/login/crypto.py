@@ -64,14 +64,12 @@ def hash_password(salt: str, password: str) -> str:
 
 @dataclass
 class JsonToken:
-    exp: int
     preferred_username: str
     typ: str = "Bearer"
 
     @property
     def json(self) -> str:
         return dumps({
-            "exp": self.exp,
             "preferred_username": self.preferred_username,
             "typ": self.typ
         })
@@ -79,25 +77,22 @@ class JsonToken:
     @classmethod
     def from_str(cls, data: str) -> 'JsonToken':
         json = loads(data)
-        if (keys := set(json.keys())) != {"exp", "preferred_username", "typ"}:
+        if (keys := set(json.keys())) != {"preferred_username", "typ"}:
             logger.warning(
                 "Invalid token content it can be a hacker. Token keys provided %s.",
                 keys
             )
             raise InvalidToken("Invalid token")
         return cls(
-            exp=json.get("exp"),
             preferred_username=json.get("preferred_username"),
             typ=json.get("typ")
         )
 
 
-def create_token(email: str) -> Token:
+def create_token(phone: str) -> Token:
     """Create a token with 24h expiration."""
-    expiration = datetime.now() + timedelta(hours=24)
     token = JsonToken(
-        exp=int(expiration.timestamp()),
-        preferred_username=email
+        preferred_username=phone
     )
     token_b64 = b64encode(token.json)
     signature = sign(token_b64)
@@ -112,6 +107,4 @@ def decode_token(token: Token) -> str:
         logger.warning("Invalid signature it can be a hacker.")
         raise InvalidToken("Invalid signature.")
     parsed_token = JsonToken.from_str(b64decode(token_b64))
-    if parsed_token.exp < int(datetime.now().timestamp()):
-        raise InvalidToken("Token expired.")
     return parsed_token.preferred_username

@@ -8,19 +8,38 @@ class BearerToken(BaseModel):
     token_type: str = "bearer"
 
 
-class User(BaseModel):
-    email: str
+class UserModel(BaseModel):
     phone: str
-    full_name: str
+
+    # email: str
+    # full_name: str
 
 
 class UserCreationModel(BaseModel):
-    email: str
     phone: str
-    full_name: str
-    password: str
 
 
-class UserCreationResponse(BaseModel):
+class UserResetModel(BaseModel):
+    phone: str
+
+
+class UserLoginModel(BaseModel):
+    phone: str
+    code: str
+
+
+class BoolResponse(BaseModel):
     vaild: bool = True
     message: str = "Ok"
+
+
+class UserCreationResponse(BoolResponse):
+    pass
+
+
+class UserValidationResponse(BoolResponse):
+    pass
+
+
+class UserLoginResponse(BoolResponse):
+    token: BearerToken

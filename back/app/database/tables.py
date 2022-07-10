@@ -15,13 +15,14 @@ class Event(Table):
 
 
 class User(Table):
-    email = CharField(primary_key=True, index=True, unique=True)
-    phone = CharField()
-    full_name = CharField()
+    phone = CharField(primary_key=True, index=True, unique=True)
     hashed_password = CharField()
     salt = CharField()
-    status = CharField(default='normal')
-    users = ManyToManyField(Event, backref='id')
+
+    # email = CharField()
+    # full_name = CharField()
+    # status = CharField(default='normal')
+    # events = ManyToManyField(Event, backref='id')
 
 
 with DB as db:

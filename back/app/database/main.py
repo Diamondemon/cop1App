@@ -1,12 +1,14 @@
+from traceback import print_exception
+
 from app.database.utils import DB
 from app.database.tables import User as UserInDB
 
 
-def get_user(email: str) -> UserInDB | None:
+def get_user(phone: str) -> UserInDB | None:
     with DB:
         try:
             user = UserInDB.select().where(
-                UserInDB.email == email
+                UserInDB.phone == phone
             ).get()
         except:
             return None
@@ -14,18 +16,27 @@ def get_user(email: str) -> UserInDB | None:
 
 
 def create_db_user(
-    email: str,
     phone: str,
-    full_name: str,
     hashed_password: str,
     salt: str
 ) -> bool:
-    with DB:
-        UserInDB.create(
-            email=email,
-            phone=phone,
-            full_name=full_name,
-            hashed_password=hashed_password,
-            salt=salt,
-        )
+    try:
+        with DB:
+            UserInDB.create(
+                phone=phone,
+                hashed_password=hashed_password,
+                salt=salt,
+            )
+    except Exception as e:
+        print_exception(e)
+        return False
     return True
+
+
+def update_db_user_password(
+    phone: str,
+    hashed_password: str
+) -> None:
+    user = get_user(phone)
+    with DB:
+        user.hashed_password = hashed_password
