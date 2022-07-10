@@ -1,0 +1,6 @@
+[Unit]
+Description=Cop1 api server
+Documentation=https://github.com/Diamondemon/cop1App
+User=${USER}
+Group=${USER}
+ExecStart=bash -c 'cd ${PWD} && make run'
