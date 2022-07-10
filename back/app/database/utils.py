@@ -1,6 +1,7 @@
 from peewee import Database, SqliteDatabase, Model  # type: ignore
 from os import getenv
 from typing import Callable
+from app.logger import logger
 
 
 def init_sqlite() -> Database:
@@ -17,10 +18,12 @@ orms_init: dict[str, Callable[[], Database]] = {
 def get_db() -> Database:
     if (db_type := getenv('DATABASE_TYPE')):
         if db_type in orms_init:
+            logger.info('Using database %s', db_type)
             return orms_init[db_type]()
         else:
             raise EnvironmentError(f'Unknown database type: {db_type}')
     else:
+        logger.info('Falling back to sqlite database')
         return SqliteDatabase('database.db')
 
 
