@@ -4,3 +4,6 @@ Documentation=https://github.com/Diamondemon/cop1App
 User=${USER}
 Group=${USER}
 ExecStart=bash -c 'cd ${PWD} && make run'
+
+[Install]
+WantedBy=network-online.target
