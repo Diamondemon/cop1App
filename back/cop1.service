@@ -1,6 +1,10 @@
 [Unit]
 Description=Cop1 api server
 Documentation=https://github.com/Diamondemon/cop1App
+After=network.target
+
+[Service]
+Type=idle
 User=${USER}
 Group=${USER}
 ExecStart=bash -c 'cd ${PWD} && make run'
