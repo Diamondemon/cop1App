@@ -38,5 +38,7 @@ def update_db_user_password(
     hashed_password: str
 ) -> None:
     user = get_user(phone)
+    if user is None:
+        raise ValueError('User not found')
     with DB:
         user.hashed_password = hashed_password

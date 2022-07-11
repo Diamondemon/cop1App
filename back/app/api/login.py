@@ -1,5 +1,5 @@
 from fastapi import Depends, APIRouter, HTTPException
-from fastapi.security import APIKeyHeader, HTTPAuthorizationCredentials
+from fastapi.security import APIKeyHeader
 
 from app.login import user_login, create_user, user_from_token, update_user_password
 from app.interfaces.main import *
@@ -12,13 +12,13 @@ token = APIKeyHeader(name="bearer", description="Connection token")
 
 @app.post("/account/create")
 async def create_new_user(user: UserCreationModel) -> UserCreationResponse:
-    logger.info(f"Creating user : {user}")
+    logger.info("Creating user : %s", user)
     return create_user(user)
 
 
 @app.post("/account/ask_validation")
 async def ask_token_validation_sms(user: UserResetModel) -> UserValidationResponse:
-    logger.info(f"Reset token for user : {user}")
+    logger.info("Reset token for user : %s", user)
     return update_user_password(user)
 
 
@@ -29,9 +29,9 @@ async def login(user: UserLoginModel) -> UserLoginResponse:
 
 
 @app.get("/account/me")
-async def read_users_me(token: str = Depends(token)) -> UserModel:
-    user = user_from_token(token)
+async def read_users_me(_token: str = Depends(token)) -> UserModel:
+    user = user_from_token(_token)
     if user is None:
         raise HTTPException(status_code=404, detail="User not found")
-    logger.info(f'user {user} is connected')
+    logger.info('user %s is connected', user)
     return UserModel(phone=user)
