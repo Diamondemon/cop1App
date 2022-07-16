@@ -1,4 +1,9 @@
+import 'package:cop1/app_theme.dart';
+import 'package:cop1/data/api.dart';
+import 'package:cop1/ui/tabs.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'data/session_data.dart';
 
 void main() {
   runApp(const MyApp());
@@ -11,20 +16,61 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
-        primarySwatch: Colors.blue,
+      title: 'COP1',
+      theme: AppTheme.themeData,
+      home: ChangeNotifierProvider(
+          create: (context) => SessionData(), child: const HomePage()
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+    );
+  }
+}
+
+class HomePage extends StatefulWidget {
+  const HomePage({Key? key}) : super(key: key);
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin {
+
+  late TabController _tabController;
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(vsync: this, length: tabs.length);
+
+    /*session(context).loadAssets(context).then((nothing)=>
+        FlutterNativeSplash.remove());*/
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    //Hive.close();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        bottomNavigationBar: Material(
+          color: Theme.of(context).primaryColor,
+          child: TabBar(
+            tabs: tabs,
+            controller: _tabController,
+          ),
+        ),
+        body: GestureDetector(
+            onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
+            child: TabBarView(
+              controller: _tabController,
+              children: const <Widget>[
+                MyHomePage(title: "Flutter Demo Page")
+              ],
+            ),
+          ),
     );
   }
 }
@@ -106,7 +152,7 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
+        onPressed: () => API.createAccount("06958458"),
         tooltip: 'Increment',
         child: const Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
