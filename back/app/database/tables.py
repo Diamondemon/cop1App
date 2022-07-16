@@ -1,17 +1,12 @@
-from peewee import SQL, CharField, ManyToManyField, DateField, IntegerField  # type: ignore
+from peewee import CharField, ManyToManyField, DateField, IntegerField  # type: ignore
 
 from app.database.utils import Table, DB
 
 
 class Event(Table):
-    id = IntegerField(
-        primary_key=True,
-        index=True,
-        unique=True,
-        # auto_increment=True
-    )
+    id = IntegerField(primary_key=True)
     date = DateField()
-    url = CharField()
+    url = CharField(index=True)
 
 
 class User(Table):
@@ -22,8 +17,7 @@ class User(Table):
     # email = CharField()
     # full_name = CharField()
     # status = CharField(default='normal')
-    # events = ManyToManyField(Event, backref='id')
+    events = ManyToManyField(Event)
 
-
-with DB as db:
-    db.create_tables([User, Event])
+Relation = User.events.get_through_model()
+DB.create_tables([User, Event, Relation])

@@ -29,7 +29,10 @@ def token_from_user(user: UserInDB) -> BearerToken:
 
 def user_from_token(token: str) -> str:
     try:
-        return decode_token(token)
+        username = decode_token(token)
+        if get_user(username) is None:
+            raise unauthorized("Invalid authentication credentials")
+        return username
     except InvalidToken as e:
         raise unauthorized(str(e))
     except Exception as e:

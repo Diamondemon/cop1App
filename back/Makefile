@@ -30,7 +30,7 @@ install: setup
 	@echo "\e[0;32mINFO: \e[0m"
 	@echo "\e[0;32mINFO: Configure the service using the environement variables present in the .env file\e[0m"
 
-clean_dev: clean
+clean_dev:
 	rm -rf database.db || true
 
 clean:

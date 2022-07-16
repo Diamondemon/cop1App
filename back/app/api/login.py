@@ -4,6 +4,8 @@ from fastapi.security import APIKeyHeader
 from app.login import user_login, create_user, user_from_token, update_user_password
 from app.interfaces.main import *
 from app.logger import logger
+from app.database.tables import User as UserInDB
+
 
 app = APIRouter(tags=["login"])
 
@@ -34,4 +36,13 @@ async def read_users_me(_token: str = Depends(token)) -> UserModel:
     if user is None:
         raise HTTPException(status_code=404, detail="User not found")
     logger.info('user %s is connected', user)
-    return UserModel(phone=user)
+    return UserModel(
+        phone=user,
+        events=[
+            Event(
+                url=e.url,
+                date=str(e.date)
+            )
+            for e in UserInDB.get(UserInDB.phone == user).events
+        ]
+    )

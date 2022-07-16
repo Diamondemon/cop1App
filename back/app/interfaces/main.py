@@ -1,4 +1,5 @@
 from pydantic import BaseModel
+from typing import List
 
 Token = str
 
@@ -7,13 +8,24 @@ class BearerToken(BaseModel):
     access_token: Token
     token_type: str = "bearer"
 
+class Event(BaseModel):
+    """An event."""
+    date: str
+    url: str
+
+
+class Events(BaseModel):
+    """A list of events."""
+    events: List[Event]
+
+
 
 class UserModel(BaseModel):
     phone: str
+    events: List[Event]
 
     # email: str
     # full_name: str
-
 
 class UserCreationModel(BaseModel):
     phone: str
