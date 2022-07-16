@@ -40,6 +40,7 @@ async def read_users_me(_token: str = Depends(token)) -> UserModel:
         phone=user,
         events=[
             Event(
+                id=e.id,
                 url=e.url,
                 date=str(e.date)
             )

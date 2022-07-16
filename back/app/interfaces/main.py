@@ -10,6 +10,7 @@ class BearerToken(BaseModel):
 
 class Event(BaseModel):
     """An event."""
+    id: int
     date: str
     url: str
 
