@@ -29,7 +29,7 @@ class UserLoginModel(BaseModel):
 
 
 class BoolResponse(BaseModel):
-    vaild: bool = True
+    valid: bool = True
     message: str = "Ok"
 
 

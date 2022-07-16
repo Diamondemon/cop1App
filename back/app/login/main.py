@@ -51,7 +51,7 @@ def create_user(user_input: UserCreationModel) -> UserCreationResponse:
         return UserCreationResponse()
     else:
         return UserCreationResponse(
-            vaild=False,
+            valid=False,
             message="Failed to create user"
         )
 
@@ -59,7 +59,7 @@ def create_user(user_input: UserCreationModel) -> UserCreationResponse:
 def update_user_password(user_input: UserResetModel) -> UserValidationResponse:
     user = get_user(user_input.phone)
     if user is None:
-        raise conflict("Unknowned username")
+        raise conflict("Unknown username")
     salt = user.salt
     password = generate_and_send_token(user.phone)
     update_db_user_password(user.phone, hash_password(salt, password))
