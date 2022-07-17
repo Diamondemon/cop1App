@@ -42,7 +42,10 @@ async def read_users_me(_token: str = Depends(token)) -> UserModel:
             Event(
                 id=e.id,
                 url=e.url,
-                date=str(e.date)
+                date=str(e.date),
+                title=e.title,
+                img=e.img,
+                loc=e.loc
             )
             for e in UserInDB.get(UserInDB.phone == user).events
         ]

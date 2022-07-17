@@ -13,6 +13,9 @@ class Event(BaseModel):
     id: int
     date: str
     url: str
+    title: str
+    img: str
+    loc: str
 
 
 class Events(BaseModel):

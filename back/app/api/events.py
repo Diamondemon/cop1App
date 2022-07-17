@@ -18,7 +18,10 @@ async def list_all_events() -> Events:
             Event(
                 id=e.id,
                 url=e.url,
-                date=str(e.date)
+                date=str(e.date),
+                title=e.title,
+                img=e.img,
+                loc=e.loc
             )
             for e in EventInDB.select()
         ]

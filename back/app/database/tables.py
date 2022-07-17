@@ -5,8 +5,11 @@ from app.database.utils import Table, DB
 
 class Event(Table):
     id = IntegerField(primary_key=True)
-    date = DateField()
     url = CharField(index=True)
+    date = DateField()
+    title = CharField()
+    img = CharField()
+    loc = CharField()
 
 
 class User(Table):
