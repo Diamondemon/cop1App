@@ -62,7 +62,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
             controller: _tabController,
           ),
         ),
-        body: GestureDetector(
+        body: GestureDetector( // May need SafeArea
             onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
             child: TabBarView(
               controller: _tabController,
