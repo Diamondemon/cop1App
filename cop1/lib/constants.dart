@@ -26,8 +26,8 @@ const BoxDecoration topBarDecoration = BoxDecoration(
         )
     )
 );
-
-BoxDecoration ButtonDecoration() => const BoxDecoration(
+*/
+BoxDecoration buttonDecoration() => const BoxDecoration(
   color: Colors.black12,
   border: Border(
     top: BorderSide(color: Colors.black, width: 2),
@@ -36,4 +36,3 @@ BoxDecoration ButtonDecoration() => const BoxDecoration(
     right: BorderSide(color: Colors.black, width: 2),
   ),
 );
-*/
