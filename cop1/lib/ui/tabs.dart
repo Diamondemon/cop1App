@@ -11,10 +11,10 @@ List<Tab> tabs = <Tab>[
   Tab(
       icon: const Icon(Icons.scoreboard),
       child: Text('Scores', style: tabStyle(10.0))),
-  /*Tab(
-      icon: const Icon(Icons.add_circle_outline),
-      child: Text('New Impro', style: tabStyle(10.0), maxLines: 2, textAlign: TextAlign.center,)),
   Tab(
+      icon: const Icon(Icons.house),
+      child: Text('Actualités', style: tabStyle(10.0), maxLines: 2, textAlign: TextAlign.center,)),
+  /*Tab(
       icon: const Icon(Icons.book),
       child: Text('All Matches', style: tabStyle(10.0), maxLines: 2, textAlign: TextAlign.center,)),*/
 ];
