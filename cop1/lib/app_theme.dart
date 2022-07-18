@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import 'constants.dart';
-import 'dart:developer' as developer;
 
 class AppTheme {
   static const Color _bg1 = main2;
@@ -14,7 +13,6 @@ class AppTheme {
   static ThemeData get themeData {
     /// Create a TextTheme and ColorScheme, that we can use to generate ThemeData
     TextTheme txtTheme = (isDark ? ThemeData.dark() : ThemeData.light()).textTheme.copyWith();
-    developer.log("${txtTheme.headline6}");
     Color? txtColor = txtTheme.bodyText1?.color;
     txtTheme = txtTheme.apply(fontFamily: "HKGrotesk");
     txtTheme = txtTheme.copyWith(
@@ -51,7 +49,6 @@ class AppTheme {
     ThemeData t = ThemeData.from(textTheme: txtTheme, colorScheme: colorScheme)
     // We can also add on some extra properties that ColorScheme seems to miss
         .copyWith(highlightColor: _accent1, toggleableActiveColor: _accent1, primaryTextTheme: txtTheme);
-    developer.log("${t.primaryTextTheme}");
     /// Return the themeData which MaterialApp can now use
     return t;
   }

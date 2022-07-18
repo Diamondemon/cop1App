@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cop1/maps_launcher.dart';
+import 'package:add_2_calendar/add_2_calendar.dart';
+import 'dart:developer' as developer;
 
 class EventTile extends StatefulWidget {
   const EventTile({Key? key, required this.event}) : super(key: key);
@@ -57,7 +59,7 @@ class _EventTileState extends State<EventTile> {
                           ],
                         ),
                       ),
-                      TextButton(onPressed: _addToCalendar, child:Text(widget.event["date"])),
+                      TextButton(onPressed: () => _addToCalendar(widget.event["date"]), child:Text(widget.event["date"])),
                       const Spacer(),
                       const Text.rich(
                         TextSpan(
@@ -72,7 +74,7 @@ class _EventTileState extends State<EventTile> {
                           ],
                         ),
                       ),
-                      TextButton(onPressed: () => _lookOnMaps(widget.event["loc"]), child:Text(widget.event["loc"])),
+                      TextButton(onPressed: _lookOnMaps, child:Text(widget.event["loc"])),
                       const Spacer(),
                       Center(
                         child: RawMaterialButton(
@@ -96,12 +98,19 @@ class _EventTileState extends State<EventTile> {
 
   }
 
-  void _addToCalendar(){
-
+  void _addToCalendar(String date){
+    final Event event = Event(
+      title: widget.event["title"],
+      description: 'Event description',
+      location: widget.event["loc"],
+      startDate: DateTime.parse(date),
+      endDate: DateTime.parse(date),
+    );
+    Add2Calendar.addEvent2Cal(event);
   }
 
-  void _lookOnMaps(String query){
-    MapsLauncher.launchQuery(query);
+  void _lookOnMaps(){
+    MapsLauncher.launchQuery(widget.event["loc"]);
   }
 
 }
