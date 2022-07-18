@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cop1/maps_launcher.dart';
 
 class EventTile extends StatefulWidget {
   const EventTile({Key? key, required this.event}) : super(key: key);
@@ -43,7 +44,7 @@ class _EventTileState extends State<EventTile> {
                       TextButton(onPressed: _addToCalendar, child:Text(widget.event["date"])),
                       const Spacer(),
                       const Text("Lieu"),
-                      TextButton(onPressed: _lookOnMaps, child:Text(widget.event["loc"])),
+                      TextButton(onPressed: () => _lookOnMaps(widget.event["loc"]), child:Text(widget.event["loc"])),
                       const Spacer(),
                       Center(
                         child: RawMaterialButton(
@@ -71,8 +72,8 @@ class _EventTileState extends State<EventTile> {
 
   }
 
-  void _lookOnMaps(){
-
+  void _lookOnMaps(String query){
+    MapsLauncher.launchQuery(query);
   }
 
 }
