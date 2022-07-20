@@ -14,7 +14,7 @@ class AppTheme {
     /// Create a TextTheme and ColorScheme, that we can use to generate ThemeData
     TextTheme txtTheme = (isDark ? ThemeData.dark() : ThemeData.light()).textTheme.copyWith();
     Color? txtColor = txtTheme.bodyText1?.color;
-    txtTheme = txtTheme.apply(fontFamily: "HKGrotesk");
+    txtTheme = txtTheme.apply(fontFamily: "HKGrotesk-Bold");
     txtTheme = txtTheme.copyWith(
         bodySmall: TextStyle( // for text
             fontFamily: "Raleway",

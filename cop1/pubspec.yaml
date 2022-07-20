@@ -117,11 +117,12 @@ flutter:
   # list giving the asset and other descriptors for the font. For
   # example:
   fonts:
-    - family: HKGrotesk
+    - family: HKGrotesk-Bold
       fonts:
         - asset: assets/fonts/hk-grotesk.bold.ttf
-          weight: 700
-        - asset: assets/fonts/hk-grotesk.bold.ttf
+    - family: HKGrotesk
+      fonts:
+        - asset: assets/fonts/hk-grotesk.medium.ttf
     - family: Raleway
       fonts:
         - asset: assets/fonts/Raleway-Regular.ttf

@@ -4,17 +4,55 @@ import 'package:cop1/constants.dart' show apiURL;
 import 'package:http/http.dart' as http;
 import 'dart:developer' as dev;
 
+class HTTP409Exception implements Exception {
+  final String? detail;
+  HTTP409Exception([this.detail]);
+
+  @override
+  String toString() => "HTTP Status Code 409: $detail";
+}
+
 class API {
 
-  static Future<void> createAccount(String phoneNumber) async{
+  static Future<bool> createAccount(String phoneNumber) async{
     String request = "$apiURL/account/create";
     Map<String, String> data = {"phone": phoneNumber};
     try {
       Map<String, dynamic> retVal = await _post(request, data);
-      dev.log("Account created? ${retVal['valid']}");
+      return retVal["valid"];
+    }
+    on HTTP409Exception {
+      rethrow;
     }
     on Exception catch (e){
       dev.log("Boom Error $e");
+      return false;
+    }
+  }
+
+  static Future<bool> askValidation(String phoneNumber) async{
+    String request = "$apiURL/account/ask_validation";
+    Map<String, String> data = {"phone": phoneNumber};
+    try {
+      Map<String, dynamic> retVal = await _post(request, data);
+      return retVal['valid'];
+    }
+    on Exception catch (e){
+      dev.log("Boom Error $e");
+      return false;
+    }
+  }
+
+  static Future<String> getToken(String phoneNumber, String code) async{
+    String request = "$apiURL/account/login";
+    Map<String, String> data = {"phone": phoneNumber, "code": code};
+    try {
+      Map<String, dynamic> retVal = await _post(request, data);
+      return retVal["token"]["access_token"];
+    }
+    on Exception catch (e){
+      dev.log("Boom Error $e");
+      throw Exception();
     }
   }
 
@@ -41,9 +79,7 @@ class API {
       // then parse the JSON.
       return jsonDecode(response.body);
     } else if (response.statusCode == 409){
-      // If the server did not return a 200 OK response,
-      // then throw an exception.
-      throw Exception('Status code 409');
+      throw HTTP409Exception(jsonDecode(response.body)["detail"]);
     }
     else {
       throw Exception('Error ${response.statusCode} on $url');
