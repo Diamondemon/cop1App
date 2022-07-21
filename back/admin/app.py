@@ -5,7 +5,7 @@ from flask import session
 from flask import request
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
-from flask import render_template, redirect
+from flask import render_template, redirect, abort
 from math import ceil as top
 
 
@@ -66,7 +66,8 @@ def index():
         {
             'title': x.title,
             'date': x.date,
-            'url': x.url
+            'url': x.url,
+            'id': x.id
         }
         for x in Event.select().order_by(Event.date).paginate(page, item_per_page)
     ]
@@ -78,10 +79,38 @@ def index():
     )
 
 
+@app.route('/event/<evt_id>', methods=['GET', 'POST'])
+@protect
+@limiter.exempt
+def event(evt_id):
+    try:
+        evt_id = int(evt_id)
+    except:
+        evt_id = -1
+    evt = None
+    try:
+        evt = Event.get(Event.id == evt_id)
+    except:
+        abort(404)
+    if request.method == 'POST':
+        Event.delete().where(Event.id == evt_id).execute()
+        print(f'Event {evt_id} deleted.')
+        return redirect('/')
+    return render_template(
+        'event.html',
+        url=evt.url,
+        date=evt.date,
+        title=evt.title,
+        img=evt.img,
+        loc=evt.loc,
+        id=evt.id
+    )
+
+
 @app.route('/new', methods=['GET', 'POST'])
 @protect
 @limiter.exempt
-def event():
+def new_event():
     if request.method == 'POST':
         Event.create(
             url=request.form['url'],

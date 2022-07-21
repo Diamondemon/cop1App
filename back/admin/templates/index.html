@@ -13,11 +13,11 @@
   </tr>
   {% for evt in events %}
   <tr>
-    <td>{{ evt.title }}</td>
+    <td><a href="/event/{{ evt.id }}"> {{ evt.title }} </a></td>
     <td>{{ evt.date }}</td>
     <td>{{ evt.url }}</td>
   </tr>
   {% endfor %}
 </table>
-
+<a href="/new"> Add </a>
 <p><a href="/logout"> Logout </a></p>
