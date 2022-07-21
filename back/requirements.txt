@@ -3,3 +3,6 @@ uvicorn
 python-multipart
 peewee
 python-dotenv
+flask
+gunicorn
+flask_limiter

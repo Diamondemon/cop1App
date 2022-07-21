@@ -1,0 +1,23 @@
+<p>
+  Page : {{ page }}/{{ max_page }} {% if page != max_page %}
+  <a href="/?page={{ page + 1 }}"> + </a>
+  {% endif %} {% if page != 1 %}
+  <a href="/?page={{ page - 1 }}"> - </a>
+  {% endif %}
+</p>
+<table>
+  <tr>
+    <th>Titre</th>
+    <th>Date</th>
+    <th>Url</th>
+  </tr>
+  {% for evt in events %}
+  <tr>
+    <td>{{ evt.title }}</td>
+    <td>{{ evt.date }}</td>
+    <td>{{ evt.url }}</td>
+  </tr>
+  {% endfor %}
+</table>
+
+<p><a href="/logout"> Logout </a></p>

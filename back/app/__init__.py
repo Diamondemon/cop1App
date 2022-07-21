@@ -1,12 +1,8 @@
 from dotenv import load_dotenv
-from os import getenv
 load_dotenv()
 
 
-def wrapper():
+def app():
+    """Create the app after loading environment"""
     from .api import app
     return app
-
-
-# import module after loading environment
-app = wrapper()
