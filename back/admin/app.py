@@ -78,8 +78,24 @@ def index():
     )
 
 
-@ app.route('/login', methods=['GET', 'POST'])
-@ limiter.limit("5 per minute")
+@app.route('/new', methods=['GET', 'POST'])
+@protect
+@limiter.exempt
+def event():
+    if request.method == 'POST':
+        Event.create(
+            url=request.form['url'],
+            date=request.form['date'],
+            title=request.form['title'],
+            img=request.form['img'],
+            loc=request.form['loc']
+        )
+        return redirect('/')
+    return render_template('new.html')
+
+
+@app.route('/login', methods=['GET', 'POST'])
+@limiter.limit("5 per minute")
 def login():
     if request.method == 'POST':
         token = ADMIN.login(
@@ -90,8 +106,8 @@ def login():
     return render_template('login.html')
 
 
-@ app.route('/logout')
-@ protect
+@app.route('/logout')
+@protect
 def logout():
     session.pop('token', None)
     return redirect('/login')
