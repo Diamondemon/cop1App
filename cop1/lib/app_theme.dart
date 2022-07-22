@@ -19,6 +19,7 @@ class AppTheme {
         bodySmall: TextStyle( // for text
             fontFamily: "Raleway",
             color: txtTheme.bodySmall?.color,
+            fontSize: txtTheme.bodySmall?.fontSize,
         ),
         bodyLarge:  const TextStyle( // for labels
             fontFamily: "Raleway",
@@ -26,7 +27,8 @@ class AppTheme {
         ),
         bodyMedium:  TextStyle( // for TabBar Icons
             fontFamily: "Raleway",
-            color:txtTheme.bodySmall?.color,
+            color:txtTheme.bodyMedium?.color,
+            fontSize: txtTheme.bodyMedium?.fontSize,
         ),
     );
 

@@ -39,11 +39,9 @@ class SessionData with ChangeNotifier {
   String get phoneNumber => _phoneNumber;
 
   Future<UserProfile?> get user async {
-    if (_phoneNumber=="") throw NoPhoneNumberException();
     if (!isConnected) throw NotConnectedException();
-    if (_localUser==null){
+    if (_localUser==null && isConnected && _phoneNumber.isNotEmpty){
       _localUser = UserProfile.fromJSON(await API.getUser(_token));
-      log("Connected user: $_localUser");
     }
     return _localUser;
   }

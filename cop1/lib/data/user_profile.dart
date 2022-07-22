@@ -22,6 +22,14 @@ class UserProfile{
     events.remove(id);
   }
 
+  bool isSubscribedToId(int id){
+    return events.any((item){return item.id == id;});
+  }
+
+  bool isSubscribedTo(Cop1Event event){
+    return events.contains(event);
+  }
+
   static UserProfile fromJSON(Map<String, dynamic> json){
     final user = UserProfile(json["phone"]!);
     for (var item in json["events"]) {

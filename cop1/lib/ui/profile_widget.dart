@@ -36,7 +36,7 @@ class ProfileWidget extends StatelessWidget {
         const SizedBox(height: 30),
         _buildName(user),
         const SizedBox(height: 30),
-        const Padding(padding: EdgeInsets.symmetric(horizontal: 20), child: Text("Vos évènements")),
+        const Padding(padding: EdgeInsets.symmetric(horizontal: 20), child: Text("Vos évènements", style: TextStyle(fontSize: 16))),
         ListView.builder(
           shrinkWrap: true,
           physics: const ClampingScrollPhysics(),
