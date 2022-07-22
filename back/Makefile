@@ -39,8 +39,8 @@ enable:
 	sudo systemctl enable cop1adm
 
 restart:
-	sudo systemctl start cop1
-	sudo systemctl start cop1adm
+	sudo systemctl restart cop1
+	sudo systemctl restart cop1adm
 
 clean_dev:
 	rm -rf database.db || true
