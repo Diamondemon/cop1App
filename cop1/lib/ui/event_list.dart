@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:cop1/utils/cop1_event.dart';
 import 'package:cop1/ui/event_tile.dart';
 import 'package:flutter/material.dart';
@@ -20,6 +22,13 @@ class _EventListState extends State<EventList> {
         builder: (BuildContext ctxt, AsyncSnapshot snapshot) {
           if (snapshot.connectionState == ConnectionState.done){
             if (snapshot.hasError){
+              if (snapshot.error is SocketException){
+                WidgetsBinding.instance
+                    .addPostFrameCallback((_) {
+                  _displayConnectionAlert(ctxt);
+                });
+                return const Scaffold();
+              }
               return Text(snapshot.error.toString());
             }
             else{
@@ -42,6 +51,26 @@ class _EventListState extends State<EventList> {
               child: EventTile(event: events[index])
           );
         }
+    );
+  }
+
+  void _displayConnectionAlert(BuildContext context){
+    showDialog(
+        context: context,
+        builder: (BuildContext alertContext){
+          return _buildDialog(alertContext);
+        }
+    );
+  }
+
+  Widget _buildDialog(BuildContext context){
+    Widget discardButton = TextButton(
+      child: const Text("Ok"),
+      onPressed: () {Navigator.of(context).pop();},
+    );
+    return AlertDialog(
+      title: const Text("Impossible de contacter le serveur, vérifiez votre connexion internet."),
+      actions: [discardButton],
     );
   }
 }

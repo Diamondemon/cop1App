@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:cop1/constants.dart' show apiURL;
 import 'package:http/http.dart' as http;
@@ -24,6 +25,9 @@ class API {
     on HTTP409Exception {
       rethrow;
     }
+    on SocketException {
+      rethrow;
+    }
     on Exception catch (e){
       dev.log("Boom Error $e");
       return false;
@@ -36,6 +40,9 @@ class API {
     try {
       Map<String, dynamic> retVal = await _post(request, data);
       return retVal['valid'];
+    }
+    on SocketException {
+      rethrow;
     }
     on Exception catch (e){
       dev.log("Boom Error $e");
@@ -50,6 +57,9 @@ class API {
       Map<String, dynamic> retVal = await _post(request, data);
       return retVal["token"]["access_token"];
     }
+    on SocketException {
+      rethrow;
+    }
     on Exception catch (e){
       dev.log("Boom Error $e");
       throw Exception();
@@ -61,6 +71,9 @@ class API {
     Map<String,String> headers = {"bearer":token};
     try {
       return _get(request, headers);
+    }
+    on SocketException {
+      rethrow;
     }
     on Exception {
       rethrow;
@@ -74,6 +87,9 @@ class API {
     try {
       return _post(request,{}, headers);
     }
+    on SocketException {
+      rethrow;
+    }
     on Exception {
       rethrow;
     }
@@ -85,6 +101,9 @@ class API {
     Map<String,String> headers = {"bearer":token};
     try {
       return _delete(request, headers);
+    }
+    on SocketException {
+      rethrow;
     }
     on Exception {
       rethrow;
@@ -98,6 +117,9 @@ class API {
       Map<String, dynamic> retVal = await _get(request);
       //dev.log("Event List: $retVal");
       return retVal;
+    }
+    on SocketException {
+      rethrow;
     }
     on Exception catch (e){
       dev.log("Boom Error $e");

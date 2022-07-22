@@ -70,6 +70,6 @@ class _ProfileTabState extends State<ProfileTab> {
 
   void _launchConnection() async{
     await Navigator.of(context).push(MaterialPageRoute(builder: (buildContext){return const CreationPage();}));
-    setState((){});
+    if (mounted) setState((){});
   }
 }

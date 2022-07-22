@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:cop1/utils/user_profile.dart';
 import 'package:flutter/material.dart';
@@ -52,8 +53,7 @@ class SessionData with ChangeNotifier {
       Map<String, dynamic> json = (await API.events())??{"events":[]};
       _events = (json["events"] as List<dynamic>).map((item){
         return Cop1Event.fromJSON(item);
-      }
-      ).toList();
+      }).toList();
     }
     return _events;
   }
