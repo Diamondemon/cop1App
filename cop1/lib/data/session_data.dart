@@ -33,7 +33,7 @@ class SessionData with ChangeNotifier {
   String _phoneNumber = "";
   String _token = "";
   UserProfile? _localUser;
-  List<Cop1Event> events = [];
+  List<Cop1Event> _events = [];
 
   String get token => _token;
   String get phoneNumber => _phoneNumber;
@@ -46,6 +46,17 @@ class SessionData with ChangeNotifier {
       log("Connected user: $_localUser");
     }
     return _localUser;
+  }
+
+  Future<List<Cop1Event>> get events async {
+    if (_events.isEmpty){
+      Map<String, dynamic> json = (await API.events())??{"events":[]};
+      _events = (json["events"] as List<dynamic>).map((item){
+        return Cop1Event.fromJSON(item);
+      }
+      ).toList();
+    }
+    return _events;
   }
 
   bool get isConnected => _token.isNotEmpty;

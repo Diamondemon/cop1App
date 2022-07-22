@@ -1,19 +1,21 @@
 
+import 'package:cop1/data/cop1_event.dart';
+
 class UserProfile{
   String? name;
   String? surname;
   final String _phoneNumber;
   String? email;
   final bool _isAdmin;
-  Set<int> events = <int>{};
+  Set<Cop1Event> events = {};
 
   String get phoneNumber => _phoneNumber;
   bool get isAdmin =>_isAdmin;
 
   UserProfile(this._phoneNumber, [this._isAdmin = false]);
 
-  void subscribeToEvent(int id){
-    events.add(id);
+  void subscribeToEvent(Cop1Event event){
+    events.add(event);
   }
 
   void unsubscribeFromEvent(int id){
@@ -23,7 +25,7 @@ class UserProfile{
   static UserProfile fromJSON(Map<String, dynamic> json){
     final user = UserProfile(json["phone"]!);
     for (var item in json["events"]) {
-      user.subscribeToEvent(item["id"]);
+      user.subscribeToEvent(Cop1Event.fromJSON(item));
     }
     return user;
   }

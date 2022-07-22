@@ -1,7 +1,9 @@
+import 'package:cop1/data/cop1_event.dart';
 import 'package:cop1/ui/event_tile.dart';
 import 'package:flutter/material.dart';
 
 import '../data/api.dart';
+import '../data/session_data.dart';
 
 class EventList extends StatefulWidget {
   const EventList({Key? key}) : super(key: key);
@@ -14,7 +16,7 @@ class _EventListState extends State<EventList> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-        future: API.events(),
+        future: session(context).events,
         builder: (BuildContext ctxt, AsyncSnapshot snapshot) {
           if (snapshot.connectionState == ConnectionState.done){
             if (snapshot.hasError){
@@ -31,13 +33,13 @@ class _EventListState extends State<EventList> {
     );
   }
 
-  Widget _buildListView(BuildContext context, Map<String, dynamic> events) {
+  Widget _buildListView(BuildContext context, List<Cop1Event> events) {
     return ListView.builder(
-        itemCount: events["events"].length,
+        itemCount: events.length,
         itemBuilder: (BuildContext ctxt, index) {
           return Padding(
               padding: const EdgeInsets.all(5.0),
-              child: EventTile(event: events["events"][index])
+              child: EventTile(event: events[index])
           );
         }
     );

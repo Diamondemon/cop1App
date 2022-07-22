@@ -20,7 +20,9 @@ class _ProfileTabState extends State<ProfileTab> {
     super.initState();
     if (!session(context).isConnected){
       WidgetsBinding.instance
-          .addPostFrameCallback((_) => Navigator.of(context).push(MaterialPageRoute(builder: (buildContext){return const CreationPage();})));
+          .addPostFrameCallback((_) {
+            _launchConnection();
+      });
     }
   }
   @override
@@ -29,19 +31,38 @@ class _ProfileTabState extends State<ProfileTab> {
         appBar: AppBar(
           title: const Text("Profil Utilisateur"),
           elevation: 0,
+          actions: session(context).isConnected? [
+            IconButton(
+              icon: const Icon(
+                Icons.edit,
+              ),
+              onPressed: (){},
+            )
+          ] : [],
         ),
         body: session(context).isConnected? const ProfileWidget() : _buildNoProfile(),
     );
   }
 
   Widget _buildNoProfile(){
-    return const Center(
+    return Center(
       child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 10.0),
-        child: Text(
-          "Veuillez vous inscrire pour avoir un profil utilisateur."
+        padding: const EdgeInsets.symmetric(horizontal: 10.0),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Text(
+                "Veuillez vous inscrire pour avoir un profil utilisateur."
+            ),
+            ElevatedButton(onPressed: _launchConnection, child: const Text("Me connecter")),
+          ]
         )
       )
     );
+  }
+
+  void _launchConnection() async{
+    await Navigator.of(context).push(MaterialPageRoute(builder: (buildContext){return const CreationPage();}));
+    setState((){});
   }
 }

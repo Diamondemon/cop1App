@@ -1,3 +1,4 @@
+import 'package:cop1/data/cop1_event.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cop1/maps_launcher.dart';
@@ -6,7 +7,7 @@ import 'dart:developer' as developer;
 
 class EventTile extends StatefulWidget {
   const EventTile({Key? key, required this.event}) : super(key: key);
-  final Map<String, dynamic> event;
+  final Cop1Event event;
 
   @override
   State<EventTile> createState() => _EventTileState();
@@ -32,11 +33,11 @@ class _EventTileState extends State<EventTile> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                        widget.event["title"],
+                        widget.event.title,
                         style: Theme.of(context).textTheme.titleMedium,
                     ),
                     const Spacer(),
-                    Image.network(widget.event['img'], fit: BoxFit.fill, height: MediaQuery.of(context).size.height/7),
+                    Image.network(widget.event.imageLink, fit: BoxFit.fill, height: MediaQuery.of(context).size.height/7),
                     const Spacer(),
                   ]
                 )
@@ -59,7 +60,7 @@ class _EventTileState extends State<EventTile> {
                           ],
                         ),
                       ),
-                      TextButton(onPressed: () => _addToCalendar(widget.event["date"]), child:Text(widget.event["date"])),
+                      TextButton(onPressed: () => _addToCalendar(widget.event.date), child:Text(widget.event.date)),
                       const Spacer(),
                       const Text.rich(
                         TextSpan(
@@ -74,7 +75,7 @@ class _EventTileState extends State<EventTile> {
                           ],
                         ),
                       ),
-                      TextButton(onPressed: _lookOnMaps, child:Text(widget.event["loc"])),
+                      TextButton(onPressed: _lookOnMaps, child:Text(widget.event.location)),
                       const Spacer(),
                       Center(
                         child: RawMaterialButton(
@@ -100,9 +101,9 @@ class _EventTileState extends State<EventTile> {
 
   void _addToCalendar(String date){
     final Event event = Event(
-      title: widget.event["title"],
-      description: 'Event description',
-      location: widget.event["loc"],
+      title: widget.event.title,
+      description: widget.event.title,
+      location: widget.event.location,
       startDate: DateTime.parse(date),
       endDate: DateTime.parse(date),
     );
@@ -110,7 +111,7 @@ class _EventTileState extends State<EventTile> {
   }
 
   void _lookOnMaps(){
-    MapsLauncher.launchQuery(widget.event["loc"]);
+    MapsLauncher.launchQuery(widget.event.location);
   }
 
 }
