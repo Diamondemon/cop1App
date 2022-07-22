@@ -1,3 +1,5 @@
+import re
+
 from fastapi import Depends, APIRouter, HTTPException
 from fastapi.security import APIKeyHeader
 
@@ -7,7 +9,6 @@ from app.logger import logger
 from app.database.tables import User as UserInDB, DB
 from app.database.main import get_user
 
-
 app = APIRouter(tags=["login"])
 
 token = APIKeyHeader(name="bearer", description="Connection token")
@@ -16,6 +17,11 @@ token = APIKeyHeader(name="bearer", description="Connection token")
 @app.post("/account/create")
 async def create_new_user(user: UserCreationModel) -> UserCreationResponse:
     logger.info("Creating user : %s", user)
+    if not re.match('\\+33[1-9][0-9]{8}', user.phone):
+        return UserCreationResponse(
+                valid=False,
+                message="Invalid phone number"
+            )
     return create_user(user)
 
 
