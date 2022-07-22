@@ -1,6 +1,6 @@
 .PHONY: all run insall clean clean_dev admin
 PYTHON=python3.10
-INSTALL_DST=/etc/systemd/system/cop1.service
+INSTALL_DST=/etc/systemd/system
 
 all: setup
 
@@ -20,7 +20,9 @@ dev: .venv
 
 install: .venv .env
 	envsubst < cop1.service > /tmp/cop1.service
-	sudo bash -c 'mv /tmp/cop1.service ${INSTALL_DST} && chmod 755 ${INSTALL_DST} && chown root:root ${INSTALL_DST}'
+	envsubst < cop1adm.service > /tmp/cop1adm.service
+	sudo bash -c 'mv /tmp/cop1.service ${INSTALL_DST}/cop1.service && chmod 755 ${INSTALL_DST}/cop1.service && chown root:root ${INSTALL_DST}/cop1.service'
+	sudo bash -c 'mv /tmp/cop1adm.service ${INSTALL_DST}/cop1adm.service && chmod 755 ${INSTALL_DST}/cop1adm.service && chown root:root ${INSTALL_DST}/cop1adm.service'
 	sudo systemctl daemon-reload
 	@echo "\e[0;32mINFO: You can now start and enable the cop1 service\e[0m"
 	@echo "\e[0;32mINFO: \e[0m"
