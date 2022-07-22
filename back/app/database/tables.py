@@ -17,10 +17,12 @@ class User(Table):
     hashed_password = CharField()
     salt = CharField()
 
-    # email = CharField()
-    # full_name = CharField()
+    email = CharField(null=True)
+    first_name = CharField(null=True)
+    last_name = CharField(null=True)
     # status = CharField(default='normal')
     events = ManyToManyField(Event)
+
 
 Relation = User.events.get_through_model()
 DB.create_tables([User, Event, Relation])

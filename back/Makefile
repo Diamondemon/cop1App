@@ -13,10 +13,10 @@ all: setup
 	@echo "\e[0;33mWARNING: New env file generated, modify variables in the .env file\e[0m";
 
 run: .venv .env
-	bash -c 'source .env && source ${PWD}/.venv/bin/activate && uvicorn app:app() --host 0.0.0.0 --port $${PORT:-8000}'
+	bash -c 'source .env && source ${PWD}/.venv/bin/activate && uvicorn app:app --host 0.0.0.0 --port $${PORT:-8000}'
 
 dev: .venv
-	bash -c 'source .env && source ${PWD}/.venv/bin/activate && uvicorn app:app() --reload --host 0.0.0.0 --port $${PORT:-8000}'
+	bash -c 'source .env && source ${PWD}/.venv/bin/activate && uvicorn app:app --reload --host 0.0.0.0 --port $${PORT:-8000}'
 
 install: .venv .env
 	envsubst < cop1.service > /tmp/cop1.service
