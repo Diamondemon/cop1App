@@ -1,4 +1,4 @@
-.PHONY: all run insall clean clean_dev admin
+.PHONY: all run insall clean clean_dev admin enable restart
 PYTHON=python3.10
 INSTALL_DST=/etc/systemd/system
 
@@ -33,6 +33,14 @@ install: .venv .env
 	@echo "\e[0;32mINFO: # systemctl start cop1adm\e[0m"
 	@echo "\e[0;32mINFO: \e[0m"
 	@echo "\e[0;32mINFO: Configure the service using the environement variables present in the .env file\e[0m"
+
+enable:
+	sudo systemctl enable cop1
+	sudo systemctl enable cop1adm
+
+restart:
+	sudo systemctl start cop1
+	sudo systemctl start cop1adm
 
 clean_dev:
 	rm -rf database.db || true
