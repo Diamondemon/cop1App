@@ -20,4 +20,17 @@ class UserProfile{
     events.remove(id);
   }
 
+  static UserProfile fromJSON(Map<String, dynamic> json){
+    final user = UserProfile(json["phone"]!);
+    for (var item in json["events"]) {
+      user.subscribeToEvent(item["id"]);
+    }
+    return user;
+  }
+
+  @override
+  String toString(){
+    return "User $name $surname, identified by phone number $phoneNumber.\nMail: $email\nSubscribed to events $events";
+  }
+
 }

@@ -1,5 +1,6 @@
 import 'package:cop1/app_theme.dart';
 import 'package:cop1/data/api.dart';
+import 'package:cop1/ui/profile_tab.dart';
 import 'package:cop1/ui/tabs.dart';
 import 'package:cop1/ui/thread_tab.dart';
 import 'package:flutter/material.dart';
@@ -16,12 +17,12 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'COP1',
-      theme: AppTheme.themeData,
-      home: ChangeNotifierProvider(
-          create: (context) => SessionData(), child: const HomePage()
-      ),
+    return ChangeNotifierProvider(
+      create: (context) => SessionData(), child:MaterialApp(
+        title: 'COP1',
+        theme: AppTheme.themeData,
+        home:  const HomePage()
+        ),
     );
   }
 }
@@ -70,6 +71,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
               children: const <Widget>[
                 MyHomePage(title: "Flutter Demo Page"),
                 ThreadTab(),
+                ProfileTab(),
               ],
             ),
           ),

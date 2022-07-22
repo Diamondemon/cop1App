@@ -56,6 +56,18 @@ class API {
     }
   }
 
+  static Future<Map<String, dynamic>> getUser(String token){
+    String request = "$apiURL/account/me";
+    Map<String,String> headers = {"bearer":token};
+    try {
+      return _get(request, headers);
+    }
+    on Exception {
+      rethrow;
+    }
+
+  }
+
   static Future<Map<String, dynamic>?> events() async {
     String request = "$apiURL/events";
     try {
@@ -87,14 +99,17 @@ class API {
   }
 
   /// Fetch a json object from the distant server
-  static Future<Map<String, dynamic>> _get(String url) async {
+  static Future<Map<String, dynamic>> _get(String url, [Map<String, String>? headers]) async {
     final response = await http
-        .get(Uri.parse(url), headers: {"accept": "application/json"});
+        .get(Uri.parse(url), headers: {"accept": "application/json", ...?headers});
 
     if (response.statusCode == 200) {
       // If the server did return a 200 OK response,
       // then parse the JSON.
       return jsonDecode(response.body);
+
+    } else if (response.statusCode == 409){
+      throw HTTP409Exception(jsonDecode(response.body)["detail"]);
     }
     else {
       throw Exception('Error ${response.statusCode} on $url');

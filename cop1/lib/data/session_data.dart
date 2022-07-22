@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:cop1/data/user_profile.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +14,10 @@ import 'api.dart';
 
 class NoPhoneNumberException implements Exception {
   NoPhoneNumberException();
+}
+
+class NotConnectedException implements Exception {
+  NotConnectedException();
 }
 
 // Syntax for call:
@@ -32,7 +37,16 @@ class SessionData with ChangeNotifier {
 
   String get token => _token;
   String get phoneNumber => _phoneNumber;
-  UserProfile? get user => _localUser;
+
+  Future<UserProfile?> get user async {
+    if (_phoneNumber=="") throw NoPhoneNumberException();
+    if (!isConnected) throw NotConnectedException();
+    if (_localUser==null){
+      _localUser = UserProfile.fromJSON(await API.getUser(_token));
+      log("Connected user: $_localUser");
+    }
+    return _localUser;
+  }
 
   bool get isConnected => _token.isNotEmpty;
 
