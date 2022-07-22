@@ -35,6 +35,12 @@ class UserModel(BaseModel):
     # full_name: str
 
 
+class UserEditModel(BaseModel):
+    email: str | None
+    first_name: str | None
+    last_name: str | None
+
+
 class UserCreationModel(BaseModel):
     phone: str
 
