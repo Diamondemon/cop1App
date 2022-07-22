@@ -25,8 +25,10 @@ install: .venv .env
 	@echo "\e[0;32mINFO: You can now start and enable the cop1 service\e[0m"
 	@echo "\e[0;32mINFO: \e[0m"
 	@echo "\e[0;32mINFO: # systemctl enable cop1\e[0m"
+	@echo "\e[0;32mINFO: # systemctl enable cop1adm\e[0m"
 	@echo "\e[0;32mINFO: \e[0m"
 	@echo "\e[0;32mINFO: # systemctl start cop1\e[0m"
+	@echo "\e[0;32mINFO: # systemctl start cop1adm\e[0m"
 	@echo "\e[0;32mINFO: \e[0m"
 	@echo "\e[0;32mINFO: Configure the service using the environement variables present in the .env file\e[0m"
 
