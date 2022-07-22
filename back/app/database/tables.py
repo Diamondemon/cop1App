@@ -17,9 +17,9 @@ class User(Table):
     hashed_password = CharField()
     salt = CharField()
 
-    email = CharField(null=True)
-    first_name = CharField(null=True)
-    last_name = CharField(null=True)
+    email = CharField()
+    first_name = CharField()
+    last_name = CharField()
     # status = CharField(default='normal')
     events = ManyToManyField(Event)
 

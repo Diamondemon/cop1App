@@ -27,12 +27,12 @@ def token_from_user(user: UserInDB) -> BearerToken:
     return BearerToken(access_token=create_token(user.phone))
 
 
-def user_from_token(token: str) -> str:
+def user_from_token(token: str) -> UserInDB:
     try:
         username = decode_token(token)
-        if get_user(username) is None:
-            raise unauthorized("Invalid authentication credentials")
-        return username
+        if (user := get_user(username)) is not None:
+            return user
+        raise unauthorized("Invalid authentication credentials")
     except InvalidToken as e:
         raise unauthorized(str(e))
     except Exception as e:

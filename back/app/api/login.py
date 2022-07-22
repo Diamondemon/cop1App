@@ -5,6 +5,7 @@ from app.login import user_login, create_user, user_from_token, update_user_pass
 from app.interfaces.main import *
 from app.logger import logger
 from app.database.tables import User as UserInDB
+from app.database.main import get_user
 
 
 app = APIRouter(tags=["login"])
@@ -33,11 +34,12 @@ async def login(user: UserLoginModel) -> UserLoginResponse:
 @app.get("/account/me")
 async def read_users_me(_token: str = Depends(token)) -> UserModel:
     user = user_from_token(_token)
-    if user is None:
-        raise HTTPException(status_code=404, detail="User not found")
     logger.info('user %s is connected', user)
     return UserModel(
-        phone=user,
+        phone=user.phone,
+        email=user.email,
+        first_name=user.first_name,
+        last_name=user.last_name,
         events=[
             Event(
                 id=e.id,
@@ -47,6 +49,14 @@ async def read_users_me(_token: str = Depends(token)) -> UserModel:
                 img=e.img,
                 loc=e.loc
             )
-            for e in UserInDB.get(UserInDB.phone == user).events
+            for e in user.events
         ]
     )
+
+
+@app.delete("/account/me")
+async def delete_account(_token: str = Depends(token)) -> BoolResponse:
+    user = user_from_token(_token)
+    logger.info('user %s request account deletion', user)
+    user.delete().execute()
+    return BoolResponse()

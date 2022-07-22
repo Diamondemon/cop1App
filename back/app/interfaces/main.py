@@ -8,6 +8,7 @@ class BearerToken(BaseModel):
     access_token: Token
     token_type: str = "bearer"
 
+
 class Event(BaseModel):
     """An event."""
     id: int
@@ -23,13 +24,16 @@ class Events(BaseModel):
     events: List[Event]
 
 
-
 class UserModel(BaseModel):
     phone: str
+    email: str
+    first_name: str
+    last_name: str
     events: List[Event]
 
     # email: str
     # full_name: str
+
 
 class UserCreationModel(BaseModel):
     phone: str
