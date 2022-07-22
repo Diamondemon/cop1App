@@ -68,6 +68,30 @@ class API {
 
   }
 
+  static Future<Map<String, dynamic>> subscribeToEvent(String token, int id){
+    String request = "$apiURL/events/subscribe/$id";
+    Map<String,String> headers = {"bearer":token};
+    try {
+      return _post(request,{}, headers);
+    }
+    on Exception {
+      rethrow;
+    }
+
+  }
+
+  static Future<Map<String, dynamic>> unsubscribeFromEvent(String token, int id){
+    String request = "$apiURL/events/subscribe/$id";
+    Map<String,String> headers = {"bearer":token};
+    try {
+      return _delete(request, headers);
+    }
+    on Exception {
+      rethrow;
+    }
+
+  }
+
   static Future<Map<String, dynamic>?> events() async {
     String request = "$apiURL/events";
     try {
@@ -82,9 +106,9 @@ class API {
   }
 
   /// Fetch a json object from the distant server
-  static Future<Map<String, dynamic>> _post(String url, Map<String, dynamic> data) async {
+  static Future<Map<String, dynamic>> _post(String url, Map<String, dynamic> data, [Map<String, String>? headers]) async {
     final response = await http
-        .post(Uri.parse(url), headers: {"accept": "application/json", "Content-Type": "application/json"}, body: jsonEncode(data));
+        .post(Uri.parse(url), headers: {"accept": "application/json", "Content-Type": "application/json", ...?headers}, body: jsonEncode(data));
 
     if (response.statusCode == 200) {
       // If the server did return a 200 OK response,
@@ -115,4 +139,23 @@ class API {
       throw Exception('Error ${response.statusCode} on $url');
     }
   }
+
+  /// Fetch a json object from the distant server
+  static Future<Map<String, dynamic>> _delete(String url, [Map<String, String>? headers]) async {
+    final response = await http
+        .delete(Uri.parse(url), headers: {"accept": "application/json", ...?headers});
+
+    if (response.statusCode == 200) {
+      // If the server did return a 200 OK response,
+      // then parse the JSON.
+      return jsonDecode(response.body);
+
+    } else if (response.statusCode == 409){
+      throw HTTP409Exception(jsonDecode(response.body)["detail"]);
+    }
+    else {
+      throw Exception('Error ${response.statusCode} on $url');
+    }
+  }
+
 }

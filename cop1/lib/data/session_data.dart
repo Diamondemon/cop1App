@@ -1,12 +1,12 @@
 import 'dart:async';
 import 'dart:developer';
 
-import 'package:cop1/data/user_profile.dart';
+import 'package:cop1/utils/user_profile.dart';
 import 'package:flutter/material.dart';
 //import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 //import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
-import 'cop1_event.dart';
+import '../utils/cop1_event.dart';
 
 import 'api.dart';
 //import 'dart:developer' as developer;
@@ -34,12 +34,13 @@ class SessionData with ChangeNotifier {
   String _token = "";
   UserProfile? _localUser;
   List<Cop1Event> _events = [];
+  final ValueNotifier<bool> _connectionListenable = ValueNotifier(false);
 
   String get token => _token;
   String get phoneNumber => _phoneNumber;
+  ValueNotifier<bool> get connectionListenable => _connectionListenable;
 
   Future<UserProfile?> get user async {
-    if (!isConnected) throw NotConnectedException();
     if (_localUser==null && isConnected && _phoneNumber.isNotEmpty){
       _localUser = UserProfile.fromJSON(await API.getUser(_token));
     }
@@ -72,7 +73,17 @@ class SessionData with ChangeNotifier {
     _phoneNumber = "";
     _token = "";
     _localUser = null;
+    _connectionListenable.value = false;
+  }
 
+  void subscribe(Cop1Event event){
+    API.subscribeToEvent(token, event.id);
+    _localUser?.subscribeToEvent(event);
+  }
+
+  void unsubscribe(int id){
+    API.unsubscribeFromEvent(token, id);
+    _localUser?.unsubscribeFromEvent(id);
   }
 
   Future<bool> setPhoneNumber(phoneNumber) async{
@@ -92,6 +103,7 @@ class SessionData with ChangeNotifier {
   Future<String> getToken(String code) async {
     if (_phoneNumber.isEmpty) throw NoPhoneNumberException();
     _token = await API.getToken(_phoneNumber, code);
+    if (token.isNotEmpty) _connectionListenable.value = true;
     return _token;
   }
 

@@ -27,20 +27,27 @@ class _ProfileTabState extends State<ProfileTab> {
   }
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          title: const Text("Profil Utilisateur"),
-          elevation: 0,
-          actions: session(context).isConnected? [
-            IconButton(
-              icon: const Icon(
-                Icons.edit,
-              ),
-              onPressed: (){},
-            )
-          ] : [],
-        ),
-        body: session(context).isConnected? const ProfileWidget() : _buildNoProfile(),
+    return ValueListenableBuilder(
+      valueListenable: session(context).connectionListenable,
+      builder: (BuildContext ctxt, bool value, _) {
+        return Scaffold(
+          appBar: AppBar(
+            title: const Text("Profil Utilisateur"),
+            elevation: 0,
+            actions: value ? [
+              IconButton(
+                icon: const Icon(
+                  Icons.edit,
+                ),
+                onPressed: () {},
+              )
+            ] : [],
+          ),
+          body: value
+              ? const ProfileWidget()
+              : _buildNoProfile(),
+        );
+      }
     );
   }
 

@@ -1,5 +1,9 @@
 
-import 'package:cop1/data/cop1_event.dart';
+import 'dart:developer';
+
+import 'package:cop1/utils/cop1_event.dart';
+import 'package:cop1/utils/set_notifier.dart';
+import 'package:flutter/material.dart';
 
 class UserProfile{
   String? name;
@@ -7,7 +11,7 @@ class UserProfile{
   final String _phoneNumber;
   String? email;
   final bool _isAdmin;
-  Set<Cop1Event> events = {};
+  SetNotifier<Cop1Event> events = SetNotifier();
 
   String get phoneNumber => _phoneNumber;
   bool get isAdmin =>_isAdmin;
@@ -19,7 +23,7 @@ class UserProfile{
   }
 
   void unsubscribeFromEvent(int id){
-    events.remove(id);
+    events.remove(events.firstWhere((event) {log("${event.id}"); return event.id == id;}));
   }
 
   bool isSubscribedToId(int id){

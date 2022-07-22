@@ -1,4 +1,4 @@
-import 'package:cop1/data/cop1_event.dart';
+import 'package:cop1/utils/cop1_event.dart';
 import 'package:cop1/ui/event_tile.dart';
 import 'package:flutter/material.dart';
 

@@ -1,10 +1,11 @@
 
 import 'dart:developer';
 
-import 'package:cop1/data/user_profile.dart';
+import 'package:cop1/utils/user_profile.dart';
 import 'package:cop1/ui/event_tile.dart';
 import 'package:flutter/material.dart';
 
+import '../utils/cop1_event.dart';
 import '../data/session_data.dart';
 
 class ProfileWidget extends StatelessWidget {
@@ -37,21 +38,31 @@ class ProfileWidget extends StatelessWidget {
         _buildName(user),
         const SizedBox(height: 30),
         const Padding(padding: EdgeInsets.symmetric(horizontal: 20), child: Text("Vos évènements", style: TextStyle(fontSize: 16))),
-        ListView.builder(
-          shrinkWrap: true,
-          physics: const ClampingScrollPhysics(),
-          itemCount: user.events.length,
-          itemBuilder: (
-            BuildContext ctxt, int index){
-              return Padding(
-                  padding: const EdgeInsets.all(5.0),
-                  child: EventTile(event: user.events.elementAt(index))
-              );
-            },
+        ValueListenableBuilder(
+          valueListenable: user.events,
+          builder: (BuildContext cntxt, Set<Cop1Event> events, _) {
+            return ListView.builder(
+              shrinkWrap: true,
+              physics: const ClampingScrollPhysics(),
+              itemCount: events.length,
+              itemBuilder:
+                  (BuildContext ctxt, int index) {
+                return Padding(
+                    padding: const EdgeInsets.all(5.0),
+                    child: EventTile(event: events.elementAt(index))
+                );
+              },
+            );
+          }
+        ),
+        Center(
+          child: ElevatedButton(onPressed: session(context).disconnectUser, child: const Text("Me déconnecter")),
         )
+
       ],
     );
   }
+
 
   Widget _buildName(UserProfile user){
     final name = user.name;

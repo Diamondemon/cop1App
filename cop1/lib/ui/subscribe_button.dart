@@ -1,5 +1,8 @@
-import 'package:cop1/data/cop1_event.dart';
-import 'package:cop1/data/user_profile.dart';
+import 'dart:developer';
+
+import 'package:cop1/ui/creation_page.dart';
+import 'package:cop1/utils/cop1_event.dart';
+import 'package:cop1/utils/user_profile.dart';
 import 'package:flutter/material.dart';
 
 import '../data/session_data.dart';
@@ -39,11 +42,18 @@ class _SubscribeButtonState extends State<SubscribeButton> {
   }
 
   void _toggleParticipation(BuildContext context, bool participate) async {
+    SessionData s = session(context);
     if (participate){
-
+      if (!s.isConnected){
+        await Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext ctxt)=> const CreationPage()));
+        if (!s.isConnected) return;
+      }
+      s.subscribe(widget.event);
+      setState((){});
     }
     else {
-
+      s.unsubscribe(widget.event.id);
+      setState((){});
     }
   }
 
