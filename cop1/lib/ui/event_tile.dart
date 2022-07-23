@@ -63,8 +63,7 @@ class _EventTileState extends State<EventTile> {
                           ],
                         ),
                       ),
-                      TextButton(onPressed: () => _addToCalendar(widget.event.date), child:Text(widget.event.date)),
-                      const Spacer(),
+                      TextButton(onPressed: () => _addToCalendar(widget.event.date), child:Text(widget.event.date, style: const TextStyle(fontSize: 12))),
                       const Text.rich(
                         TextSpan(
                           children: [
@@ -78,7 +77,7 @@ class _EventTileState extends State<EventTile> {
                           ],
                         ),
                       ),
-                      TextButton(onPressed: _lookOnMaps, child:Text(widget.event.location)),
+                      TextButton(onPressed: _lookOnMaps, child:Text(widget.event.location, style: const TextStyle(fontSize: 12))),
                       const Spacer(),
                       Expanded(flex: 2, child: Center(
                         child: SubscribeButton(event: widget.event),

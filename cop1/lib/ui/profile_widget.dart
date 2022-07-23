@@ -55,6 +55,7 @@ class ProfileWidget extends StatelessWidget {
             );
           }
         ),
+        const SizedBox(height: 30,),
         Center(
           child: ElevatedButton(onPressed: session(context).disconnectUser, child: const Text("Me déconnecter")),
         )
