@@ -4,11 +4,20 @@ import 'package:cop1/ui/profile_tab.dart';
 import 'package:cop1/ui/tabs.dart';
 import 'package:cop1/ui/thread_tab.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:hive_flutter/adapters.dart';
 import 'package:provider/provider.dart';
 import 'data/session_data.dart';
 
+Future<void> initAll() async {
+  await Hive.initFlutter();
+}
+
 void main() {
-  runApp(const MyApp());
+  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
+  initAll().then((_) => runApp(const MyApp()));
 }
 
 class MyApp extends StatelessWidget {
@@ -17,6 +26,7 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     return ChangeNotifierProvider(
       create: (context) => SessionData(), child:MaterialApp(
         title: 'COP1',
@@ -43,14 +53,15 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
     super.initState();
     _tabController = TabController(vsync: this, length: tabs.length);
 
-    /*session(context).loadAssets(context).then((nothing)=>
-        FlutterNativeSplash.remove());*/
+    session(context).loadAssets(context).then(
+            (_) => FlutterNativeSplash.remove()
+    );
   }
 
   @override
   void dispose() {
     _tabController.dispose();
-    //Hive.close();
+    Hive.close();
     super.dispose();
   }
 

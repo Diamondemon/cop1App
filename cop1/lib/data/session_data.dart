@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:cop1/utils/user_profile.dart';
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 //import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 //import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
@@ -40,6 +41,7 @@ class SessionData with ChangeNotifier {
   String get token => _token;
   String get phoneNumber => _phoneNumber;
   ValueNotifier<bool> get connectionListenable => _connectionListenable;
+  bool get isConnected => _token.isNotEmpty;
 
   Future<UserProfile?> get user async {
     if (_localUser==null && isConnected && _phoneNumber.isNotEmpty){
@@ -58,7 +60,6 @@ class SessionData with ChangeNotifier {
     return _events;
   }
 
-  bool get isConnected => _token.isNotEmpty;
 
   /// App preferences
   //static const storage = FlutterSecureStorage();
@@ -74,6 +75,16 @@ class SessionData with ChangeNotifier {
     _token = "";
     _localUser = null;
     _connectionListenable.value = false;
+    _storeCreds();
+  }
+
+  void deleteUser(){
+    API.deleteUser(token);
+    _phoneNumber = "";
+    _token = "";
+    _localUser = null;
+    _connectionListenable.value = false;
+    _storeCreds();
   }
 
   void subscribe(Cop1Event event){
@@ -104,11 +115,22 @@ class SessionData with ChangeNotifier {
     if (_phoneNumber.isEmpty) throw NoPhoneNumberException();
     _token = await API.getToken(_phoneNumber, code);
     if (token.isNotEmpty) _connectionListenable.value = true;
+    _storeCreds();
     return _token;
   }
 
-  void _loadToken() async {
+  void _loadCreds() async {
+    final credBox = await Hive.openBox("Credentials");
+    _phoneNumber = credBox.get("phone",defaultValue:  "");
+    _token = credBox.get("token",defaultValue:  "");
+    if (token.isNotEmpty) _connectionListenable.value = true;
+  }
 
+
+  void _storeCreds() async {
+    final credBox = await Hive.openBox("Credentials");
+    credBox.put("phone", _phoneNumber);
+    credBox.put("token", _token);
   }
 
   Future<bool> askValidation() async {
@@ -160,7 +182,7 @@ class SessionData with ChangeNotifier {
 
   /// Load all the text assets from the data/ folder
   Future<void> loadAssets(BuildContext context) async {
-    _loadToken();
+    _loadCreds();
     //loadAsset(context, 'data/database_category.txt').then(readCategories);
   }
 }

@@ -78,7 +78,20 @@ class API {
     on Exception {
       rethrow;
     }
+  }
 
+  static Future<Map<String, dynamic>> deleteUser(String token){
+    String request = "$apiURL/account/me";
+    Map<String,String> headers = {"bearer":token};
+    try {
+      return _delete(request, headers);
+    }
+    on SocketException {
+      rethrow;
+    }
+    on Exception {
+      rethrow;
+    }
   }
 
   static Future<Map<String, dynamic>> subscribeToEvent(String token, int id){
