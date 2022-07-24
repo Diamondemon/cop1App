@@ -25,7 +25,7 @@ class _ProfileEditState extends State<ProfileEdit> implements ConnectedWidgetSta
       appBar: AppBar(
         title: const Text("Edition du profil"),
         actions: [
-          IconButton(onPressed: (){}, icon: const Icon(Icons.delete_forever))
+          IconButton(onPressed: () => _deleteUserForever(context), icon: const Icon(Icons.delete_forever))
         ],
       ),
       body: FutureBuilder(
@@ -88,5 +88,16 @@ class _ProfileEditState extends State<ProfileEdit> implements ConnectedWidgetSta
       }
 
     }
+  }
+
+  void _deleteUserForever(BuildContext context) async {
+    try {
+      await session(context).deleteUser();
+    }
+    on SocketException {
+      ConnectedWidgetState.displayConnectionAlert(context);
+      return;
+    }
+    if (mounted) Navigator.of(context).pop();
   }
 }

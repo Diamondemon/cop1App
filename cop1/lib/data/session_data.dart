@@ -95,8 +95,13 @@ class SessionData with ChangeNotifier {
     }
   }
 
-  void deleteUser(){
-    API.deleteUser(token);
+  Future<void> deleteUser() async {
+    try {
+      await API.deleteUser(token);
+    }
+    on SocketException {
+      rethrow;
+    }
     _phoneNumber = "";
     _token = "";
     _localUser = null;
