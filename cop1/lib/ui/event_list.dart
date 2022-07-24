@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 
 import '../data/api.dart';
 import '../data/session_data.dart';
+import '../utils/connected_widget_state.dart';
 
 class EventList extends StatefulWidget {
   const EventList({Key? key}) : super(key: key);
@@ -25,7 +26,7 @@ class _EventListState extends State<EventList> {
               if (snapshot.error is SocketException){
                 WidgetsBinding.instance
                     .addPostFrameCallback((_) {
-                  _displayConnectionAlert(ctxt);
+                  ConnectedWidgetState.displayConnectionAlert(ctxt);
                 });
                 return const Scaffold();
               }
@@ -51,26 +52,6 @@ class _EventListState extends State<EventList> {
               child: EventTile(event: events[index])
           );
         }
-    );
-  }
-
-  void _displayConnectionAlert(BuildContext context){
-    showDialog(
-        context: context,
-        builder: (BuildContext alertContext){
-          return _buildDialog(alertContext);
-        }
-    );
-  }
-
-  Widget _buildDialog(BuildContext context){
-    Widget discardButton = TextButton(
-      child: const Text("Ok"),
-      onPressed: () {Navigator.of(context).pop();},
-    );
-    return AlertDialog(
-      title: const Text("Impossible de contacter le serveur, vérifiez votre connexion internet."),
-      actions: [discardButton],
     );
   }
 }

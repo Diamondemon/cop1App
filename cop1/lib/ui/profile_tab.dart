@@ -40,8 +40,8 @@ class _ProfileTabState extends State<ProfileTab> {
                 icon: const Icon(
                   Icons.edit,
                 ),
-                onPressed: () {
-                  Navigator.of(ctxt).push(MaterialPageRoute(builder:
+                onPressed: () async {
+                  await Navigator.of(ctxt).push(MaterialPageRoute(builder:
                     (BuildContext buildContext) => const ProfileEdit()));
                   },
               ),

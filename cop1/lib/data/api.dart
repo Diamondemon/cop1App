@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:cop1/constants.dart' show apiURL;
+import 'package:cop1/utils/user_profile.dart';
 import 'package:http/http.dart' as http;
 import 'dart:developer' as dev;
 
@@ -62,7 +63,7 @@ class API {
     }
     on Exception catch (e){
       dev.log("Boom Error $e");
-      throw Exception();
+      rethrow;
     }
   }
 
@@ -71,6 +72,21 @@ class API {
     Map<String,String> headers = {"bearer":token};
     try {
       return _get(request, headers);
+    }
+    on SocketException {
+      rethrow;
+    }
+    on Exception {
+      rethrow;
+    }
+  }
+
+  static Future<Map<String, dynamic>> modifyUser(String token, UserProfile user){
+    String request = "$apiURL/account/me";
+    Map<String,String> headers = {"bearer":token};
+    Map<String,String> data = {"first_name":user.firstName.value, "last_name": user.lastName.value, "email": user.email.value};
+    try {
+      return _post(request, data, headers);
     }
     on SocketException {
       rethrow;
@@ -121,7 +137,6 @@ class API {
     on Exception {
       rethrow;
     }
-
   }
 
   static Future<Map<String, dynamic>?> events() async {
