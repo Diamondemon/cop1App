@@ -1,7 +1,10 @@
+import 'dart:io';
+
 import 'package:cop1/data/session_data.dart';
 import 'package:cop1/ui/text_field_widget.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+
+import '../utils/connected_widget_state.dart';
 
 class ValidationPage extends StatefulWidget {
   const ValidationPage({Key? key}) : super(key: key);
@@ -60,14 +63,26 @@ class _ValidationPageState extends State<ValidationPage> {
   }
 
   void finalizeConnection(BuildContext context) async{
-    if ((await session(context).getToken(_code)).isNotEmpty){
-      Navigator.of(context).popUntil((route)=>route.isFirst);
-      return;
+    try {
+      if ((await session(context).getToken(_code)).isNotEmpty){
+        Navigator.of(context).popUntil((route)=>route.isFirst);
+        return;
+      }
     }
+    on SocketException {
+      ConnectedWidgetState.displayConnectionAlert(context);
+    }
+
   }
 
 
-  void resendCode(BuildContext context){
-    setState((){});
+  void resendCode(BuildContext context) async {
+    try {
+      await session(context).askValidation();
+      setState((){});
+    }
+    on SocketException {
+      ConnectedWidgetState.displayConnectionAlert(context);
+    }
   }
 }

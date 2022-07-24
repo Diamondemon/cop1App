@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:cop1/ui/creation_page.dart';
 import 'package:cop1/utils/cop1_event.dart';
@@ -22,7 +23,7 @@ class _SubscribeButtonState extends State<SubscribeButton> {
       future: session(context).user,
       builder: (BuildContext ctxt, snapshot){
         if (snapshot.connectionState == ConnectionState.done){
-          if (snapshot.hasError){
+          if (snapshot.hasError && snapshot.error is! SocketException){
             return Text(snapshot.error.toString());
           }
           else if (snapshot.data==null){

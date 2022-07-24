@@ -78,6 +78,23 @@ class SessionData with ChangeNotifier {
     _storeCreds();
   }
 
+  Future<bool> modifyUser(String firstName, String lastName, String email) async {
+    _localUser?.firstName.value = firstName;
+    _localUser?.lastName.value = lastName;
+    _localUser?.email.value = email;
+    try{
+      final retVal = await API.modifyUser(token, _localUser!);
+      return retVal["valid"];
+    }
+    on SocketException {
+      rethrow;
+    }
+    on Exception catch (e){
+      log("Error: $e");
+      return false;
+    }
+  }
+
   void deleteUser(){
     API.deleteUser(token);
     _phoneNumber = "";
@@ -113,7 +130,12 @@ class SessionData with ChangeNotifier {
 
   Future<String> getToken(String code) async {
     if (_phoneNumber.isEmpty) throw NoPhoneNumberException();
-    _token = await API.getToken(_phoneNumber, code);
+    try {
+      _token = await API.getToken(_phoneNumber, code);
+    }
+    on SocketException {
+      rethrow;
+    }
     if (token.isNotEmpty) _connectionListenable.value = true;
     _storeCreds();
     return _token;
@@ -166,18 +188,6 @@ class SessionData with ChangeNotifier {
       }
     }
 
-  }*/
-  /*
-  /// Reads the Index contained in the preferences of the app.
-  /// If none is found, save the default value.
-  Future<void> loadIndex() async {
-    String? stringIndex = await storage.read(key: "currentMatchIndex");
-    if (stringIndex==null){
-      storeIndex();
-    }
-    else {
-      currentMatchIndex = int.parse(stringIndex);
-    }
   }*/
 
   /// Load all the text assets from the data/ folder

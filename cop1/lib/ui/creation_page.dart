@@ -1,9 +1,13 @@
+import 'dart:io';
+
 import 'package:cop1/data/session_data.dart';
 import 'package:cop1/ui/text_field_widget.dart';
 import 'package:cop1/ui/validation_page.dart';
 import 'package:flutter/material.dart';
 
 import 'dart:developer' as developer;
+
+import '../utils/connected_widget_state.dart';
 
 class CreationPage extends StatefulWidget {
   const CreationPage({Key? key}) : super(key: key);
@@ -47,11 +51,17 @@ class _CreationPageState extends State<CreationPage> {
 
   void goToValidation(BuildContext context) async {
     if (phoneNumber!=""){
-      if (await session(context).setPhoneNumber(phoneNumber)){
-        if (await session(context).askValidation()) {
-          Navigator.push(context, MaterialPageRoute(builder: (cntxt)=> const ValidationPage()));
+      try{
+        if (await session(context).setPhoneNumber(phoneNumber)){
+          if (await session(context).askValidation()) {
+            Navigator.push(context, MaterialPageRoute(builder: (cntxt)=> const ValidationPage()));
+          }
         }
       }
+      on SocketException {
+        ConnectedWidgetState.displayConnectionAlert(context);
+      }
+
     }
   }
 }

@@ -3,13 +3,13 @@ import 'dart:developer';
 
 import 'package:cop1/utils/cop1_event.dart';
 import 'package:cop1/utils/set_notifier.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 
 class UserProfile{
-  String? name;
-  String? surname;
+  ValueNotifier<String> firstName=ValueNotifier("");
+  ValueNotifier<String> lastName=ValueNotifier("");
   final String _phoneNumber;
-  String? email;
+  ValueNotifier<String> email=ValueNotifier("");
   final bool _isAdmin;
   SetNotifier<Cop1Event> events = SetNotifier();
 
@@ -23,7 +23,7 @@ class UserProfile{
   }
 
   void unsubscribeFromEvent(int id){
-    events.remove(events.firstWhere((event) {log("${event.id}"); return event.id == id;}));
+    events.remove(events.firstWhere((event) => event.id == id));
   }
 
   bool isSubscribedToId(int id){
@@ -35,7 +35,10 @@ class UserProfile{
   }
 
   static UserProfile fromJSON(Map<String, dynamic> json){
-    final user = UserProfile(json["phone"]!);
+    final user = UserProfile(json["phone"]);
+    user.firstName.value = json["first_name"];
+    user.lastName.value = json["last_name"];
+    user.email.value = json["email"];
     for (var item in json["events"]) {
       user.subscribeToEvent(Cop1Event.fromJSON(item));
     }
@@ -44,7 +47,7 @@ class UserProfile{
 
   @override
   String toString(){
-    return "User $name $surname, identified by phone number $phoneNumber.\nMail: $email\nSubscribed to events $events";
+    return "User $firstName.value $lastName.value, identified by phone number $phoneNumber.\nMail: $email.value\nSubscribed to events $events";
   }
 
 }
