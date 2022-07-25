@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:cop1/utils/cop1_event.dart';
@@ -18,7 +19,12 @@ class EventList extends StatefulWidget {
 class _EventListState extends State<EventList> {
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
+    return RefreshIndicator(
+      onRefresh: () async {
+        await session(context).refreshEvents();
+        setState((){});
+      },
+      child: FutureBuilder(
         future: session(context).events,
         builder: (BuildContext ctxt, AsyncSnapshot snapshot) {
           if (snapshot.connectionState == ConnectionState.done){
@@ -40,6 +46,7 @@ class _EventListState extends State<EventList> {
             return const Scaffold();
           }
         }
+      ),
     );
   }
 
@@ -52,6 +59,6 @@ class _EventListState extends State<EventList> {
               child: EventTile(event: events[index])
           );
         }
-    );
+      );
   }
 }

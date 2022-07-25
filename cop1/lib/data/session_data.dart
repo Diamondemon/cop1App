@@ -52,12 +52,16 @@ class SessionData with ChangeNotifier {
 
   Future<List<Cop1Event>> get events async {
     if (_events.isEmpty){
-      Map<String, dynamic> json = (await API.events())??{"events":[]};
-      _events = (json["events"] as List<dynamic>).map((item){
-        return Cop1Event.fromJSON(item);
-      }).toList();
+      await refreshEvents();
     }
     return _events;
+  }
+
+  Future<void> refreshEvents() async {
+    Map<String, dynamic> json = (await API.events())??{"events":[]};
+    _events = (json["events"] as List<dynamic>).map((item){
+      return Cop1Event.fromJSON(item);
+    }).toList();
   }
 
 
