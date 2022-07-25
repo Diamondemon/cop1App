@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:cop1/utils/user_profile.dart';
@@ -93,8 +92,8 @@ class SessionData with ChangeNotifier {
     on SocketException {
       rethrow;
     }
-    on Exception catch (e){
-      log("Error: $e");
+    on Exception{
+      //log("Error: $e");
       return false;
     }
   }

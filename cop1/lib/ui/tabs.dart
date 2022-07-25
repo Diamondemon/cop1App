@@ -8,9 +8,9 @@ TextStyle tabStyle([double? fontSize]) => TextStyle(
 
 /// The 5 tabs of the main tab view
 List<Tab> tabs = <Tab>[
-  Tab(
+  /*Tab(
       icon: const Icon(Icons.scoreboard, color: main2),
-      child: Text('Scores', style: tabStyle(10.0))),
+      child: Text('Scores', style: tabStyle(10.0))),*/
   Tab(
       icon: const Icon(Icons.house),
       child: Text('Actualités', style: tabStyle(10.0), maxLines: 2, textAlign: TextAlign.center,)),

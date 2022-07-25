@@ -1,11 +1,9 @@
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:cop1/utils/cop1_event.dart';
 import 'package:cop1/ui/event_tile.dart';
 import 'package:flutter/material.dart';
 
-import '../data/api.dart';
 import '../data/session_data.dart';
 import '../utils/connected_widget_state.dart';
 
@@ -20,10 +18,7 @@ class _EventListState extends State<EventList> {
   @override
   Widget build(BuildContext context) {
     return RefreshIndicator(
-      onRefresh: () async {
-        await session(context).refreshEvents();
-        setState((){});
-      },
+      onRefresh: () async => await _refreshList(context),
       child: FutureBuilder(
         future: session(context).events,
         builder: (BuildContext ctxt, AsyncSnapshot snapshot) {
@@ -34,7 +29,7 @@ class _EventListState extends State<EventList> {
                     .addPostFrameCallback((_) {
                   ConnectedWidgetState.displayConnectionAlert(ctxt);
                 });
-                return const Scaffold();
+                return _buildListView(ctxt, []);
               }
               return Text(snapshot.error.toString());
             }
@@ -61,4 +56,15 @@ class _EventListState extends State<EventList> {
         }
       );
   }
+
+  Future<void> _refreshList(BuildContext context) async {
+    try {
+      await session(context).refreshEvents();
+      setState((){});
+    }
+    on SocketException {
+      ConnectedWidgetState.displayConnectionAlert(context);
+    }
+  }
+
 }

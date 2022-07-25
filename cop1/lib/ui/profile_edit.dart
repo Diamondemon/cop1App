@@ -91,13 +91,15 @@ class _ProfileEditState extends State<ProfileEdit> implements ConnectedWidgetSta
   }
 
   void _deleteUserForever(BuildContext context) async {
-    try {
-      await session(context).deleteUser();
+    if (await ConnectedWidgetState.displayYesNoDialog(context)){
+      try {
+        await session(context).deleteUser();
+      }
+      on SocketException {
+        ConnectedWidgetState.displayConnectionAlert(context);
+        return;
+      }
+      if (mounted) Navigator.of(context).pop();
     }
-    on SocketException {
-      ConnectedWidgetState.displayConnectionAlert(context);
-      return;
-    }
-    if (mounted) Navigator.of(context).pop();
   }
 }

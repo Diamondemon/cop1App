@@ -5,7 +5,6 @@ import 'package:cop1/ui/text_field_widget.dart';
 import 'package:cop1/ui/validation_page.dart';
 import 'package:flutter/material.dart';
 
-import 'dart:developer' as developer;
 
 import '../utils/connected_widget_state.dart';
 

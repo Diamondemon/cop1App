@@ -1,5 +1,4 @@
 
-import 'dart:developer';
 
 import 'package:cop1/utils/cop1_event.dart';
 import 'package:cop1/utils/set_notifier.dart';

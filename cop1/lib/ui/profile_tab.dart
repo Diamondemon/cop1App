@@ -1,4 +1,3 @@
-import 'dart:developer';
 
 import 'package:cop1/ui/creation_page.dart';
 import 'package:cop1/ui/profile_edit.dart';

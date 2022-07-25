@@ -1,12 +1,12 @@
+import 'dart:io';
+
 import 'package:cop1/utils/cop1_event.dart';
 import 'package:cop1/ui/subscribe_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cop1/maps_launcher.dart';
 import 'package:add_2_calendar/add_2_calendar.dart';
-import 'dart:developer' as developer;
 
-import '../data/session_data.dart';
 
 class EventTile extends StatefulWidget {
   const EventTile({Key? key, required this.event}) : super(key: key);
@@ -40,7 +40,7 @@ class _EventTileState extends State<EventTile> {
                         style: Theme.of(context).textTheme.titleMedium,
                     ),
                     const Spacer(),
-                    Image.network(widget.event.imageLink, fit: BoxFit.fill, height: MediaQuery.of(context).size.height/7),
+                    _buildImage(context),
                     const Spacer(),
                   ]
                 )
@@ -104,6 +104,15 @@ class _EventTileState extends State<EventTile> {
 
   void _lookOnMaps(){
     MapsLauncher.launchQuery(widget.event.location);
+  }
+
+  Widget _buildImage(BuildContext context){
+    try {
+      return Image.network(widget.event.imageLink, fit: BoxFit.fill, height: MediaQuery.of(context).size.height/7);
+    }
+    on SocketException {
+      return const Icon(Icons.image_not_supported);
+    }
   }
 
 }
