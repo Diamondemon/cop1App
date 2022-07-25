@@ -24,7 +24,7 @@ async def list_all_events() -> Events:
                 img=e.img,
                 loc=e.loc
             )
-            for e in EventInDB.select()
+            for e in EventInDB.select().order_by(EventInDB.date)
         ]
     )
 
