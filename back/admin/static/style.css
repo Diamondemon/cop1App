@@ -1,0 +1,58 @@
+th
+{
+    font-size: large;
+}
+
+.headerDiv
+{
+    display: flex;
+    justify-content:space-between;
+    width: 100%;
+}
+
+#logoutButton
+{
+    font-weight: bold;
+}
+
+body
+{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+
+td
+{
+    padding-left: 10;
+    padding-right: 10;
+}
+
+#tableDiv
+{
+    width: 90%;
+}
+
+.eventImage 
+{
+    width: 320px;
+    height: 180px;
+}
+
+.imgColumn
+{
+    width: 320px;
+    height:180px;
+}
+
+#buttonTd
+{
+    text-align: center;
+}
+
+a
+{
+    text-decoration: none;
+    color: #DF5F4D;
+}

@@ -1,5 +1,24 @@
+<!DOCTYPE html>
+<title>Page de connexion</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 <form method="post">
-  <p>Username: <input type="text" name="username" /></p>
-  <p>Password: <input type="text" name="password" /></p>
-  <p><input type="submit" value="Login" /></p>
+  <table>
+    <tr>
+      <td>Utilisateur:</td>
+      <td>
+        <input type="text" name="username" />
+      </td>
+    </tr>
+    <tr>
+      <td>Mot de passe: </td>
+      <td>
+        <input type="password" name="password" />
+      </td>
+    </tr>
+    <tr>
+      <td colspan="2" id="buttonTd">
+        <input type="submit" value="Connexion" />
+      </td>
+    </tr>
+  </table>
 </form>
