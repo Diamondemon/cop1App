@@ -14,6 +14,14 @@ class HTTP409Exception implements Exception {
   String toString() => "HTTP Status Code 409: $detail";
 }
 
+class HTTP401Exception implements Exception {
+  final String? detail;
+  HTTP401Exception([this.detail]);
+
+  @override
+  String toString() => "HTTP Status Code 401: $detail";
+}
+
 class API {
 
   static Future<bool> createAccount(String phoneNumber) async{
@@ -167,8 +175,11 @@ class API {
     } else if (response.statusCode == 409){
       throw HTTP409Exception(jsonDecode(response.body)["detail"]);
     }
+    else if (response.statusCode == 401 && jsonDecode(response.body)["detail"] == "Invalid authentication credentials"){
+      throw HTTP401Exception("Invalid authentication credentials");
+    }
     else {
-      throw Exception('Error ${response.statusCode} on $url');
+      throw Exception('Error ${response.statusCode} on $url. Detail: ${jsonDecode(response.body)["detail"]}');
     }
   }
 
@@ -185,8 +196,11 @@ class API {
     } else if (response.statusCode == 409){
       throw HTTP409Exception(jsonDecode(response.body)["detail"]);
     }
+    else if (response.statusCode == 401 && jsonDecode(response.body)["detail"] == "Invalid authentication credentials"){
+      throw HTTP401Exception("Invalid authentication credentials");
+    }
     else {
-      throw Exception('Error ${response.statusCode} on $url');
+      throw Exception('Error ${response.statusCode} on $url. Detail: ${jsonDecode(response.body)["detail"]}');
     }
   }
 
@@ -203,8 +217,11 @@ class API {
     } else if (response.statusCode == 409){
       throw HTTP409Exception(jsonDecode(response.body)["detail"]);
     }
+    else if (response.statusCode == 401 && jsonDecode(response.body)["detail"] == "Invalid authentication credentials"){
+      throw HTTP401Exception("Invalid authentication credentials");
+    }
     else {
-      throw Exception('Error ${response.statusCode} on $url');
+      throw Exception('Error ${response.statusCode} on $url. Detail: ${jsonDecode(response.body)["detail"]}');
     }
   }
 

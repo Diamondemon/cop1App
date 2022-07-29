@@ -43,8 +43,13 @@ class SessionData with ChangeNotifier {
   bool get isConnected => _token.isNotEmpty;
 
   Future<UserProfile?> get user async {
-    if (_localUser==null && isConnected && _phoneNumber.isNotEmpty){
-      _localUser = UserProfile.fromJSON(await API.getUser(_token));
+    try {
+      if (_localUser==null && isConnected && _phoneNumber.isNotEmpty){
+        _localUser = UserProfile.fromJSON(await API.getUser(_token));
+      }
+    }
+    on HTTP401Exception {
+      disconnectUser();
     }
     return _localUser;
   }
@@ -91,6 +96,10 @@ class SessionData with ChangeNotifier {
     }
     on SocketException {
       rethrow;
+    }
+    on HTTP401Exception {
+      disconnectUser();
+      return false;
     }
     on Exception{
       //log("Error: $e");
