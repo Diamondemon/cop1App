@@ -1,18 +1,17 @@
-th
-{
-    font-size: large;
+@font-face {
+    font-family: "HK-Grotesk";
+    src: url(./fonts/hk-grotesk.medium.ttf) format("truetype");
 }
 
-.headerDiv
-{
-    display: flex;
-    justify-content:space-between;
-    width: 100%;
+@font-face {
+    font-family: "HK-Grotesk Bold";
+    src: url(./fonts/hk-grotesk.bold.ttf) format("truetype");
 }
 
-#logoutButton
-{
-    font-weight: bold;
+@font-face {
+    font-family: "Raleway";
+    src: url(./fonts/Raleway-VariableFont_wght.ttf) format("truetype");
+    font-weight: normal, bold;
 }
 
 body
@@ -22,12 +21,47 @@ body
     align-items: center;
 }
 
+body, input
+{
+    font-family: "Raleway";
+}
+
+h1
+{
+    font-family: "HK-Grotesk Bold";
+}
+
+a
+{
+    font-family: "HK-Grotesk Bold";
+    text-decoration: none;
+    color: #DF5F4D;
+}
+
+th
+{
+    font-size: large;
+    font-family: "HK-Grotesk Bold";
+}
 
 td
 {
     padding-left: 10;
     padding-right: 10;
 }
+
+.headerDiv
+{
+    display: flex;
+    justify-content:space-between;
+    width: 100%;
+}
+
+.button
+{
+    font-weight: bold;
+}
+
 
 #tableDiv
 {
@@ -49,10 +83,4 @@ td
 #buttonTd
 {
     text-align: center;
-}
-
-a
-{
-    text-decoration: none;
-    color: #DF5F4D;
 }

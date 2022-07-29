@@ -1,2 +1,5 @@
 .vscode
 logos CG/
+*.zip
+CG-Cop1.pdf
+.gitignore
