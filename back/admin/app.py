@@ -1,3 +1,4 @@
+from datetime import datetime
 from functools import wraps
 
 from flask import Flask
@@ -67,7 +68,8 @@ def index():
             'title': x.title,
             'date': x.date,
             'url': x.url,
-            'id': x.id
+            'id': x.id,
+            'img': x.img
         }
         for x in Event.select().order_by(Event.date).paginate(page, item_per_page)
     ]
@@ -75,7 +77,7 @@ def index():
         'index.html',
         page=page,
         max_page=max_page,
-        events=events
+        events=events,
     )
 
 
@@ -120,7 +122,10 @@ def new_event():
             loc=request.form['loc']
         )
         return redirect('/')
-    return render_template('new.html')
+    return render_template(
+        'new.html',
+        date= datetime.now().date(),
+        )
 
 
 @app.route('/login', methods=['GET', 'POST'])

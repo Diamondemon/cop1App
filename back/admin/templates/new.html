@@ -1,8 +1,68 @@
-<form method="post">
-  <p>url: <input type="text" name="url" /></p>
-  <p>date: <input type="text" name="date" /></p>
-  <p>title: <input type="text" name="title" /></p>
-  <p>img: <input type="text" name="img" /></p>
-  <p>loc: <input type="text" name="loc" /></p>
-  <p><input type="submit" value="Create" /></p>
-</form>
+<!DOCTYPE html>
+<head>
+  <title>Création d'évènement</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+  <link
+    rel="preload"
+    href="{{ url_for('static', filename='hk-grotesk.bold.ttf') }}"
+    as="font"
+    type="font/woff"
+    crossorigin
+  />
+  <link
+    rel="preload"
+    href="{{ url_for('static', filename='hk-grotesk.medium.ttf') }}"
+    as="font"
+    type="font/woff"
+    crossorigin
+  />
+  <link
+    rel="preload"
+    href="{{ url_for('static', filename='Raleway-VariableFont_wght.ttf') }}"
+    as="font"
+    type="font/woff"
+    crossorigin
+  />
+</head>
+<body>
+  <h1>Nouvel évènement</h1>
+  <form method="post">
+    <table>
+      <tr>
+        <td>Titre:</td>
+        <td>
+          <input type="text" name="title" size="40" />
+        </td>
+      </tr>
+      <tr>
+        <td>Lien d'inscription:</td>
+        <td>
+          <input type="url" name="url" size="40" />
+        </td>
+      </tr>
+      <tr>
+        <td>Date:</td>
+        <td>
+          <input type="date" name="date" value="{{ date }}" size="40" />
+        </td>
+      </tr>
+      <tr>
+        <td>Lien d'image:</td>
+        <td>
+          <input type="url" name="img" size="40" />
+        </td>
+      </tr>
+      <tr>
+        <td>Lieu:</td>
+        <td>
+          <input type="text" name="loc" size="40" />
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2" id="buttonTd">
+          <input type="submit" value="Créer" class="button" />
+        </td>
+      </tr>
+    </table>
+  </form>
+</body>

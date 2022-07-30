@@ -1,0 +1,86 @@
+@font-face {
+    font-family: "HK-Grotesk";
+    src: url(./fonts/hk-grotesk.medium.ttf) format("truetype");
+}
+
+@font-face {
+    font-family: "HK-Grotesk Bold";
+    src: url(./fonts/hk-grotesk.bold.ttf) format("truetype");
+}
+
+@font-face {
+    font-family: "Raleway";
+    src: url(./fonts/Raleway-VariableFont_wght.ttf) format("truetype");
+    font-weight: normal, bold;
+}
+
+body
+{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+body, input
+{
+    font-family: "Raleway";
+}
+
+h1
+{
+    font-family: "HK-Grotesk Bold";
+}
+
+a
+{
+    font-family: "HK-Grotesk Bold";
+    text-decoration: none;
+    color: #DF5F4D;
+}
+
+th
+{
+    font-size: large;
+    font-family: "HK-Grotesk Bold";
+}
+
+td
+{
+    padding-left: 10;
+    padding-right: 10;
+}
+
+.headerDiv
+{
+    display: flex;
+    justify-content:space-between;
+    width: 100%;
+}
+
+.button
+{
+    font-weight: bold;
+}
+
+
+#tableDiv
+{
+    width: 90%;
+}
+
+.eventImage 
+{
+    width: 320px;
+    height: 180px;
+}
+
+.imgColumn
+{
+    width: 320px;
+    height:180px;
+}
+
+#buttonTd
+{
+    text-align: center;
+}

@@ -1,5 +1,49 @@
-<form method="post">
-  <p>Username: <input type="text" name="username" /></p>
-  <p>Password: <input type="text" name="password" /></p>
-  <p><input type="submit" value="Login" /></p>
-</form>
+<!DOCTYPE html>
+<head>
+  <title>Page de connexion</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+  <link
+    rel="preload"
+    href="{{ url_for('static', filename='hk-grotesk.bold.ttf') }}"
+    as="font"
+    type="font/woff"
+    crossorigin
+  />
+  <link
+    rel="preload"
+    href="{{ url_for('static', filename='hk-grotesk.medium.ttf') }}"
+    as="font"
+    type="font/woff"
+    crossorigin
+  />
+  <link
+    rel="preload"
+    href="{{ url_for('static', filename='Raleway-VariableFont_wght.ttf') }}"
+    as="font"
+    type="font/woff"
+    crossorigin
+  />
+</head>
+<body>
+  <form method="post">
+    <table>
+      <tr>
+        <td>Utilisateur:</td>
+        <td>
+          <input type="text" name="username" />
+        </td>
+      </tr>
+      <tr>
+        <td>Mot de passe:</td>
+        <td>
+          <input type="password" name="password" />
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2" id="buttonTd">
+          <input type="submit" value="Connexion" class="button" />
+        </td>
+      </tr>
+    </table>
+  </form>
+</body>
