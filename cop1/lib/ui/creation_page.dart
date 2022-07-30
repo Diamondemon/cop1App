@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:cop1/data/session_data.dart';
@@ -17,7 +18,8 @@ class CreationPage extends StatefulWidget {
 
 class _CreationPageState extends State<CreationPage> {
   String phoneNumber="";
-
+  final RegExp phoneNumRE = RegExp(r"^(\+33\s?)|0[67]([0-9]{2}\s?){4}\s*$");
+  final RegExp numStartRE = RegExp(r"^\+33");
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -36,7 +38,14 @@ class _CreationPageState extends State<CreationPage> {
                   textAlign: TextAlign.justify,
                 ),
                 const SizedBox(height: 20,),
-                TextFieldWidget(label: "Numéro de Téléphone", text: "", onChanged: (phone){phoneNumber = phone;} ),
+                TextFieldWidget(label: "Numéro de Téléphone",
+                  text: "",
+                  hintText: "+33 6 XX XX XX XX",
+                  onChanged: (phone){phoneNumber = phone;},
+                  keyboardType: TextInputType.phone,
+                  regEx: phoneNumRE,
+                  errorText: "Numéro de téléphone non valide.",
+                ),
                 ElevatedButton(
                   onPressed: ()=>goToValidation(context),
                   child: const Text('Valider'),
@@ -49,8 +58,13 @@ class _CreationPageState extends State<CreationPage> {
   }
 
   void goToValidation(BuildContext context) async {
-    if (phoneNumber!=""){
+    if (phoneNumRE.hasMatch(phoneNumber)){
       try{
+        if (!numStartRE.hasMatch(phoneNumber)){
+          phoneNumber = phoneNumber.replaceFirst("0", "+33");
+        }
+        log(phoneNumber);
+        phoneNumber = phoneNumber.replaceAll(" ", "");
         if (await session(context).setPhoneNumber(phoneNumber)){
           if (await session(context).askValidation()) {
             Navigator.push(context, MaterialPageRoute(builder: (cntxt)=> const ValidationPage()));

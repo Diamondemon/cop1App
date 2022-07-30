@@ -1,10 +1,11 @@
-import 'dart:developer';
+//import 'dart:developer';
 import 'dart:io';
 
 import 'package:cop1/data/session_data.dart';
 import 'package:cop1/ui/text_field_widget.dart';
 import 'package:cop1/utils/user_profile.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../utils/connected_widget_state.dart';
 
@@ -19,6 +20,7 @@ class _ProfileEditState extends State<ProfileEdit> implements ConnectedWidgetSta
   String _firstName="";
   String _lastName="";
   String _email="";
+  final RegExp mailRE = RegExp(r"^([a-z0-9_.-]+@[a-z0-9_.-]+[.][a-z]+)?(\s)*$");
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -63,9 +65,24 @@ class _ProfileEditState extends State<ProfileEdit> implements ConnectedWidgetSta
         padding: const EdgeInsets.all(10),
         child: ListView(
           children: [
-            TextFieldWidget(label: "Prénom", text: user.firstName.value, onChanged: (name)=>_firstName=name),
-            TextFieldWidget(label: "Nom", text: user.lastName.value, onChanged: (surname)=>_lastName=surname),
-            TextFieldWidget(label: "E-mail", text: user.email.value, onChanged: (email)=>_email=email),
+            TextFieldWidget(label: "Prénom",
+                text: user.firstName.value,
+                onChanged: (name)=>_firstName=name,
+                inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r"[a-zàâçéèêëîïôûùüÿñæœ .-]*$", caseSensitive: false))],
+            ),
+            TextFieldWidget(label: "Nom",
+                text: user.lastName.value,
+                onChanged: (surname)=>_lastName=surname,
+                inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r"[a-zàâçéèêëîïôûùüÿñæœ .-]*$", caseSensitive: false))],
+            ),
+            TextFieldWidget(label: "E-mail",
+                text: user.email.value,
+                hintText: "user@example.com",
+                errorText: "Le format de mail ne correspond pas.",
+                onChanged: (email)=>_email=email,
+                regEx: mailRE,
+                keyboardType: TextInputType.emailAddress,
+            ),
             Center( child: ElevatedButton(onPressed: ()=>_saveNewInfo(context), child: const Text("Sauvegarder")))
           ],
         )
@@ -73,8 +90,7 @@ class _ProfileEditState extends State<ProfileEdit> implements ConnectedWidgetSta
   }
 
   void _saveNewInfo(BuildContext context) async {
-    final RegExp mailRE = RegExp(r"^([a-z0-9]{1,}@[a-z0-9]{1,}[.][a-z]{1,})?$");
-    log("Email matches: ${mailRE.hasMatch(_email)}");
+    _email = _email.replaceAll(" ", "");
     if (mailRE.hasMatch(_email)){
       try{
         final bool result = await session(context).modifyUser(_firstName, _lastName, _email);
@@ -86,7 +102,6 @@ class _ProfileEditState extends State<ProfileEdit> implements ConnectedWidgetSta
       on SocketException {
         ConnectedWidgetState.displayConnectionAlert(context);
       }
-
     }
   }
 

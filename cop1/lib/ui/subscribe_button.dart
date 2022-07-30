@@ -51,7 +51,7 @@ class _SubscribeButtonState extends State<SubscribeButton> {
         if (!s.isConnected) return;
       }
       if (!mounted) return;
-      const subscribed = true ;//SubscriptionPage.throughIframe(context, widget.event.url); //
+      const subscribed = true; //SubscriptionPage.throughIframe(context, widget.event.url); //
       if (subscribed) s.subscribe(widget.event);
       setState((){});
     }

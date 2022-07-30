@@ -41,7 +41,11 @@ class _ValidationPageState extends State<ValidationPage> {
                     textAlign: TextAlign.justify,
                   ),
                   const SizedBox(height: 20,),
-                  TextFieldWidget(label: "Code à 6 chiffres", text: "", onChanged: (code){_code = code;} ),
+                  TextFieldWidget(label: "Code à 6 chiffres",
+                    text: "",
+                    onChanged: (code){_code = code;},
+                    keyboardType: TextInputType.number,
+                  ),
                   Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
