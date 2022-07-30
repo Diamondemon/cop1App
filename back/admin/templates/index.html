@@ -1,36 +1,74 @@
 <!DOCTYPE html>
-<title>Gestion des évènements</title>
-<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-<div class="headerDiv">
-  <span>
-    Page : {{ page }}/{{ max_page }} {% if page != max_page %}
-    <a href="/?page={{ page + 1 }}"> + </a>
-    {% endif %} {% if page != 1 %}
-    <a href="/?page={{ page - 1 }}"> - </a>
-    {% endif %}
-  </span>
-  <input type="submit" href="/logout" value="Déconnexion" class="button" onclick="logout()" />
-</div>
+<head>
+  <title>Gestion des évènements</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+  <link
+    rel="preload"
+    href="{{ url_for('static', filename='hk-grotesk.bold.ttf') }}"
+    as="font"
+    type="font/woff"
+    crossorigin
+  />
+  <link
+    rel="preload"
+    href="{{ url_for('static', filename='hk-grotesk.medium.ttf') }}"
+    as="font"
+    type="font/woff"
+    crossorigin
+  />
+  <link
+    rel="preload"
+    href="{{ url_for('static', filename='Raleway-VariableFont_wght.ttf') }}"
+    as="font"
+    type="font/woff"
+    crossorigin
+  />
+</head>
+<body>
+  <div class="headerDiv">
+    <span>
+      Page : {{ page }}/{{ max_page }} {% if page != max_page %}
+      <a href="/?page={{ page + 1 }}"> + </a>
+      {% endif %} {% if page != 1 %}
+      <a href="/?page={{ page - 1 }}"> - </a>
+      {% endif %}
+    </span>
+    <input
+      type="submit"
+      href="/logout"
+      value="Déconnexion"
+      class="button"
+      onclick="logout()"
+    />
+  </div>
 
-<div id="tableDiv">
-  <table>
-    <thead>
-      <th></th>
-      <th>Titre</th>
-      <th>Date</th>
-      <th>Inscription</th>
-    </thead>
-    {% for evt in events %}
-    <tr>
-      <td><img src="{{ evt.img }}" alt="Image de l'évènement" class="eventImage" /></td>
-      <td><a href="/event/{{ evt.id }}"> {{ evt.title }} </a></td>
-      <td>{{ evt.date }}</td>
-      <td>
-        <a href="{{ evt.url }}">{{ evt.url }}</a></td>
-    </tr>
-    {% endfor %}
-  </table>
-</div>
+  <div id="tableDiv">
+    <table>
+      <thead>
+        <th></th>
+        <th>Titre</th>
+        <th>Date</th>
+        <th>Inscription</th>
+      </thead>
+      {% for evt in events %}
+      <tr>
+        <td>
+          <img
+            src="{{ evt.img }}"
+            alt="Image de l'évènement"
+            class="eventImage"
+          />
+        </td>
+        <td><a href="/event/{{ evt.id }}"> {{ evt.title }} </a></td>
+        <td>{{ evt.date }}</td>
+        <td>
+          <a href="{{ evt.url }}">{{ evt.url }}</a>
+        </td>
+      </tr>
+      {% endfor %}
+    </table>
+  </div>
 
-<input type="submit" value="Ajouter" class="button" onclick="addEvent()" />
-<script src="static/js/index.js"></script>
+  <input type="submit" value="Ajouter" class="button" onclick="addEvent()" />
+  <script src="static/js/index.js"></script>
+</body>

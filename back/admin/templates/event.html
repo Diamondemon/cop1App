@@ -1,42 +1,63 @@
 <!DOCTYPE html>
-<title>Evènement {{ title }}</title>
-<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-<table>
-  <tr>
-    <td colspan="2" style="text-align: center;">
-      <h1>{{ title }}</h1>
-    </td>
-  </tr>
-  <tr>
-    <td colspan="2" style="text-align: center;">
-      <img src="{{ img }}" alt="Image de l'évènement" class="eventImage" />
-    </td>
-  </tr>
-  <tr>
-    <td>Lien d'inscription: </td>
-    <td>
-      <a href="{{ url }}">{{ url }}</a>
-    </td>
-  </tr>
-  <tr>
-    <td>Date: </td>
-    <td>
-      {{ date }}
-    </td>
-  </tr>
-  <tr>
-    <td>Lien d'image: </td>
-    <td>
-      <a href="{{ img }}">{{ img }}</a>
-    </td>
-  </tr>
-  <tr>
-    <td>Lieu: </td>
-    <td>
-      {{ loc }}
-    </td>
-  </tr>
-</table>
-<form method="POST">
-  <p><input type="submit" value="Supprimer"  class="button" /></p>
-</form>
+<head>
+  <title>Evènement {{ title }}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+  <link
+    rel="preload"
+    href="{{ url_for('static', filename='hk-grotesk.bold.ttf') }}"
+    as="font"
+    type="font/woff"
+    crossorigin
+  />
+  <link
+    rel="preload"
+    href="{{ url_for('static', filename='hk-grotesk.medium.ttf') }}"
+    as="font"
+    type="font/woff"
+    crossorigin
+  />
+  <link
+    rel="preload"
+    href="{{ url_for('static', filename='Raleway-VariableFont_wght.ttf') }}"
+    as="font"
+    type="font/woff"
+    crossorigin
+  />
+</head>
+<body>
+  <table>
+    <tr>
+      <td colspan="2" style="text-align: center">
+        <h1>{{ title }}</h1>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="2" style="text-align: center">
+        <img src="{{ img }}" alt="Image de l'évènement" class="eventImage" />
+      </td>
+    </tr>
+    <tr>
+      <td>Lien d'inscription:</td>
+      <td>
+        <a href="{{ url }}">{{ url }}</a>
+      </td>
+    </tr>
+    <tr>
+      <td>Date:</td>
+      <td>{{ date }}</td>
+    </tr>
+    <tr>
+      <td>Lien d'image:</td>
+      <td>
+        <a href="{{ img }}">{{ img }}</a>
+      </td>
+    </tr>
+    <tr>
+      <td>Lieu:</td>
+      <td>{{ loc }}</td>
+    </tr>
+  </table>
+  <form method="POST">
+    <p><input type="submit" value="Supprimer" class="button" /></p>
+  </form>
+</body>
