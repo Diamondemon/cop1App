@@ -1,11 +1,13 @@
-.PHONY: all run insall clean clean_dev admin enable restart
+.PHONY: all run insall clean clean_dev admin enable restart deps
 PYTHON=python3.10
 INSTALL_DST=/etc/systemd/system
 
-all: setup
+all: .env .venv deps
 
 .venv:
 	${PYTHON} -m venv .venv >/dev/null
+
+deps:
 	bash -c 'source ${PWD}/.venv/bin/activate && ${PYTHON} -m pip install --upgrade pip && ${PYTHON} -m pip install -r requirements.txt' >/dev/null
 
 .env:

@@ -6,3 +6,5 @@ python-dotenv
 flask
 gunicorn
 flask_limiter
+requests
+types-requests
