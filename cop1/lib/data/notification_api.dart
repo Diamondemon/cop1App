@@ -1,24 +1,32 @@
-import 'package:cop1/utils/cop1_event.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_native_timezone/flutter_native_timezone.dart';
+import 'package:timezone/data/latest.dart' as tz_init;
 import 'package:timezone/timezone.dart' as tz;
+import 'dart:developer';
 
 class NotificationAPI {
  static final _notifications = FlutterLocalNotificationsPlugin();
+ static late final tz.Location _location;
 
  static Future<bool?> initialize() async {
    const android = AndroidInitializationSettings('@mipmap/ic_launcher');
    const iOS = IOSInitializationSettings();
    const initSettings = InitializationSettings(android: android, iOS: iOS);
+   tz_init.initializeTimeZones();
+   final locationName = await FlutterNativeTimezone.getLocalTimezone();
+   log(locationName);
+   _location = tz.getLocation(locationName);
+   tz.setLocalLocation(_location);
    return await _notifications.initialize(initSettings);
  }
 
  static Future _notificationDetails() async {
    return const NotificationDetails(
      android: AndroidNotificationDetails(
-       'channel id',
-       'channel name',
-       channelDescription: 'channel description',
-       importance: Importance.defaultImportance,
+       'C0P1',
+       'COP1 channel',
+       channelDescription: 'Notification channel for COP1 events.',
+       importance: Importance.max,
      ),
      iOS: IOSNotificationDetails(),
    );
@@ -31,19 +39,27 @@ class NotificationAPI {
    String? payload,
 }) async => _notifications.show(id, title, body, await _notificationDetails(), payload: payload);
 
- static Future scheduleEventNotification({required Cop1Event event}) async {
-   final text = "N'oubliez pas votre évènement COP1 \"${event.title}\" "
-       "le ${event.date}. Ne pas y aller alors que vous y êtes inscrit peut vous pénaliser!";
+ static Future scheduleEventNotification({
+   int id=0,
+   required String title,
+   required String text,
+   required DateTime scheduledDate,
+   String? payload,
+ }) async {
    return _notifications.zonedSchedule(
-       10*event.id,
-       event.title,
-       text , 
-       tz.TZDateTime.from(DateTime.parse(event.date), tz.getLocation(DateTime.now().timeZoneName)),
+       id,
+       title,
+       text ,
+       tz.TZDateTime.from(scheduledDate, _location),
        await _notificationDetails(),
        androidAllowWhileIdle: true,
        uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.wallClockTime,
-       payload: "Hello there"
+       payload: payload
    );
  }
+
+ static void cancel(int id) => _notifications.cancel(id);
+
+ static void cancelAll() => _notifications.cancelAll();
 
 }

@@ -1,9 +1,11 @@
 
 import 'package:add_2_calendar/add_2_calendar.dart';
+import 'package:cop1/data/notification_api.dart';
 
 class Cop1Event {
   final int id;
   final String title;
+  final String description;
   final String date;
   final String hour;
   final String duration;
@@ -11,7 +13,7 @@ class Cop1Event {
   final String imageLink;
   final String url;
 
-  Cop1Event(this.id, this.title, this.date, this.hour, this.duration, this.location, this.imageLink, this.url);
+  Cop1Event(this.id, this.title, this.description, this.date, this.hour, this.duration, this.location, this.imageLink, this.url);
 
   @override
   bool operator ==(Object other){
@@ -35,6 +37,7 @@ class Cop1Event {
     return Cop1Event(
         json["id"],
         json["title"]??"Sans titre",
+        json["description"]??"Sans description",
         json["date"],
         json["hour"]??"08:00",
         json["duration"]??"01:00",
@@ -57,4 +60,48 @@ class Cop1Event {
     Add2Calendar.addEvent2Cal(event);
   }
 
+  void scheduleNotifications(){
+    //TODO Remove this on prod
+    final text = "N'oubliez pas votre évènement COP1 \"$title\" "
+        "le $date. Ne pas y aller alors que vous y êtes inscrit peut vous pénaliser!";
+    NotificationAPI.scheduleEventNotification(
+        id: 10*id+2,
+        title: title,
+        text: text,
+        scheduledDate: DateTime.now().add(const Duration(seconds: 10)),
+        payload: "/event/$id"
+    );
+    scheduleDayPriorNotification();
+    scheduleHourPriorNotification();
+  }
+
+  void scheduleHourPriorNotification(){
+    final text = "N'oubliez pas votre évènement COP1 \"$title\" "
+        "le $date. Ne pas y aller alors que vous y êtes inscrit peut vous pénaliser!";
+    NotificationAPI.scheduleEventNotification(
+        id: 10*id,
+        title: title,
+        text: text,
+        scheduledDate: DateTime.parse("$date $hour").subtract(const Duration(days: 1)),
+        payload: "/event/$id"
+    );
+  }
+
+  void scheduleDayPriorNotification(){
+    final text = "N'oubliez pas votre évènement COP1 \"$title\" "
+        "le $date. Ne pas y aller alors que vous y êtes inscrit peut vous pénaliser!";
+    NotificationAPI.scheduleEventNotification(
+        id: 10*id+1,
+        title: title,
+        text: text,
+        scheduledDate: DateTime.parse("$date $hour").subtract(const Duration(hours: 2)),
+        payload: "/event/$id"
+    );
+  }
+
+  void cancelNotifications(){
+    NotificationAPI.cancel(10*id+2);
+    NotificationAPI.cancel(10*id+1);
+    NotificationAPI.cancel(10*id);
+  }
 }

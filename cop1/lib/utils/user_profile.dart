@@ -1,5 +1,3 @@
-
-
 import 'package:cop1/utils/cop1_event.dart';
 import 'package:cop1/utils/set_notifier.dart';
 import 'package:flutter/foundation.dart';
@@ -19,10 +17,13 @@ class UserProfile{
 
   void subscribeToEvent(Cop1Event event){
     events.add(event);
+    event.scheduleNotifications();
   }
 
   void unsubscribeFromEvent(int id){
-    events.remove(events.firstWhere((event) => event.id == id));
+    Cop1Event toRemove = events.firstWhere((event) => event.id == id);
+    toRemove.cancelNotifications();
+    events.remove(toRemove);
   }
 
   bool isSubscribedToId(int id){
@@ -47,6 +48,13 @@ class UserProfile{
   @override
   String toString(){
     return "User $firstName.value $lastName.value, identified by phone number $phoneNumber.\nMail: $email.value\nSubscribed to events $events";
+  }
+
+  void scheduleUserNotifications(){
+    for (Cop1Event element in events) {
+      element.cancelNotifications();
+      element.scheduleNotifications();
+    }
   }
 
 }
