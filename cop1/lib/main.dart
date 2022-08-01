@@ -29,11 +29,12 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     return ChangeNotifierProvider(
-      create: (context) => SessionData(), child:MaterialApp(
+      create: (context) => SessionData(),
+      child:MaterialApp(
         title: 'COP1',
         theme: AppTheme.themeData,
         home:  const HomePage()
-        ),
+      ),
     );
   }
 }
