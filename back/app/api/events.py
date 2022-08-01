@@ -1,11 +1,10 @@
-from fastapi import Depends, APIRouter, HTTPException
+from fastapi import Depends, APIRouter
 
 from app.interfaces.main import Events, Event, BoolResponse
-from app.database.tables import Event as EventInDB, User as UserInDB
+from app.database.tables import Event as EventInDB
 from app.api.login import token
 
 from app.login import user_from_token
-from app.logger import logger
 
 
 app = APIRouter(tags=["events"])
@@ -17,12 +16,13 @@ async def list_all_events() -> Events:
     return Events(
         events=[
             Event(
-                id=e.id,
-                url=e.url,
+                id=str(e.id),
                 date=str(e.date),
-                title=e.title,
-                img=e.img,
-                loc=e.loc
+                duration=str(e.duration),
+                desc=str(e.desc),
+                title=str(e.title),
+                img=str(e.img),
+                loc=str(e.loc),
             )
             for e in EventInDB.select().order_by(EventInDB.date)
         ]
