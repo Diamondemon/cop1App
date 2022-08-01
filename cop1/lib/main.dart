@@ -87,13 +87,6 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        child: const Icon(Icons.add),
-        onPressed: () => NotificationAPI.showNotif(
-          title: "Hello there",
-          body: "Je suis un test.",
-        ),
-      ),
     );
   }
 }
