@@ -91,7 +91,6 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
         onPressed: () => NotificationAPI.showNotif(
           title: "Hello there",
           body: "Je suis un test.",
-          payload: "Je sais pas à quoi je sers."
         ),
       ),
     );

@@ -5,7 +5,6 @@ import 'package:cop1/ui/subscribe_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cop1/utils/maps_launcher.dart';
-import 'package:add_2_calendar/add_2_calendar.dart';
 
 
 class EventTile extends StatefulWidget {
@@ -63,7 +62,12 @@ class _EventTileState extends State<EventTile> {
                           ],
                         ),
                       ),
-                      TextButton(onPressed: () => _addToCalendar(widget.event.date), child:Text(widget.event.date, style: const TextStyle(fontSize: 12))),
+                      TextButton(onPressed: widget.event.addToCalendar,
+                        child: Text(
+                          "${widget.event.date} ${widget.event.hour}",
+                          style: const TextStyle(fontSize: 12)
+                        )
+                      ),
                       const Text.rich(
                         TextSpan(
                           children: [
@@ -89,17 +93,6 @@ class _EventTileState extends State<EventTile> {
             ]
         )
     );
-  }
-
-  void _addToCalendar(String date){
-    final Event event = Event(
-      title: widget.event.title,
-      description: widget.event.title,
-      location: widget.event.location,
-      startDate: DateTime.parse(date),
-      endDate: DateTime.parse(date),
-    );
-    Add2Calendar.addEvent2Cal(event);
   }
 
   void _lookOnMaps(){
