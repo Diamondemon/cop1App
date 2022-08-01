@@ -1,12 +1,13 @@
-from peewee import CharField, ManyToManyField, DateField, IntegerField  # type: ignore
+from peewee import CharField, ManyToManyField, DateField, TextField  # type: ignore
 
 from app.database.utils import Table, DB
 
 
 class Event(Table):
-    id = IntegerField(primary_key=True)
-    url = CharField(index=True)
+    id = CharField(primary_key=True, index=True)
     date = DateField()
+    duration = CharField()
+    desc = TextField()
     title = CharField()
     img = CharField()
     loc = CharField()

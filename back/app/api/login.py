@@ -19,9 +19,9 @@ async def create_new_user(user: UserCreationModel) -> UserCreationResponse:
     logger.info("Creating user : %s", user)
     if not re.match('\\+33[1-9][0-9]{8}', user.phone):
         return UserCreationResponse(
-                valid=False,
-                message="Invalid phone number"
-            )
+            valid=False,
+            message="Invalid phone number"
+        )
     return create_user(user)
 
 
@@ -48,12 +48,13 @@ async def read_users_me(_token: str = Depends(token)) -> UserModel:
         last_name=user.last_name,
         events=[
             Event(
-                id=e.id,
-                url=e.url,
+                id=str(e.id),
                 date=str(e.date),
-                title=e.title,
-                img=e.img,
-                loc=e.loc
+                duration=str(e.duration),
+                desc=str(e.desc),
+                title=str(e.title),
+                img=str(e.img),
+                loc=str(e.loc),
             )
             for e in user.events
         ]
@@ -82,5 +83,6 @@ async def edit_users_me(edit: UserEditModel, _token: str = Depends(token)) -> Bo
 async def delete_account(_token: str = Depends(token)) -> BoolResponse:
     user = user_from_token(_token)
     logger.info('user %s request account deletion', user)
+    # TODO: delete events links
     user.delete().execute()
     return BoolResponse()

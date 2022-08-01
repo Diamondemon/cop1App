@@ -26,36 +26,55 @@
 </head>
 <body>
   <h1>Nouvel évènement</h1>
+  <button onclick="autoFill()">Auto fill</button>
   <form method="post">
     <table>
       <tr>
+        <td>ID Weezevent:</td>
+        <td>
+          <input id="weezeventId" type="text" name="id" size="40" />
+        </td>
+      </tr>
+      <tr>
         <td>Titre:</td>
         <td>
-          <input type="text" name="title" size="40" />
+          <input id="title" type="text" name="title" size="40" />
         </td>
       </tr>
       <tr>
-        <td>Lien d'inscription:</td>
+        <td>Description:</td>
         <td>
-          <input type="url" name="url" size="40" />
-        </td>
-      </tr>
-      <tr>
-        <td>Date:</td>
-        <td>
-          <input type="date" name="date" value="{{ date }}" size="40" />
+          <input id="desc" type="text" name="desc" size="40" />
         </td>
       </tr>
       <tr>
         <td>Lien d'image:</td>
         <td>
-          <input type="url" name="img" size="40" />
+          <input id="img" type="url" name="img" size="40" />
+        </td>
+      </tr>
+      <tr>
+        <td>Date:</td>
+        <td>
+          <input
+            id="date"
+            type="datetime-local"
+            name="date"
+            value="{{ date }}"
+            size="40"
+          />
+        </td>
+      </tr>
+      <tr>
+        <td>Duree:</td>
+        <td>
+          <input id="duration" type="text" name="duration" size="40" />
         </td>
       </tr>
       <tr>
         <td>Lieu:</td>
         <td>
-          <input type="text" name="loc" size="40" />
+          <input id="loc" type="text" name="loc" size="40" />
         </td>
       </tr>
       <tr>
@@ -65,4 +84,32 @@
       </tr>
     </table>
   </form>
+  <script>
+    function autoFill() {
+      const error = "border-block-color: red;";
+      const evt_id = document.getElementById("weezeventId").value;
+      console.log(evt_id);
+      if (evt_id == "") {
+        document.getElementById("weezeventId").style = error;
+      } else {
+        document.getElementById("weezeventId").style = "";
+        fetch(`/event_info/${evt_id}`)
+          .then((x) => x.json())
+          .then((obj) => {
+            data = obj.data;
+            console.log(data);
+            document.getElementById("title").value = data.title;
+            document.getElementById("desc").value = data.desc;
+            document.getElementById("img").value = data.img;
+            document.getElementById("date").value = data.date;
+            document.getElementById("duration").value = data.duration;
+            document.getElementById("loc").value = data.loc;
+          })
+          .catch((err) => {
+            document.getElementById("weezeventId").style = error;
+            console.log(err);
+          });
+      }
+    }
+  </script>
 </body>

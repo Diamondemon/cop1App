@@ -206,9 +206,10 @@ class Weezevent:
         loc = evt['venue']
         return {
             'id': evt.get('id'),
-            'url': evt.get('extras', {}).get('minisite_url'),
             'date': evt.get('period', {}).get('start'),
+            'duration': '01:00:00',
             'title': evt.get('title'),
+            'desc': evt.get('desc'),
             'img': evt.get('image'),
             'loc': f"{loc.get('address')}, {loc.get('zip_code')} {loc.get('city')}"
         }

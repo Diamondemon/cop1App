@@ -1,8 +1,7 @@
 from traceback import print_exception
-import datetime
 
 from app.database.utils import DB
-from app.database.tables import User as UserInDB, Event
+from app.database.tables import User as UserInDB
 
 
 def get_user(phone: str) -> UserInDB | None:

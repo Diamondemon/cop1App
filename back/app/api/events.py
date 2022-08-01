@@ -1,12 +1,11 @@
-from fastapi import Depends, APIRouter, HTTPException
+from fastapi import Depends, APIRouter
 
 from app.interfaces.main import Events, Event, BoolResponse
-from app.database.tables import Event as EventInDB, User as UserInDB
+from app.database.tables import Event as EventInDB
 from app.api.login import token
 
 from app.login import user_from_token
-from app.logger import logger
-
+from auto_subscribe import subscribe
 
 app = APIRouter(tags=["events"])
 
@@ -17,12 +16,13 @@ async def list_all_events() -> Events:
     return Events(
         events=[
             Event(
-                id=e.id,
-                url=e.url,
+                id=str(e.id),
                 date=str(e.date),
-                title=e.title,
-                img=e.img,
-                loc=e.loc
+                duration=str(e.duration),
+                desc=str(e.desc),
+                title=str(e.title),
+                img=str(e.img),
+                loc=str(e.loc),
             )
             for e in EventInDB.select().order_by(EventInDB.date)
         ]
@@ -34,10 +34,24 @@ async def subscribe_to_an_event(item_id: int, _token: str = Depends(token)) -> B
     """Subscribe to an event."""
     user = user_from_token(_token)
     try:
-        user.events.add([EventInDB.get(EventInDB.id == item_id)])
-        return BoolResponse()
+        evt = EventInDB.get(EventInDB.id == item_id)
     except:
         return BoolResponse(valid=False, message=f"Unable to access event {item_id}")
+    try:
+        barcode = subscribe(
+            str(item_id),
+            user.phone,
+            user.first_name,
+            user.last_name,
+            user.email
+        )
+    except:
+        return BoolResponse(valid=False, message=f"Unable to subscribe to event {item_id}")
+    try:
+        user.events.add([evt])
+    except:
+        return BoolResponse(valid=False, message=f"Unable link event {item_id} to you")
+    return BoolResponse(message=barcode)
 
 
 @app.delete("/events/subscribe/{item_id}")
