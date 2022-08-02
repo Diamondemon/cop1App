@@ -17,11 +17,10 @@ class UserProfile{
   UserProfile(this._phoneNumber, [this._isAdmin = false]);
 
   void subscribeToEvent(Cop1Event event){
-    if (event.isPast){
+    if (!event.isPast){
       events.add(event);
       event.scheduleNotifications();
     }
-    pastEvents.add(event); //TODO remove
   }
 
   void unsubscribeFromEvent(int id){

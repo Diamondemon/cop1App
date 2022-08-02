@@ -63,16 +63,6 @@ class Cop1Event {
   }
 
   void scheduleNotifications(){
-    //TODO Remove this on prod
-    final text = "N'oubliez pas votre évènement COP1 \"$title\" "
-        "le $date. Ne pas y aller alors que vous y êtes inscrit peut vous pénaliser!";
-    NotificationAPI.scheduleEventNotification(
-        id: 10*id+3,
-        title: title,
-        text: text,
-        scheduledDate: DateTime.now().add(const Duration(seconds: 10)),
-        payload: "/event/$id"
-    );
     if (scheduleHourPriorNotification()) scheduleDayPriorNotification();
   }
 
