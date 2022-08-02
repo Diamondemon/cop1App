@@ -9,6 +9,7 @@ class UserProfile{
   ValueNotifier<String> email=ValueNotifier("");
   final bool _isAdmin;
   SetNotifier<Cop1Event> events = SetNotifier();
+  SetNotifier<Cop1Event> pastEvents = SetNotifier();
 
   String get phoneNumber => _phoneNumber;
   bool get isAdmin =>_isAdmin;
@@ -16,8 +17,11 @@ class UserProfile{
   UserProfile(this._phoneNumber, [this._isAdmin = false]);
 
   void subscribeToEvent(Cop1Event event){
-    events.add(event);
-    event.scheduleNotifications();
+    if (event.isPast){
+      events.add(event);
+      event.scheduleNotifications();
+    }
+    pastEvents.add(event); //TODO remove
   }
 
   void unsubscribeFromEvent(int id){
@@ -40,7 +44,13 @@ class UserProfile{
     user.lastName.value = json["last_name"];
     user.email.value = json["email"];
     for (var item in json["events"]) {
-      user.subscribeToEvent(Cop1Event.fromJSON(item));
+      final Cop1Event event = Cop1Event.fromJSON(item);
+      if (event.isPast){
+        user.pastEvents.add(event);
+      }
+      else {
+        user.subscribeToEvent(event);
+      }
     }
     return user;
   }
@@ -54,6 +64,12 @@ class UserProfile{
     for (Cop1Event element in events) {
       element.cancelNotifications();
       element.scheduleNotifications();
+    }
+  }
+
+  void cancelUserNotifications(){
+    for (Cop1Event element in events){
+      element.cancelNotifications();
     }
   }
 
