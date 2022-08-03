@@ -69,6 +69,7 @@ def index():
         {
             'id': x.id,
             'title': x.title,
+            'img': x.img,
             'date': x.date
         }
         for x in Event.select().order_by(Event.date).paginate(page, item_per_page)
