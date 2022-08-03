@@ -70,7 +70,7 @@ def index():
             'id': x.id,
             'title': x.title,
             'img': x.img,
-            'date': x.date
+            'date': x.date.replace("T", " à ")
         }
         for x in Event.select().order_by(Event.date).paginate(page, item_per_page)
     ]
@@ -104,7 +104,7 @@ def event(evt_id):
         title=evt.title,
         desc=evt.desc,
         id=evt.id,
-        date=evt.date,
+        date=evt.date.replace("T", " à "),
         duration=evt.duration,
         img=evt.img,
         loc=evt.loc,

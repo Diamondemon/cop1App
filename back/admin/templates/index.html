@@ -52,7 +52,13 @@
       </thead>
       {% for evt in events %}
       <tr>
-        <td><img src="{{ evt.img }}" class="eventImage"/></td>
+        <td>
+          <img
+            src="{{ evt.img }}"
+            alt="Image de l'évènement"
+            class="eventImage"
+          />
+        </td>
         <td><a href="/event/{{ evt.id }}"> {{ evt.id }}</a></td>
         <td>{{ evt.title }}</td>
         <td>{{ evt.date }}</td>
