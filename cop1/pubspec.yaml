@@ -45,6 +45,7 @@ dependencies:
   flutter_local_notifications: ^9.7.0
   timezone: ^0.8.0
   flutter_native_timezone: ^2.0.0
+  qr_flutter: ^4.0.0
 
 dev_dependencies:
   flutter_test:
