@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:cop1/data/session_data.dart';
@@ -63,7 +62,6 @@ class _CreationPageState extends State<CreationPage> {
         if (!numStartRE.hasMatch(phoneNumber)){
           phoneNumber = phoneNumber.replaceFirst("0", "+33");
         }
-        log(phoneNumber);
         phoneNumber = phoneNumber.replaceAll(" ", "");
         if (await session(context).setPhoneNumber(phoneNumber)){
           if (await session(context).askValidation()) {
