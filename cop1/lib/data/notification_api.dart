@@ -2,7 +2,6 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_native_timezone/flutter_native_timezone.dart';
 import 'package:timezone/data/latest.dart' as tz_init;
 import 'package:timezone/timezone.dart' as tz;
-import 'dart:developer';
 
 class NotificationAPI {
  static final _notifications = FlutterLocalNotificationsPlugin();
@@ -14,7 +13,6 @@ class NotificationAPI {
    const initSettings = InitializationSettings(android: android, iOS: iOS);
    tz_init.initializeTimeZones();
    final locationName = await FlutterNativeTimezone.getLocalTimezone();
-   log(locationName);
    _location = tz.getLocation(locationName);
    tz.setLocalLocation(_location);
    return await _notifications.initialize(initSettings);
@@ -27,19 +25,20 @@ class NotificationAPI {
        'COP1 channel',
        channelDescription: 'Notification channel for COP1 events.',
        importance: Importance.max,
+       styleInformation: BigTextStyleInformation('')
      ),
      iOS: IOSNotificationDetails(),
    );
  }
 
- static Future showNotif({
+ static Future<void> showNotif({
   int id=0,
    String? title,
    String? body,
    String? payload,
 }) async => _notifications.show(id, title, body, await _notificationDetails(), payload: payload);
 
- static Future scheduleEventNotification({
+ static Future<void> scheduleEventNotification({
    int id=0,
    required String title,
    required String text,

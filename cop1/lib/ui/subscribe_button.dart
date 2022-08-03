@@ -62,15 +62,16 @@ class _SubscribeButtonState extends State<SubscribeButton> {
   }
 
   Widget _buildButton(BuildContext context, bool participated) {
+    final String text = widget.event.isPast? "Passé": (participated? "Je me retire": "Je m'inscris");
     return RawMaterialButton(
-      onPressed: ()=>_toggleParticipation(context, !participated),
+      onPressed: widget.event.isPast? (){} : ()=>_toggleParticipation(context, !participated),
       fillColor: Theme.of(context).primaryColor,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(9),
       ),
       child: Padding(
         padding: const EdgeInsets.all(5.0),
-        child: Text(participated? "Je me retire": "Je m'inscris", style: Theme.of(context).primaryTextTheme.bodyLarge),
+        child: Text(text, style: Theme.of(context).primaryTextTheme.bodyLarge),
       )
     );
   }

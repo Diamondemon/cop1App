@@ -19,79 +19,79 @@ class _EventTileState extends State<EventTile> {
   @override
   Widget build(BuildContext context) {
     return Container(
-        height: MediaQuery.of(context).size.height/4,
-        decoration: BoxDecoration(
-          border: Border.symmetric(
-              horizontal: BorderSide(color: Theme.of(context).primaryColor, width:3.0)
-          ),
+      height: MediaQuery.of(context).size.height/4,
+      decoration: BoxDecoration(
+        border: Border.symmetric(
+            horizontal: BorderSide(color: Theme.of(context).primaryColor, width:3.0)
         ),
-        padding: const EdgeInsets.only(top: 10.0, bottom: 5.0, right:10.0, left:10.0),
-        child: Row(
-            children: [
-              Expanded(
-                flex: 3,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                        widget.event.title,
-                        style: Theme.of(context).textTheme.titleMedium,
-                    ),
-                    const Spacer(),
-                    _buildImage(context),
-                    const Spacer(),
-                  ]
-                )
-              ),
-              Expanded(
-                  flex: 2,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+      ),
+      padding: const EdgeInsets.only(top: 10.0, bottom: 5.0, right:10.0, left:10.0),
+      child: Row(
+        children: [
+          Expanded(
+            flex: 3,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                    widget.event.title,
+                    style: Theme.of(context).textTheme.titleMedium,
+                ),
+                const Spacer(),
+                _buildImage(context),
+                const Spacer(),
+              ]
+            )
+          ),
+          Expanded(
+            flex: 2,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text.rich(
+                  TextSpan(
                     children: [
-                      const Text.rich(
-                        TextSpan(
-                          children: [
-                            WidgetSpan(
-                              alignment: PlaceholderAlignment.top,
-                              child: Icon(Icons.calendar_month, size: 14),
-                            ),
-                            TextSpan(
-                              text: " Calendrier",
-                            ),
-                          ],
-                        ),
+                      WidgetSpan(
+                        alignment: PlaceholderAlignment.top,
+                        child: Icon(Icons.calendar_month, size: 14),
                       ),
-                      TextButton(onPressed: widget.event.addToCalendar,
-                        child: Text(
-                          "${widget.event.date} ${widget.event.hour}",
-                          style: const TextStyle(fontSize: 12)
-                        )
+                      TextSpan(
+                        text: " Calendrier",
                       ),
-                      const Text.rich(
-                        TextSpan(
-                          children: [
-                            WidgetSpan(
-                              alignment: PlaceholderAlignment.top,
-                              child: Icon(CupertinoIcons.location, size: 14),
-                            ),
-                            TextSpan(
-                              text: " Lieu",
-                            ),
-                          ],
-                        ),
-                      ),
-                      TextButton(onPressed: _lookOnMaps, child:Text(widget.event.location, style: const TextStyle(fontSize: 12))),
-                      const Spacer(),
-                      Expanded(flex: 2, child: Center(
-                        child: SubscribeButton(event: widget.event),
-                      )
-                      )
-                    ]
+                    ],
+                  ),
+                ),
+                TextButton(onPressed: widget.event.addToCalendar,
+                  child: Text(
+                    "${widget.event.date} ${widget.event.hour}",
+                    style: const TextStyle(fontSize: 12)
                   )
-              )
-            ]
-        )
+                ),
+                const Text.rich(
+                  TextSpan(
+                    children: [
+                      WidgetSpan(
+                        alignment: PlaceholderAlignment.top,
+                        child: Icon(CupertinoIcons.location, size: 14),
+                      ),
+                      TextSpan(
+                        text: " Lieu",
+                      ),
+                    ],
+                  ),
+                ),
+                TextButton(onPressed: _lookOnMaps, child:Text(widget.event.location, style: const TextStyle(fontSize: 12))),
+                const Spacer(),
+                Expanded(flex: 2, child: Center(
+                  child: SubscribeButton(event: widget.event),
+                )
+                )
+              ]
+            )
+          )
+        ]
+      )
     );
   }
 

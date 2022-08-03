@@ -13,6 +13,8 @@ class Cop1Event {
   final String imageLink;
   final String url;
 
+  bool get isPast => DateTime.parse("$date $hour").isBefore(DateTime.now());
+
   Cop1Event(this.id, this.title, this.description, this.date, this.hour, this.duration, this.location, this.imageLink, this.url);
 
   @override
@@ -61,47 +63,68 @@ class Cop1Event {
   }
 
   void scheduleNotifications(){
-    //TODO Remove this on prod
-    final text = "N'oubliez pas votre évènement COP1 \"$title\" "
-        "le $date. Ne pas y aller alors que vous y êtes inscrit peut vous pénaliser!";
-    NotificationAPI.scheduleEventNotification(
-        id: 10*id+2,
-        title: title,
-        text: text,
-        scheduledDate: DateTime.now().add(const Duration(seconds: 10)),
-        payload: "/event/$id"
-    );
-    scheduleDayPriorNotification();
-    scheduleHourPriorNotification();
+    if (scheduleHourPriorNotification()) scheduleDayPriorNotification();
   }
 
-  void scheduleHourPriorNotification(){
+  void showImmediateNotification(){
     final text = "N'oubliez pas votre évènement COP1 \"$title\" "
-        "le $date. Ne pas y aller alors que vous y êtes inscrit peut vous pénaliser!";
-    NotificationAPI.scheduleEventNotification(
-        id: 10*id,
-        title: title,
-        text: text,
-        scheduledDate: DateTime.parse("$date $hour").subtract(const Duration(days: 1)),
-        payload: "/event/$id"
-    );
+        "le $date à $hour. Ne pas y aller alors que vous y êtes inscrit peut vous pénaliser!";
+    final eventDate = DateTime.parse("$date $hour");
+    if (DateTime.now().compareTo(eventDate) <= 0) {
+      NotificationAPI.showNotif(
+          id: 10 * id + 2,
+          title: title,
+          body: text,
+          payload: "/event/$id"
+      );
+    }
   }
 
-  void scheduleDayPriorNotification(){
+  bool scheduleHourPriorNotification() {
     final text = "N'oubliez pas votre évènement COP1 \"$title\" "
-        "le $date. Ne pas y aller alors que vous y êtes inscrit peut vous pénaliser!";
-    NotificationAPI.scheduleEventNotification(
-        id: 10*id+1,
-        title: title,
-        text: text,
-        scheduledDate: DateTime.parse("$date $hour").subtract(const Duration(hours: 2)),
-        payload: "/event/$id"
-    );
+        "le $date à $hour. Ne pas y aller alors que vous y êtes inscrit peut vous pénaliser!";
+    final eventDate = DateTime.parse("$date $hour");
+    if (DateTime.now().compareTo(eventDate.subtract(const Duration(days: 1))) < 0){
+      NotificationAPI.scheduleEventNotification(
+          id: 10 * id,
+          title: title,
+          text: text,
+          scheduledDate: DateTime.parse("$date $hour").subtract(
+              const Duration(days: 1)),
+          payload: "/event/$id"
+      );
+      return true;
+    }
+    else {
+      showImmediateNotification();
+      return false;
+    }
+  }
+
+  bool scheduleDayPriorNotification(){
+    final text = "N'oubliez pas votre évènement COP1 \"$title\" "
+        "le $date à $hour. Ne pas y aller alors que vous y êtes inscrit peut vous pénaliser!";
+    final eventDate = DateTime.parse("$date $hour");
+    if (DateTime.now().compareTo(eventDate.subtract(const Duration(hours: 2))) < 0){
+      NotificationAPI.scheduleEventNotification(
+          id: 10*id+1,
+          title: title,
+          text: text,
+          scheduledDate: eventDate.subtract(const Duration(hours: 2)),
+          payload: "/event/$id"
+      );
+      return true;
+    }
+    else {
+      showImmediateNotification();
+      return false;
+    }
   }
 
   void cancelNotifications(){
-    NotificationAPI.cancel(10*id+2);
+    NotificationAPI.cancel(10*id+3);
     NotificationAPI.cancel(10*id+1);
     NotificationAPI.cancel(10*id);
   }
+
 }
