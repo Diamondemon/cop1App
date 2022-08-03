@@ -4,7 +4,6 @@ import 'package:cop1/utils/cop1_event.dart';
 import 'package:cop1/ui/subscribe_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:cop1/utils/maps_launcher.dart';
 
 
 class EventTile extends StatefulWidget {
@@ -81,7 +80,7 @@ class _EventTileState extends State<EventTile> {
                     ],
                   ),
                 ),
-                TextButton(onPressed: _lookOnMaps, child:Text(widget.event.location, style: const TextStyle(fontSize: 12))),
+                TextButton(onPressed: widget.event.lookoutLocationOnMaps, child:Text(widget.event.location, style: const TextStyle(fontSize: 12))),
                 const Spacer(),
                 Expanded(flex: 2, child: Center(
                   child: SubscribeButton(event: widget.event),
@@ -93,10 +92,6 @@ class _EventTileState extends State<EventTile> {
         ]
       )
     );
-  }
-
-  void _lookOnMaps(){
-    MapsLauncher.launchQuery(widget.event.location);
   }
 
   Widget _buildImage(BuildContext context){

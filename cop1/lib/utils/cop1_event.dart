@@ -2,6 +2,8 @@
 import 'package:add_2_calendar/add_2_calendar.dart';
 import 'package:cop1/data/notification_api.dart';
 
+import 'maps_launcher.dart';
+
 class Cop1Event {
   final int id;
   final String title;
@@ -60,6 +62,10 @@ class Cop1Event {
       timeZone: DateTime.now().timeZoneName,
     );
     Add2Calendar.addEvent2Cal(event);
+  }
+
+  void lookoutLocationOnMaps(){
+    MapsLauncher.launchQuery(location);
   }
 
   void scheduleNotifications(){
