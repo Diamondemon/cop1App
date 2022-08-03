@@ -45,12 +45,14 @@
   <div id="tableDiv">
     <table>
       <thead>
+        <th></th>
         <th>ID</th>
         <th>Titre</th>
         <th>Date</th>
       </thead>
       {% for evt in events %}
       <tr>
+        <td><img src="{{ evt.img }}" class="eventImage"/></td>
         <td><a href="/event/{{ evt.id }}"> {{ evt.id }}</a></td>
         <td>{{ evt.title }}</td>
         <td>{{ evt.date }}</td>
