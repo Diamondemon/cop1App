@@ -47,5 +47,25 @@
 		<true/>
 		<key>UIStatusBarHidden</key>
 		<false/>
+		<key>LSApplicationQueriesSchemes</key>
+            <array>
+                <string>comgooglemaps</string>
+                <string>baidumap</string>
+                <string>iosamap</string>
+                <string>waze</string>
+                <string>citymapper</string>
+                <string>mapswithme</string>
+                <string>osmandmaps</string>
+                <string>dgis</string>
+                <string>qqmap</string>
+                <string>here-location</string>
+            </array>
+        <key>NSCalendarsUsageDescription</key>
+        <string>Add COP1 events to your personal calendar.</string>
+        <key>CFBundleLocalizations</key>
+        	<array>
+        		<string>en</string>
+        		<string>fr</string>
+        	</array>
 	</dict>
 </plist>

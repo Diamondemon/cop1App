@@ -79,6 +79,7 @@ class SessionData with ChangeNotifier {
   }*/
 
   void disconnectUser(){
+    _localUser?.cancelUserNotifications();
     _phoneNumber = "";
     _token = "";
     _localUser = null;
@@ -114,11 +115,7 @@ class SessionData with ChangeNotifier {
     on SocketException {
       rethrow;
     }
-    _phoneNumber = "";
-    _token = "";
-    _localUser = null;
-    _connectionListenable.value = false;
-    _storeCreds();
+    disconnectUser();
   }
 
   void subscribe(Cop1Event event){

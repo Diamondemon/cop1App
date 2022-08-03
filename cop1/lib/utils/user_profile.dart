@@ -1,5 +1,3 @@
-
-
 import 'package:cop1/utils/cop1_event.dart';
 import 'package:cop1/utils/set_notifier.dart';
 import 'package:flutter/foundation.dart';
@@ -11,6 +9,7 @@ class UserProfile{
   ValueNotifier<String> email=ValueNotifier("");
   final bool _isAdmin;
   SetNotifier<Cop1Event> events = SetNotifier();
+  SetNotifier<Cop1Event> pastEvents = SetNotifier();
 
   String get phoneNumber => _phoneNumber;
   bool get isAdmin =>_isAdmin;
@@ -18,11 +17,16 @@ class UserProfile{
   UserProfile(this._phoneNumber, [this._isAdmin = false]);
 
   void subscribeToEvent(Cop1Event event){
-    events.add(event);
+    if (!event.isPast){
+      events.add(event);
+      event.scheduleNotifications();
+    }
   }
 
   void unsubscribeFromEvent(int id){
-    events.remove(events.firstWhere((event) => event.id == id));
+    Cop1Event toRemove = events.firstWhere((event) => event.id == id);
+    toRemove.cancelNotifications();
+    events.remove(toRemove);
   }
 
   bool isSubscribedToId(int id){
@@ -39,7 +43,13 @@ class UserProfile{
     user.lastName.value = json["last_name"];
     user.email.value = json["email"];
     for (var item in json["events"]) {
-      user.subscribeToEvent(Cop1Event.fromJSON(item));
+      final Cop1Event event = Cop1Event.fromJSON(item);
+      if (event.isPast){
+        user.pastEvents.add(event);
+      }
+      else {
+        user.subscribeToEvent(event);
+      }
     }
     return user;
   }
@@ -47,6 +57,19 @@ class UserProfile{
   @override
   String toString(){
     return "User $firstName.value $lastName.value, identified by phone number $phoneNumber.\nMail: $email.value\nSubscribed to events $events";
+  }
+
+  void scheduleUserNotifications(){
+    for (Cop1Event element in events) {
+      element.cancelNotifications();
+      element.scheduleNotifications();
+    }
+  }
+
+  void cancelUserNotifications(){
+    for (Cop1Event element in events){
+      element.cancelNotifications();
+    }
   }
 
 }
