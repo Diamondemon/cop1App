@@ -151,6 +151,10 @@ class _EventPageState extends State<EventPage> {
         child: QrImage(
           data: code,
           version: QrVersions.auto,
+          embeddedImage: const AssetImage("assets/Logo CO_P1 512.png"),
+          embeddedImageStyle: QrEmbeddedImageStyle(
+            size: Size(MediaQuery.of(context).size.width*0.1, MediaQuery.of(context).size.width*0.1)
+          ),
         )
       )
     );
