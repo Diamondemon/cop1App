@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:cop1/data/session_data.dart';
 import 'package:cop1/ui/event_page.dart';
 import 'package:cop1/utils/cop1_event.dart';
 import 'package:cop1/ui/subscribe_button.dart';
@@ -22,7 +21,7 @@ class _EventTileState extends State<EventTile> {
     return InkWell(
       onTap: ()=> _openEventPage(context),
       child: Container(
-          height: MediaQuery.of(context).size.height/4,
+          height: (MediaQuery.of(context).size.height/4)*MediaQuery.of(context).textScaleFactor,
           decoration: BoxDecoration(
             border: Border.symmetric(
                 horizontal: BorderSide(color: Theme.of(context).primaryColor, width:3.0)
