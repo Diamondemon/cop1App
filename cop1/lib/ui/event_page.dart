@@ -120,10 +120,15 @@ class _EventPageState extends State<EventPage> {
           }
           else {
             final UserProfile user = snapshot.data as UserProfile;
-            return IconButton(
-              icon: const Icon(Icons.qr_code),
-              onPressed: ()=>_displayQRCodeAlert(context, "12345"),
-            );
+            if (user.isSubscribedToId(widget.eventId)){
+              return IconButton(
+                icon: const Icon(Icons.qr_code),
+                onPressed: ()=>_displayQRCodeAlert(context, "12345"),
+              );
+            }
+            else {
+              return Container();
+            }
           }
         }
         else {
