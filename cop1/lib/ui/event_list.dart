@@ -51,7 +51,7 @@ class _EventListState extends State<EventList> {
         itemBuilder: (BuildContext ctxt, index) {
           return Padding(
               padding: const EdgeInsets.all(5.0),
-              child: EventTile(event: events[index])
+              child: EventTile(event: events[events.length-index-1])
           );
         }
       );
