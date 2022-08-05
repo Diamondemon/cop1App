@@ -17,8 +17,10 @@ class CreationPage extends StatefulWidget {
 
 class _CreationPageState extends State<CreationPage> {
   String phoneNumber="";
+  bool _rgpdChecked=false;
   final RegExp phoneNumRE = RegExp(r"^(\+33\s?)|0[67]([0-9]{2}\s?){4}\s*$");
   final RegExp numStartRE = RegExp(r"^\+33");
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,7 +39,7 @@ class _CreationPageState extends State<CreationPage> {
                   textAlign: TextAlign.justify,
                 ),
                 const SizedBox(height: 20,),
-                TextFieldWidget(label: "Numéro de Téléphone",
+                TextFieldWidget(label: "Numéro de Téléphone*",
                   text: "",
                   hintText: "+33 6 XX XX XX XX",
                   onChanged: (phone){phoneNumber = phone;},
@@ -45,6 +47,15 @@ class _CreationPageState extends State<CreationPage> {
                   regEx: phoneNumRE,
                   errorText: "Numéro de téléphone non valide.",
                 ),
+                CheckboxListTile(
+                  title: const Text("Je consens à ce que mes données soient utilisées sur la plateforme Weezevent dans "
+                      "le cadre de la réservation des évènements organisés par l'association COP1. *"),
+                  value: _rgpdChecked,
+                  onChanged: (bool? value){
+                    setState(() {
+                      _rgpdChecked = value??false;
+                    });
+                  }),
                 ElevatedButton(
                   onPressed: ()=>goToValidation(context),
                   child: const Text('Valider'),
@@ -57,7 +68,7 @@ class _CreationPageState extends State<CreationPage> {
   }
 
   void goToValidation(BuildContext context) async {
-    if (phoneNumRE.hasMatch(phoneNumber)){
+    if (phoneNumRE.hasMatch(phoneNumber) && _rgpdChecked){
       try{
         if (!numStartRE.hasMatch(phoneNumber)){
           phoneNumber = phoneNumber.replaceFirst("0", "+33");
