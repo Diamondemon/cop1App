@@ -25,76 +25,45 @@ class _EventPageState extends State<EventPage> {
         title: Text(event.title),
         actions: session(context).isConnected? [_buildQRCodeButton(context)] : [],
       ),
-      body: ListView(
-          children: [
-            Text(event.title, style: Theme.of(context).textTheme.headlineSmall,),
-            _buildImage(context, event),
-            const Text.rich(
-              TextSpan(
-                children: [
-                  WidgetSpan(
-                    alignment: PlaceholderAlignment.top,
-                    child: Icon(Icons.calendar_month, size: 14),
-                  ),
-                  TextSpan(
-                    text: " Calendrier",
-                  ),
-                ],
-              ),
-            ),
-            TextButton(onPressed: event.addToCalendar,
-                child: Text(
-                    "${event.date} ${event.hour}",
-                    style: const TextStyle(fontSize: 12)
-                )
-            ),
-            const Text.rich(
-              TextSpan(
-                children: [
-                  WidgetSpan(
-                    alignment: PlaceholderAlignment.top,
-                    child: Icon(CupertinoIcons.location, size: 14),
-                  ),
-                  TextSpan(
-                    text: " Lieu",
-                  ),
-                ],
-              ),
-            ),
-            TextButton(onPressed: event.lookoutLocationOnMaps, child:Text(event.location, style: const TextStyle(fontSize: 12))),
-            const Text.rich(
-              TextSpan(
-                children: [
-                  WidgetSpan(
-                    alignment: PlaceholderAlignment.top,
-                    child: Icon(CupertinoIcons.timer, size: 14),
-                  ),
-                  TextSpan(
-                    text: " Durée",
-                  ),
-                ],
-              ),
-            ),
-            Text(event.duration),
-            const Text.rich(
-              TextSpan(
-                children: [
-                  WidgetSpan(
-                    alignment: PlaceholderAlignment.top,
-                    child: Icon(CupertinoIcons.info, size: 14),
-                  ),
-                  TextSpan(
-                    text: " Informations complémentaires",
-                  ),
-                ],
-              ),
-            ),
-            Text(event.description),
-          ],
-        ),
+      body: Padding(
+        padding: const EdgeInsets.only(left: 10, right: 10, top: 5),
+        child: _buildListView(context, event),
+      )
+
     );
   }
 
+    Widget _buildListView(BuildContext context, Cop1Event event){
+      return ListView(
+        children: [
+          Text(event.title, style: Theme.of(context).textTheme.headlineSmall,),
+          const SizedBox(height: 10,),
+          _buildImage(context, event),
+          const SizedBox(height: 10,),
+          _buildIconText(context, Icons.calendar_month, " Calendrier"),
+          TextButton(onPressed: event.addToCalendar,
+              child: Text(
+                  "${event.date} ${event.hour}",
+                  style: const TextStyle(fontSize: 12)
+              )
+          ),
+          _buildIconText(context, CupertinoIcons.location, " Lieu"),
+          TextButton(onPressed: event.lookoutLocationOnMaps, child:Text(event.location, style: const TextStyle(fontSize: 12))),
+          _buildIconText(context, CupertinoIcons.timer, " Durée"),
+          Padding(padding: const EdgeInsets.all(5),
+            child: Text(event.duration)
+          ),
+          _buildIconText(context, CupertinoIcons.info, " Informations complémentaires"),
+          Padding(
+            padding: const EdgeInsets.only(top:5),
+            child: Text(
+                event.description,
+              textAlign: TextAlign.justify,
+            ),
+          )
+        ],
+      );
+    }
 
   Widget _buildImage(BuildContext context, Cop1Event event){
     try {
@@ -147,6 +116,21 @@ class _EventPageState extends State<EventPage> {
           });
   }
 
+  Widget _buildIconText(BuildContext context, final IconData icon, final String text) {
+    return Text.rich(
+      TextSpan(
+        children: [
+          WidgetSpan(
+            alignment: PlaceholderAlignment.top,
+            child: Icon(icon, size: 14),
+          ),
+          TextSpan(
+            text: text,
+          ),
+        ],
+      ),
+    );
+  }
 
   Dialog _buildQRCodeAlert(BuildContext context, String code){
     return Dialog(
