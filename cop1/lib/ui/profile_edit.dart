@@ -20,7 +20,8 @@ class _ProfileEditState extends State<ProfileEdit> implements ConnectedWidgetSta
   String _firstName="";
   String _lastName="";
   String _email="";
-  final RegExp mailRE = RegExp(r"^([a-z0-9_.-]+@[a-z0-9_.-]+[.][a-z]+)?(\s)*$");
+  final RegExp mailRE = RegExp(r"^([a-z0-9_.-]+@[a-z0-9_.-]+[.][a-z]+)(\s)*$");
+  final RegExp nameRE = RegExp(r"^.+$");
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -69,11 +70,15 @@ class _ProfileEditState extends State<ProfileEdit> implements ConnectedWidgetSta
                 text: user.firstName.value,
                 onChanged: (name)=>_firstName=name,
                 inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r"[a-zàâçéèêëîïôûùüÿñæœ .-]*$", caseSensitive: false))],
+                regEx: nameRE,
+                errorText: "Veuillez renseigner un prénom.",
             ),
             TextFieldWidget(label: "Nom",
                 text: user.lastName.value,
                 onChanged: (surname)=>_lastName=surname,
                 inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r"[a-zàâçéèêëîïôûùüÿñæœ .-]*$", caseSensitive: false))],
+                regEx: nameRE,
+                errorText: "Veuillez renseigner un nom.",
             ),
             TextFieldWidget(label: "E-mail",
                 text: user.email.value,
