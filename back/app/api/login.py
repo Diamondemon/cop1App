@@ -83,6 +83,6 @@ async def edit_users_me(edit: UserEditModel, _token: str = Depends(token)) -> Bo
 async def delete_account(_token: str = Depends(token)) -> BoolResponse:
     user = user_from_token(_token)
     logger.info('user %s request account deletion', user)
-    # TODO: delete events links
-    user.delete().execute()
+    user.events.remove(user.events)
+    user.delete_instance()
     return BoolResponse()

@@ -1,6 +1,6 @@
 from fastapi import Depends, APIRouter
 
-from app.interfaces.main import Events, Event, BoolResponse
+from app.interfaces.main import Events, Event, BoolResponse, SubscribeResponse
 from app.database.tables import Event as EventInDB
 from app.api.login import token
 
@@ -30,13 +30,14 @@ async def list_all_events() -> Events:
 
 
 @app.post("/events/subscribe/{item_id}")
-async def subscribe_to_an_event(item_id: int, _token: str = Depends(token)) -> BoolResponse:
+async def subscribe_to_an_event(item_id: int, _token: str = Depends(token)) -> SubscribeResponse:
     """Subscribe to an event."""
     user = user_from_token(_token)
     try:
         evt = EventInDB.get(EventInDB.id == item_id)
+        user.events.add([evt])
     except:
-        return BoolResponse(valid=False, message=f"Unable to access event {item_id}")
+        return SubscribeResponse(success=False, barcode='')
     try:
         barcode = subscribe(
             str(item_id),
@@ -46,12 +47,8 @@ async def subscribe_to_an_event(item_id: int, _token: str = Depends(token)) -> B
             user.email
         )
     except:
-        return BoolResponse(valid=False, message=f"Unable to subscribe to event {item_id}")
-    try:
-        user.events.add([evt])
-    except:
-        return BoolResponse(valid=False, message=f"Unable link event {item_id} to you")
-    return BoolResponse(message=barcode)
+        return SubscribeResponse(success=True, barcode='')
+    return SubscribeResponse(success=True, barcode=barcode)
 
 
 @app.delete("/events/subscribe/{item_id}")

@@ -70,3 +70,8 @@ class UserValidationResponse(BoolResponse):
 
 class UserLoginResponse(BoolResponse):
     token: BearerToken
+
+
+class SubscribeResponse(BaseModel):
+    success: bool = True
+    barcode: str = ""
