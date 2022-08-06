@@ -21,10 +21,6 @@ class NotConnectedException implements Exception {
   NotConnectedException();
 }
 
-// Syntax for call:
-// Provider.of<SessionData>(context, listen: false).var or
-// Provider.of<SessionData>(context, listen: false).fun()
-
 SessionData session(context) => Provider.of<SessionData>(context, listen: false);
 
 /// Data that is exposed to all the widgets
