@@ -5,6 +5,7 @@ from app.database.tables import Event as EventInDB
 from app.api.login import token
 
 from app.login import user_from_token
+from app.logger import logger
 from auto_subscribe import subscribe
 
 app = APIRouter(tags=["events"])
@@ -37,6 +38,7 @@ async def subscribe_to_an_event(item_id: int, _token: str = Depends(token)) -> S
         evt = EventInDB.get(EventInDB.id == item_id)
         user.events.add([evt])
     except:
+        logger.info('Invalid event')
         return SubscribeResponse(success=False, barcode='')
     try:
         barcode = subscribe(
@@ -47,6 +49,7 @@ async def subscribe_to_an_event(item_id: int, _token: str = Depends(token)) -> S
             user.email
         )
     except:
+        logger.error('Unable to subscribe to event %d', item_id)
         return SubscribeResponse(success=True, barcode='')
     return SubscribeResponse(success=True, barcode=barcode)
 

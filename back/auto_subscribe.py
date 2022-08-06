@@ -29,7 +29,6 @@ def subscribe(
             'email': email
         })
     )
-    print(res.text)
     data = res.json()
     if data['error'] is not None:
         raise SubscriptionException(data['error'])
