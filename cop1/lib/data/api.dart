@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:cop1/constants.dart' show apiURL;
 import 'package:cop1/utils/user_profile.dart';
 import 'package:http/http.dart' as http;
+// TODO Remove all calls to dart:developer for prod
 //import 'dart:developer' as dev;
 
 class HTTP409Exception implements Exception {

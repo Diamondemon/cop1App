@@ -1,6 +1,6 @@
 
 import 'package:cop1/ui/creation_page.dart';
-import 'package:cop1/ui/profile_edit.dart';
+import 'package:cop1/ui/profile_edit_page.dart';
 import 'package:cop1/ui/profile_widget.dart';
 import 'package:flutter/material.dart';
 
@@ -41,7 +41,7 @@ class _ProfileTabState extends State<ProfileTab> {
                 ),
                 onPressed: () async {
                   await Navigator.of(ctxt).push(MaterialPageRoute(builder:
-                    (BuildContext buildContext) => const ProfileEdit()));
+                    (BuildContext buildContext) => const ProfileEditPage()));
                   },
               ),
             ] : [],

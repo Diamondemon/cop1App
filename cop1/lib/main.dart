@@ -1,4 +1,5 @@
 import 'package:cop1/app_theme.dart';
+import 'package:cop1/data/notification_api.dart';
 import 'package:cop1/ui/profile_tab.dart';
 import 'package:cop1/ui/tabs.dart';
 import 'package:cop1/ui/thread_tab.dart';
@@ -11,6 +12,7 @@ import 'data/session_data.dart';
 
 Future<void> initAll() async {
   await Hive.initFlutter();
+  await NotificationAPI.initialize();
 }
 
 void main() {
@@ -27,11 +29,12 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     return ChangeNotifierProvider(
-      create: (context) => SessionData(), child:MaterialApp(
+      create: (context) => SessionData(),
+      child:MaterialApp(
         title: 'COP1',
         theme: AppTheme.themeData,
         home:  const HomePage()
-        ),
+      ),
     );
   }
 }
@@ -67,23 +70,23 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        bottomNavigationBar: Material(
-          color: Theme.of(context).primaryColor,
-          child: TabBar(
-            tabs: tabs,
-            controller: _tabController,
-          ),
+      bottomNavigationBar: Material(
+        color: Theme.of(context).primaryColor,
+        child: TabBar(
+          tabs: tabs,
+          controller: _tabController,
         ),
-        body: GestureDetector( // May need SafeArea
-            onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
-            child: TabBarView(
-              controller: _tabController,
-              children: const <Widget>[
-                ThreadTab(),
-                ProfileTab(),
-              ],
-            ),
-          ),
+      ),
+      body: GestureDetector( // May need SafeArea
+        onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
+        child: TabBarView(
+          controller: _tabController,
+          children: const <Widget>[
+            ThreadTab(),
+            ProfileTab(),
+          ],
+        ),
+      ),
     );
   }
 }

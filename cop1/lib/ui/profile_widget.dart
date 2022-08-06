@@ -45,30 +45,57 @@ class ProfileWidget extends StatelessWidget implements ConnectedWidgetState{
         const SizedBox(height: 30),
         _buildMainInfo(context, user),
         const SizedBox(height: 30),
-        const Padding(padding: EdgeInsets.symmetric(horizontal: 20), child: Text("Vos évènements", style: TextStyle(fontSize: 16))),
-        ValueListenableBuilder(
-          valueListenable: user.events,
-          builder: (BuildContext cntxt, Set<Cop1Event> events, _) {
-            return ListView.builder(
-              shrinkWrap: true,
-              physics: const ClampingScrollPhysics(),
-              itemCount: events.length,
-              itemBuilder:
-                  (BuildContext ctxt, int index) {
-                return Padding(
-                    padding: const EdgeInsets.all(5.0),
-                    child: EventTile(event: events.elementAt(index))
-                );
-              },
-            );
-          }
-        ),
-        const SizedBox(height: 30,),
+        const Padding(padding: EdgeInsets.symmetric(horizontal: 20), child: Text("Evènements à venir", style: TextStyle(fontSize: 16))),
+        _buildEventsList(context, user),
+        const SizedBox(height: 20,),
+        const Padding(padding: EdgeInsets.symmetric(horizontal: 20), child: Text("Evènements passés", style: TextStyle(fontSize: 16))),
+        _buildPastEventsList(context, user),
+        const SizedBox(height: 20,),
         Center(
           child: ElevatedButton(onPressed: session(context).disconnectUser, child: const Text("Me déconnecter")),
-        )
-
+        ),
+        const SizedBox(height: 20,),
       ],
+    );
+  }
+
+  Widget _buildEventsList(BuildContext context, UserProfile user){
+    return ValueListenableBuilder(
+        valueListenable: user.events,
+        builder: (BuildContext cntxt, Set<Cop1Event> events, _) {
+          return ListView.builder(
+            shrinkWrap: true,
+            physics: const ClampingScrollPhysics(),
+            itemCount: events.length,
+            itemBuilder:
+                (BuildContext ctxt, int index) {
+              return Padding(
+                  padding: const EdgeInsets.all(5.0),
+                  child: EventTile(event: events.elementAt(index))
+              );
+            },
+          );
+        }
+    );
+  }
+
+  Widget _buildPastEventsList(BuildContext context, UserProfile user){
+    return ValueListenableBuilder(
+        valueListenable: user.pastEvents,
+        builder: (BuildContext cntxt, Set<Cop1Event> events, _) {
+          return ListView.builder(
+            shrinkWrap: true,
+            physics: const ClampingScrollPhysics(),
+            itemCount: events.length,
+            itemBuilder:
+                (BuildContext ctxt, int index) {
+              return Padding(
+                  padding: const EdgeInsets.all(5.0),
+                  child: EventTile(event: events.elementAt(index))
+              );
+            },
+          );
+        }
     );
   }
 

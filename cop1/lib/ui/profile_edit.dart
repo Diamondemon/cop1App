@@ -10,7 +10,8 @@ import 'package:flutter/services.dart';
 import '../utils/connected_widget_state.dart';
 
 class ProfileEdit extends StatefulWidget {
-  const ProfileEdit({Key? key}) : super(key: key);
+  const ProfileEdit({Key? key, this.onFinished}) : super(key: key);
+  final void Function()? onFinished;
 
   @override
   State<ProfileEdit> createState() => _ProfileEditState();
@@ -20,17 +21,11 @@ class _ProfileEditState extends State<ProfileEdit> implements ConnectedWidgetSta
   String _firstName="";
   String _lastName="";
   String _email="";
-  final RegExp mailRE = RegExp(r"^([a-z0-9_.-]+@[a-z0-9_.-]+[.][a-z]+)?(\s)*$");
+  final RegExp mailRE = RegExp(r"^([a-z0-9_.-]+@[a-z0-9_.-]+[.][a-z]+)(\s)*$");
+  final RegExp nameRE = RegExp(r"^.+$");
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Edition du profil"),
-        actions: [
-          IconButton(onPressed: () => _deleteUserForever(context), icon: const Icon(Icons.delete_forever))
-        ],
-      ),
-      body: FutureBuilder(
+    return FutureBuilder(
         future: session(context).user,
         builder: (BuildContext ctxt, AsyncSnapshot<UserProfile?> snapshot){
           if (snapshot.connectionState == ConnectionState.done){
@@ -53,7 +48,6 @@ class _ProfileEditState extends State<ProfileEdit> implements ConnectedWidgetSta
             return const Scaffold();
           }
         }
-      ),
     );
   }
 
@@ -69,11 +63,15 @@ class _ProfileEditState extends State<ProfileEdit> implements ConnectedWidgetSta
                 text: user.firstName.value,
                 onChanged: (name)=>_firstName=name,
                 inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r"[a-zàâçéèêëîïôûùüÿñæœ .-]*$", caseSensitive: false))],
+                regEx: nameRE,
+                errorText: "Veuillez renseigner un prénom.",
             ),
             TextFieldWidget(label: "Nom",
                 text: user.lastName.value,
                 onChanged: (surname)=>_lastName=surname,
                 inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r"[a-zàâçéèêëîïôûùüÿñæœ .-]*$", caseSensitive: false))],
+                regEx: nameRE,
+                errorText: "Veuillez renseigner un nom.",
             ),
             TextFieldWidget(label: "E-mail",
                 text: user.email.value,
@@ -96,25 +94,15 @@ class _ProfileEditState extends State<ProfileEdit> implements ConnectedWidgetSta
         final bool result = await session(context).modifyUser(_firstName, _lastName, _email);
         if (result && mounted) {
           Navigator.of(context).pop();
+          if (widget.onFinished != null){
+            widget.onFinished!();
+          }
           return;
         }
       }
       on SocketException {
         ConnectedWidgetState.displayConnectionAlert(context);
       }
-    }
-  }
-
-  void _deleteUserForever(BuildContext context) async {
-    if (await ConnectedWidgetState.displayYesNoDialog(context)){
-      try {
-        await session(context).deleteUser();
-      }
-      on SocketException {
-        ConnectedWidgetState.displayConnectionAlert(context);
-        return;
-      }
-      if (mounted) Navigator.of(context).pop();
     }
   }
 }

@@ -39,6 +39,9 @@ class _TextFieldWidgetState extends State<TextFieldWidget> {
     super.initState();
 
     controller = TextEditingController(text: widget.text);
+    if (widget.regEx != null) {
+      _regExMatches = widget.regEx!.hasMatch(widget.text);
+    }
   }
 
   @override

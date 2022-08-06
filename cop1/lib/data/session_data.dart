@@ -21,10 +21,6 @@ class NotConnectedException implements Exception {
   NotConnectedException();
 }
 
-// Syntax for call:
-// Provider.of<SessionData>(context, listen: false).var or
-// Provider.of<SessionData>(context, listen: false).fun()
-
 SessionData session(context) => Provider.of<SessionData>(context, listen: false);
 
 /// Data that is exposed to all the widgets
@@ -68,6 +64,10 @@ class SessionData with ChangeNotifier {
     }).toList();
   }
 
+  Cop1Event getEvent(int eventId) {
+    return _events.firstWhere((Cop1Event element) => element.id == eventId);
+  }
+
 
   /// App preferences
   //static const storage = FlutterSecureStorage();
@@ -79,6 +79,7 @@ class SessionData with ChangeNotifier {
   }*/
 
   void disconnectUser(){
+    _localUser?.cancelUserNotifications();
     _phoneNumber = "";
     _token = "";
     _localUser = null;
@@ -114,11 +115,7 @@ class SessionData with ChangeNotifier {
     on SocketException {
       rethrow;
     }
-    _phoneNumber = "";
-    _token = "";
-    _localUser = null;
-    _connectionListenable.value = false;
-    _storeCreds();
+    disconnectUser();
   }
 
   void subscribe(Cop1Event event){
