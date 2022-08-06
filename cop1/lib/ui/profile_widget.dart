@@ -118,7 +118,7 @@ class ProfileWidget extends StatelessWidget implements ConnectedWidgetState{
           (BuildContext lastNameContext, String lastName, _) {
             final String fullName;
             if (lastName.isEmpty && firstName.isEmpty){
-              fullName = "Utilisateur annonyme";
+              fullName = "Utilisateur anonyme";
             }
             else {
               fullName = "$firstName $lastName";
