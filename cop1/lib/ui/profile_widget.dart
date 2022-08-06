@@ -47,13 +47,14 @@ class ProfileWidget extends StatelessWidget implements ConnectedWidgetState{
         const SizedBox(height: 30),
         const Padding(padding: EdgeInsets.symmetric(horizontal: 20), child: Text("Evènements à venir", style: TextStyle(fontSize: 16))),
         _buildEventsList(context, user),
+        const SizedBox(height: 20,),
         const Padding(padding: EdgeInsets.symmetric(horizontal: 20), child: Text("Evènements passés", style: TextStyle(fontSize: 16))),
         _buildPastEventsList(context, user),
-        const SizedBox(height: 30,),
+        const SizedBox(height: 20,),
         Center(
           child: ElevatedButton(onPressed: session(context).disconnectUser, child: const Text("Me déconnecter")),
-        )
-
+        ),
+        const SizedBox(height: 20,),
       ],
     );
   }
@@ -117,7 +118,7 @@ class ProfileWidget extends StatelessWidget implements ConnectedWidgetState{
           (BuildContext lastNameContext, String lastName, _) {
             final String fullName;
             if (lastName.isEmpty && firstName.isEmpty){
-              fullName = "Utilisateur annonyme";
+              fullName = "Utilisateur anonyme";
             }
             else {
               fullName = "$firstName $lastName";

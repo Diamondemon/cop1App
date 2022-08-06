@@ -68,6 +68,10 @@ class SessionData with ChangeNotifier {
     }).toList();
   }
 
+  Cop1Event getEvent(int eventId) {
+    return _events.firstWhere((Cop1Event element) => element.id == eventId);
+  }
+
 
   /// App preferences
   //static const storage = FlutterSecureStorage();

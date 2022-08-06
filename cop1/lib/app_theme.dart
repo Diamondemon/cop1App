@@ -50,7 +50,8 @@ class AppTheme {
     /// Now that we have ColorScheme and TextTheme, we can create the ThemeData
     ThemeData t = ThemeData.from(textTheme: txtTheme, colorScheme: colorScheme)
     // We can also add on some extra properties that ColorScheme seems to miss
-        .copyWith(highlightColor: _accent1, toggleableActiveColor: _accent1, primaryTextTheme: txtTheme);
+        .copyWith(highlightColor: _accent1, toggleableActiveColor: _accent1, primaryTextTheme: txtTheme,
+    appBarTheme: const AppBarTheme(elevation:0));
     /// Return the themeData which MaterialApp can now use
     return t;
   }
