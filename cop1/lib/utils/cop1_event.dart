@@ -1,4 +1,3 @@
-
 import 'package:add_2_calendar/add_2_calendar.dart';
 import 'package:cop1/data/notification_api.dart';
 
@@ -89,14 +88,13 @@ class Cop1Event {
   bool scheduleHourPriorNotification() {
     final text = "N'oubliez pas votre évènement COP1 \"$title\" "
         "le $date à $hour. Ne pas y aller alors que vous y êtes inscrit peut vous pénaliser!";
-    final eventDate = DateTime.parse("$date $hour");
-    if (DateTime.now().compareTo(eventDate.subtract(const Duration(days: 1))) < 0){
+    final notifyDate = DateTime.parse("$date $hour").subtract(const Duration(hours: 2));
+    if (DateTime.now().compareTo(notifyDate) < 0){
       NotificationAPI.scheduleEventNotification(
           id: 10 * id,
           title: title,
           text: text,
-          scheduledDate: DateTime.parse("$date $hour").subtract(
-              const Duration(days: 1)),
+          scheduledDate: notifyDate,
           payload: "/event/$id"
       );
       return true;
@@ -110,13 +108,13 @@ class Cop1Event {
   bool scheduleDayPriorNotification(){
     final text = "N'oubliez pas votre évènement COP1 \"$title\" "
         "le $date à $hour. Ne pas y aller alors que vous y êtes inscrit peut vous pénaliser!";
-    final eventDate = DateTime.parse("$date $hour");
-    if (DateTime.now().compareTo(eventDate.subtract(const Duration(hours: 2))) < 0){
+    final notifyDate = DateTime.parse("$date $hour").subtract(const Duration(days: 1));
+    if (DateTime.now().compareTo(notifyDate) < 0){
       NotificationAPI.scheduleEventNotification(
           id: 10*id+1,
           title: title,
           text: text,
-          scheduledDate: eventDate.subtract(const Duration(hours: 2)),
+          scheduledDate: notifyDate,
           payload: "/event/$id"
       );
       return true;
