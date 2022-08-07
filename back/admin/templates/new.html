@@ -26,6 +26,7 @@
 </head>
 <body>
   <h1>Nouvel évènement</h1>
+  <p style="color: red">{{ error | default("") }}</p>
   <button onclick="autoFill()">Auto fill</button>
   <form method="post">
     <table>

@@ -116,8 +116,16 @@ def event(evt_id):
 @limiter.exempt
 def new_event():
     if request.method == 'POST':
+        try:
+            evt_id = int(request.form['id'])
+        except:
+            return render_template(
+                'new.html',
+                date=datetime.now().date(),
+                error="ID is required"
+            )
         Event.create(
-            id=request.form['id'],
+            id=evt_id,
             date=request.form['date'],
             duration=request.form['duration'],
             desc=request.form['desc'],
