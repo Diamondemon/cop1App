@@ -67,7 +67,7 @@ class _EventTileState extends State<EventTile> {
                   ),
                   TextButton(onPressed: widget.event.addToCalendar,
                       child: Text(
-                          "${widget.event.date} ${widget.event.hour}",
+                          widget.event.date.toString(),
                           style: const TextStyle(fontSize: 12)
                       )
                   ),

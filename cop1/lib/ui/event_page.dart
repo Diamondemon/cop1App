@@ -43,7 +43,7 @@ class _EventPageState extends State<EventPage> {
           _buildIconText(context, Icons.calendar_month, " Calendrier"),
           TextButton(onPressed: event.addToCalendar,
               child: Text(
-                  "${event.date} ${event.hour}",
+                  "${event.date}",
                   style: const TextStyle(fontSize: 12)
               )
           ),
