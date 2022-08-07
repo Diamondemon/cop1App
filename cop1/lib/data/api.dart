@@ -5,7 +5,7 @@ import 'package:cop1/constants.dart' show apiURL;
 import 'package:cop1/utils/user_profile.dart';
 import 'package:http/http.dart' as http;
 // TODO Remove all calls to dart:developer for prod
-import 'dart:developer' as dev;
+//import 'dart:developer' as dev;
 
 class HTTP409Exception implements Exception {
   final String? detail;
@@ -39,7 +39,7 @@ class API {
       rethrow;
     }
     on Exception catch (e){
-      dev.log("Boom Error $e");
+      //dev.log("Boom Error $e");
       return false;
     }
   }
@@ -167,7 +167,7 @@ class API {
   /// Fetch a json object from the distant server
   static Future<Map<String, dynamic>> _post(String url, Map<String, dynamic> data, [Map<String, String>? headers]) async {
     final response = await http
-        .post(Uri.parse(url), headers: {"accept": "application/json", "Content-Type": "application/json", ...?headers}, body: jsonEncode(data));
+        .post(Uri.parse(url), headers: {"accept": "application/json", "Content-Type": "application/json", ...?headers}, body: jsonEncode(data), encoding: Encoding.getByName("UTF-8"));
 
     if (response.statusCode == 200) {
       // If the server did return a 200 OK response,
@@ -208,7 +208,7 @@ class API {
   /// Fetch a json object from the distant server
   static Future<Map<String, dynamic>> _delete(String url, [Map<String, String>? headers]) async {
     final response = await http
-        .delete(Uri.parse(url), headers: {"accept": "application/json", ...?headers});
+        .delete(Uri.parse(url), headers: {"accept": "application/json", ...?headers}, encoding: Encoding.getByName("UTF-8"));
 
     if (response.statusCode == 200) {
       // If the server did return a 200 OK response,
