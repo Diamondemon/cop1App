@@ -69,7 +69,7 @@ class Cop1Event {
   void showImmediateNotification(){
     final text = "N'oubliez pas votre évènement COP1 \"$title\" "
         "le $date. Ne pas y aller alors que vous y êtes inscrit peut vous pénaliser!";
-    if (isPast) {
+    if (!isPast) {
       NotificationAPI.showNotif(
           id: 10 * id + 2,
           title: title,
