@@ -8,6 +8,7 @@ from app.interfaces.main import *
 from app.logger import logger
 from app.database.tables import User as UserInDB, DB
 from app.database.main import get_user
+from app.tools import check_email, check_username
 
 app = APIRouter(tags=["login"])
 
@@ -67,14 +68,26 @@ async def edit_users_me(edit: UserEditModel, _token: str = Depends(token)) -> Bo
     logger.info('user %s is connected', user)
     logger.info(edit)
     if edit.email is not None:
-        logger.info('email edited')
-        user.email = edit.email
+        if check_email(edit.email):
+            logger.info('email edited')
+            user.email = edit.email
+        else:
+            logger.info('invalid email')
+            return BoolResponse(valid=False, message='email')
     if edit.first_name is not None:
-        logger.info('first_name edited')
-        user.first_name = edit.first_name
+        if check_username(edit.first_name):
+            logger.info('first_name edited')
+            user.first_name = edit.first_name
+        else:
+            logger.info('invalid first_name')
+            return BoolResponse(valid=False, message='first_name')
     if edit.last_name is not None:
-        logger.info('last_name edited')
-        user.last_name = edit.last_name
+        if check_username(edit.last_name):
+            logger.info('last_name edited')
+            user.last_name = edit.last_name
+        else:
+            logger.info('invalid last_name')
+            return BoolResponse(valid=False, message='last_name')
     user.save()
     return BoolResponse()
 
