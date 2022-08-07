@@ -55,7 +55,7 @@ class _EventPageState extends State<EventPage> {
           ),
           _buildIconText(context, CupertinoIcons.info, " Informations complémentaires"),
           Padding(
-            padding: const EdgeInsets.only(top:5),
+            padding: const EdgeInsets.only(top:5, left: 10, right: 10),
             child: Text(
                 event.description,
               textAlign: TextAlign.justify,
