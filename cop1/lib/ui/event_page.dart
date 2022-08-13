@@ -103,7 +103,7 @@ class _EventPageState extends State<EventPage> {
             if (user.isSubscribedToId(widget.eventId)){
               return IconButton(
                 icon: const Icon(Icons.qr_code),
-                onPressed: ()=>_displayQRCodeAlert(context, "12345"),
+                onPressed: ()=>_displayQRCodeAlert(context, user.barcodes[widget.eventId]??"1234567"),
               );
             }
             else {

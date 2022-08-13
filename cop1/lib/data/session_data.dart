@@ -118,9 +118,11 @@ class SessionData with ChangeNotifier {
     disconnectUser();
   }
 
-  void subscribe(Cop1Event event){
-    API.subscribeToEvent(token, event.id);
-    _localUser?.subscribeToEvent(event);
+  Future<void> subscribe(Cop1Event event) async {
+    final subscription = await API.subscribeToEvent(token, event.id);
+    if (subscription["success"]){
+      _localUser?.subscribeToEvent(event, subscription["barcode"]??"123456");
+    }
   }
 
   void unsubscribe(int id){

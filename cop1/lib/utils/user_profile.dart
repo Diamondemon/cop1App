@@ -10,15 +10,17 @@ class UserProfile{
   final bool _isAdmin;
   SetNotifier<Cop1Event> events = SetNotifier();
   SetNotifier<Cop1Event> pastEvents = SetNotifier();
+  Map<int, String> barcodes = {};
 
   String get phoneNumber => _phoneNumber;
   bool get isAdmin =>_isAdmin;
 
   UserProfile(this._phoneNumber, [this._isAdmin = false]);
 
-  void subscribeToEvent(Cop1Event event){
+  void subscribeToEvent(Cop1Event event, String barcode){
     if (!event.isPast){
       events.add(event);
+      barcodes[event.id]=barcode;
       event.scheduleNotifications();
     }
   }
@@ -48,7 +50,8 @@ class UserProfile{
         user.pastEvents.add(event);
       }
       else {
-        user.subscribeToEvent(event);
+        //TODO fix this
+        user.subscribeToEvent(event,"123456");
       }
     }
     return user;
