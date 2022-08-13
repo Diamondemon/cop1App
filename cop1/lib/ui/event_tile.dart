@@ -67,7 +67,8 @@ class _EventTileState extends State<EventTile> {
                             TextButton(
                                 onPressed: widget.event.addToCalendar,
                                 child: Text(
-                                    "${widget.event.date}",//DateFormat.yMEd("fr").add_jms().format(widget.event.date),
+                                    //TODO make locale dynamic
+                                    DateFormat.yMEd("fr").add_jm().format(widget.event.date),
                                     style: const TextStyle(fontSize: 12)
                                 )
                             ),
