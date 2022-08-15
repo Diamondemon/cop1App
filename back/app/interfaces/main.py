@@ -19,6 +19,9 @@ class Event(BaseModel):
     img: str
     loc: str
 
+class EventInscrit(Event):
+    barcode: str
+
 
 class Events(BaseModel):
     """A list of events."""

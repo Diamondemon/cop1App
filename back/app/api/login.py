@@ -53,7 +53,7 @@ async def read_users_me(_token: str = Depends(token)) -> UserModel:
         first_name=user.first_name,
         last_name=user.last_name,
         events=[
-            Event(
+            EventInscrit(
                 id=str(e.id),
                 date=str(e.date),
                 duration=str(e.duration),
@@ -61,6 +61,7 @@ async def read_users_me(_token: str = Depends(token)) -> UserModel:
                 title=str(e.title),
                 img=str(e.img),
                 loc=str(e.loc),
+                barcode=str(e.inscription.barcode)
             )
             for e in evt
         ]
