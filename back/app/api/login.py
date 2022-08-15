@@ -6,7 +6,7 @@ from fastapi.security import APIKeyHeader
 from app.login import user_login, create_user, user_from_token, update_user_password
 from app.interfaces.main import *
 from app.logger import logger
-from app.database.tables import User as UserInDB, Event as EventInDB, Inscription as InscriptionInDB, DB
+from app.database.tables import User as UserInDB, Event as EventInDB, Inscription as InscriptionInDB
 from app.database.main import get_user
 from app.tools import check_email, check_username
 
@@ -42,11 +42,11 @@ async def login(user: UserLoginModel) -> UserLoginResponse:
 async def read_users_me(_token: str = Depends(token)) -> UserModel:
     user = user_from_token(_token)
     logger.info('user %s is connected', user)
-    evt = UserInDB \
-        .select(InscriptionInDB, EventInDB) \
-        .join(InscriptionInDB, on=(UserInDB.phone == InscriptionInDB.user)) \
-        .join(EventInDB, on=(EventInDB.id == InscriptionInDB.event)) \
-        .where(UserInDB == user.phone)
+    evt = EventInDB \
+        .select(EventInDB, InscriptionInDB) \
+        .join(InscriptionInDB) \
+        .where(InscriptionInDB.user == user) \
+        .prefetch()
     return UserModel(
         phone=user.phone,
         email=user.email,
@@ -101,6 +101,11 @@ async def edit_users_me(edit: UserEditModel, _token: str = Depends(token)) -> Bo
 async def delete_account(_token: str = Depends(token)) -> BoolResponse:
     user = user_from_token(_token)
     logger.info('user %s request account deletion', user)
-    user.events.remove(user.events)
+    evt = EventInDB \
+        .select(EventInDB, InscriptionInDB) \
+        .join(InscriptionInDB) \
+        .where(InscriptionInDB.user == user)
+    for e in evt:
+        e.delete_instance()
     user.delete_instance()
     return BoolResponse()

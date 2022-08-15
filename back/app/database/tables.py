@@ -1,11 +1,11 @@
-from peewee import CharField, DateField, TextField, ForeignKeyField  # type: ignore
+from peewee import CharField, TextField, ForeignKeyField  # type: ignore
 
 from app.database.utils import Table, DB
 
 
 class Event(Table):
     id = CharField(primary_key=True, index=True)
-    date = DateField()
+    date = CharField()
     duration = CharField()
     desc = TextField()
     title = CharField()
