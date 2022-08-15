@@ -6,7 +6,7 @@ from fastapi.security import APIKeyHeader
 from app.login import user_login, create_user, user_from_token, update_user_password
 from app.interfaces.main import *
 from app.logger import logger
-from app.database.tables import User as UserInDB, DB
+from app.database.tables import User as UserInDB, Event as EventInDB, Inscription as InscriptionInDB, DB
 from app.database.main import get_user
 from app.tools import check_email, check_username
 
@@ -42,6 +42,11 @@ async def login(user: UserLoginModel) -> UserLoginResponse:
 async def read_users_me(_token: str = Depends(token)) -> UserModel:
     user = user_from_token(_token)
     logger.info('user %s is connected', user)
+    evt = UserInDB \
+        .select(InscriptionInDB, EventInDB) \
+        .join(InscriptionInDB, on=(UserInDB.phone == InscriptionInDB.user)) \
+        .join(EventInDB, on=(EventInDB.id == InscriptionInDB.event)) \
+        .where(UserInDB == user.phone)
     return UserModel(
         phone=user.phone,
         email=user.email,
@@ -57,7 +62,7 @@ async def read_users_me(_token: str = Depends(token)) -> UserModel:
                 img=str(e.img),
                 loc=str(e.loc),
             )
-            for e in user.events
+            for e in evt
         ]
     )
 

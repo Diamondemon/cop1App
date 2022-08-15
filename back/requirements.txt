@@ -8,3 +8,4 @@ gunicorn
 flask_limiter
 requests
 types-requests
+psycopg2-binary
