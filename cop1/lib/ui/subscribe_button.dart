@@ -58,7 +58,7 @@ class _SubscribeButtonState extends State<SubscribeButton> {
       setState((){});
     }
     else {
-      s.unsubscribe(widget.event.id);
+      s.unsubscribe(widget.event);
       setState((){});
     }
   }

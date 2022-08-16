@@ -79,7 +79,7 @@ class SessionData with ChangeNotifier {
   }*/
 
   void disconnectUser(){
-    _localUser?.cancelUserNotifications();
+    _localUser?.cancelUserNotifications(_events);
     _phoneNumber = "";
     _token = "";
     _localUser = null;
@@ -125,9 +125,9 @@ class SessionData with ChangeNotifier {
     }
   }
 
-  void unsubscribe(int id){
-    API.unsubscribeFromEvent(token, id);
-    _localUser?.unsubscribeFromEvent(id);
+  void unsubscribe(Cop1Event event){
+    API.unsubscribeFromEvent(token, event.id);
+    _localUser?.unsubscribeFromEvent(event);
   }
 
   Future<bool> setPhoneNumber(phoneNumber) async{

@@ -1,5 +1,6 @@
 import 'package:add_2_calendar/add_2_calendar.dart';
 import 'package:cop1/data/notification_api.dart';
+import 'package:intl/intl.dart';
 
 import 'maps_launcher.dart';
 
@@ -68,7 +69,7 @@ class Cop1Event {
 
   void showImmediateNotification(){
     final text = "N'oubliez pas votre évènement COP1 \"$title\" "
-        "le $date. Ne pas y aller alors que vous y êtes inscrit peut vous pénaliser!";
+        "le ${DateFormat.yMEd("fr").add_jm().format(date)}. Ne pas y aller alors que vous y êtes inscrit peut vous pénaliser!";
     if (!isPast) {
       NotificationAPI.showNotif(
           id: 10 * id + 2,
@@ -81,7 +82,7 @@ class Cop1Event {
 
   bool scheduleHourPriorNotification() {
     final text = "N'oubliez pas votre évènement COP1 \"$title\" "
-        "le $date. Ne pas y aller alors que vous y êtes inscrit peut vous pénaliser!";
+        "le ${DateFormat.yMEd("fr").add_jm().format(date)}. Ne pas y aller alors que vous y êtes inscrit peut vous pénaliser!";
     final notifyDate = date.subtract(const Duration(hours: 2));
     if (DateTime.now().compareTo(notifyDate) < 0){
       NotificationAPI.scheduleEventNotification(
@@ -101,7 +102,7 @@ class Cop1Event {
 
   bool scheduleDayPriorNotification(){
     final text = "N'oubliez pas votre évènement COP1 \"$title\" "
-        "le $date. Ne pas y aller alors que vous y êtes inscrit peut vous pénaliser!";
+        "le ${DateFormat.yMEd("fr").add_jm().format(date)}. Ne pas y aller alors que vous y êtes inscrit peut vous pénaliser!";
     final notifyDate = date.subtract(const Duration(days: 1));
     if (DateTime.now().compareTo(notifyDate) < 0){
       NotificationAPI.scheduleEventNotification(
