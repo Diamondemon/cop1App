@@ -11,12 +11,16 @@ class BearerToken(BaseModel):
 
 class Event(BaseModel):
     """An event."""
-    id: int
+    id: str
     date: str
-    url: str
+    duration: str
+    desc: str
     title: str
     img: str
     loc: str
+
+class EventInscrit(Event):
+    barcode: str
 
 
 class Events(BaseModel):
@@ -69,3 +73,8 @@ class UserValidationResponse(BoolResponse):
 
 class UserLoginResponse(BoolResponse):
     token: BearerToken
+
+
+class SubscribeResponse(BaseModel):
+    success: bool = True
+    barcode: str = ""

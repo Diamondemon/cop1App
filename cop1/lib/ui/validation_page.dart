@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:cop1/data/session_data.dart';
 import 'package:cop1/ui/profile_creation_page.dart';
 import 'package:cop1/ui/text_field_widget.dart';
-import 'package:cop1/utils/user_profile.dart';
 import 'package:flutter/material.dart';
 
 import '../utils/connected_widget_state.dart';

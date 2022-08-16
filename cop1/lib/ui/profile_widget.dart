@@ -2,9 +2,11 @@
 import 'dart:io';
 
 import 'package:cop1/utils/connected_widget_state.dart';
+import 'package:cop1/utils/set_notifier.dart';
 import 'package:cop1/utils/user_profile.dart';
 import 'package:cop1/ui/event_tile.dart';
 import 'package:flutter/material.dart';
+import 'package:tuple/tuple.dart';
 
 import '../utils/cop1_event.dart';
 import '../data/session_data.dart';
@@ -16,8 +18,8 @@ class ProfileWidget extends StatelessWidget implements ConnectedWidgetState{
   Widget build(BuildContext context) {
 
     return FutureBuilder(
-        future: session(context).user,
-        builder: (BuildContext ctxt, AsyncSnapshot snapshot) {
+        future: getUserAndEvents(context),
+        builder: (BuildContext ctxt, AsyncSnapshot<Tuple2<UserProfile?, List<Cop1Event>>> snapshot) {
           if (snapshot.connectionState == ConnectionState.done){
             if (snapshot.hasError){
               if (snapshot.error is SocketException){
@@ -28,8 +30,11 @@ class ProfileWidget extends StatelessWidget implements ConnectedWidgetState{
               }
               return Text(snapshot.error.toString());
             }
-            else{
-              return _buildListView(ctxt, snapshot.data!);
+            else if (snapshot.hasData){
+              return _buildListView(ctxt, snapshot.data!.item1!, snapshot.data!.item2);
+            }
+            else {
+              return const Scaffold();
             }
           }
           else {
@@ -39,17 +44,17 @@ class ProfileWidget extends StatelessWidget implements ConnectedWidgetState{
     );
   }
 
-  Widget _buildListView(BuildContext context, UserProfile user){
+  Widget _buildListView(BuildContext context, UserProfile user, List<Cop1Event> events){
     return ListView(
       children: [
         const SizedBox(height: 30),
         _buildMainInfo(context, user),
         const SizedBox(height: 30),
         const Padding(padding: EdgeInsets.symmetric(horizontal: 20), child: Text("Evènements à venir", style: TextStyle(fontSize: 16))),
-        _buildEventsList(context, user),
+        _buildEventsList(context, user.events, events),
         const SizedBox(height: 20,),
         const Padding(padding: EdgeInsets.symmetric(horizontal: 20), child: Text("Evènements passés", style: TextStyle(fontSize: 16))),
-        _buildPastEventsList(context, user),
+        _buildEventsList(context, user.pastEvents, events),
         const SizedBox(height: 20,),
         Center(
           child: ElevatedButton(onPressed: session(context).disconnectUser, child: const Text("Me déconnecter")),
@@ -59,39 +64,19 @@ class ProfileWidget extends StatelessWidget implements ConnectedWidgetState{
     );
   }
 
-  Widget _buildEventsList(BuildContext context, UserProfile user){
+  Widget _buildEventsList(BuildContext context, SetNotifier<int> subEvents, List<Cop1Event> events){
     return ValueListenableBuilder(
-        valueListenable: user.events,
-        builder: (BuildContext cntxt, Set<Cop1Event> events, _) {
+        valueListenable: subEvents,
+        builder: (BuildContext cntxt, Set<int> evts, _) {
           return ListView.builder(
             shrinkWrap: true,
             physics: const ClampingScrollPhysics(),
-            itemCount: events.length,
+            itemCount: evts.length,
             itemBuilder:
                 (BuildContext ctxt, int index) {
               return Padding(
                   padding: const EdgeInsets.all(5.0),
-                  child: EventTile(event: events.elementAt(index))
-              );
-            },
-          );
-        }
-    );
-  }
-
-  Widget _buildPastEventsList(BuildContext context, UserProfile user){
-    return ValueListenableBuilder(
-        valueListenable: user.pastEvents,
-        builder: (BuildContext cntxt, Set<Cop1Event> events, _) {
-          return ListView.builder(
-            shrinkWrap: true,
-            physics: const ClampingScrollPhysics(),
-            itemCount: events.length,
-            itemBuilder:
-                (BuildContext ctxt, int index) {
-              return Padding(
-                  padding: const EdgeInsets.all(5.0),
-                  child: EventTile(event: events.elementAt(index))
+                  child: EventTile(event: events.firstWhere((element) => (element.id == evts.elementAt(index))))
               );
             },
           );
@@ -143,5 +128,11 @@ class ProfileWidget extends StatelessWidget implements ConnectedWidgetState{
       }
     );
   }
+
+  Future<Tuple2<UserProfile?, List<Cop1Event>>> getUserAndEvents (BuildContext context) async {
+    SessionData s = session(context);
+    return Tuple2(await s.user, await s.events);
+  }
+
 }
 

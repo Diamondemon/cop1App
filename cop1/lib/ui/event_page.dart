@@ -1,9 +1,11 @@
 import 'dart:io';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cop1/data/session_data.dart';
 import 'package:cop1/utils/user_profile.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
 import '../utils/cop1_event.dart';
@@ -43,7 +45,8 @@ class _EventPageState extends State<EventPage> {
           _buildIconText(context, Icons.calendar_month, " Calendrier"),
           TextButton(onPressed: event.addToCalendar,
               child: Text(
-                  "${event.date} ${event.hour}",
+                  //TODO make locale dynamic
+                  DateFormat.yMEd("fr").add_jm().format(event.date),
                   style: const TextStyle(fontSize: 12)
               )
           ),
@@ -55,7 +58,7 @@ class _EventPageState extends State<EventPage> {
           ),
           _buildIconText(context, CupertinoIcons.info, " Informations complémentaires"),
           Padding(
-            padding: const EdgeInsets.only(top:5),
+            padding: const EdgeInsets.only(top:5, left: 10, right: 10),
             child: Text(
                 event.description,
               textAlign: TextAlign.justify,
@@ -66,12 +69,20 @@ class _EventPageState extends State<EventPage> {
     }
 
   Widget _buildImage(BuildContext context, Cop1Event event){
-    try {
-      return Image.network(event.imageLink, fit: BoxFit.fill);
-    }
-    on SocketException {
-      return const Icon(Icons.image_not_supported);
-    }
+    return CachedNetworkImage(
+      imageUrl: event.imageLink,
+      fit: BoxFit.fill,
+      progressIndicatorBuilder: (BuildContext context, String url, DownloadProgress? progress){
+        return Center(
+          child: CircularProgressIndicator(value: progress?.progress),
+        );
+      },
+      errorWidget: (BuildContext context, String url, error){
+        return const Center(
+            child: Icon(Icons.image_not_supported)
+        );
+      },
+    );
   }
 
 
@@ -92,7 +103,7 @@ class _EventPageState extends State<EventPage> {
             if (user.isSubscribedToId(widget.eventId)){
               return IconButton(
                 icon: const Icon(Icons.qr_code),
-                onPressed: ()=>_displayQRCodeAlert(context, "12345"),
+                onPressed: ()=>_displayQRCodeAlert(context, user.barcodes[widget.eventId]??"1234567"),
               );
             }
             else {

@@ -1,12 +1,13 @@
-from peewee import CharField, ManyToManyField, DateField, IntegerField  # type: ignore
+from peewee import CharField, TextField, ForeignKeyField  # type: ignore
 
 from app.database.utils import Table, DB
 
 
 class Event(Table):
-    id = IntegerField(primary_key=True)
-    url = CharField(index=True)
-    date = DateField()
+    id = CharField(primary_key=True, index=True)
+    date = CharField()
+    duration = CharField()
+    desc = TextField()
     title = CharField()
     img = CharField()
     loc = CharField()
@@ -21,8 +22,13 @@ class User(Table):
     first_name = CharField()
     last_name = CharField()
     # status = CharField(default='normal')
-    events = ManyToManyField(Event)
 
 
-Relation = User.events.get_through_model()
-DB.create_tables([User, Event, Relation])
+class Inscription(Table):
+    user = ForeignKeyField(User, backref='inscription')
+    event = ForeignKeyField(Event, backref='inscription')
+    barcode = CharField()
+    id = CharField(index=True)
+
+
+DB.create_tables([User, Event, Inscription])

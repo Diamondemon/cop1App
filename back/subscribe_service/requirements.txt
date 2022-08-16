@@ -1,3 +1,4 @@
 textract
 flask
 gunicorn
+selenium

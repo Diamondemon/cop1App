@@ -1,4 +1,4 @@
-.PHONY: all run insall clean clean_dev admin enable restart deps
+.PHONY: all run install clean clean_dev admin enable restart deps
 PYTHON=python3.10
 INSTALL_DST=/etc/systemd/system
 

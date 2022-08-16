@@ -1,5 +1,6 @@
 import 'package:add_2_calendar/add_2_calendar.dart';
 import 'package:cop1/data/notification_api.dart';
+import 'package:intl/intl.dart';
 
 import 'maps_launcher.dart';
 
@@ -7,16 +8,14 @@ class Cop1Event {
   final int id;
   final String title;
   final String description;
-  final String date;
-  final String hour;
+  final DateTime date;
   final String duration;
   final String location;
   final String imageLink;
-  final String url;
 
-  bool get isPast => DateTime.parse("$date $hour").isBefore(DateTime.now());
+  bool get isPast => date.isBefore(DateTime.now());
 
-  Cop1Event(this.id, this.title, this.description, this.date, this.hour, this.duration, this.location, this.imageLink, this.url);
+  Cop1Event(this.id, this.title, this.description, this.date, this.duration, this.location, this.imageLink);
 
   @override
   bool operator ==(Object other){
@@ -38,26 +37,23 @@ class Cop1Event {
 
   static Cop1Event fromJSON(Map<String, dynamic> json){
     return Cop1Event(
-        json["id"],
+        int.tryParse(json["id"])??-1,
         json["title"]??"Sans titre",
-        json["description"]??"Sans description",
-        json["date"],
-        json["hour"]??"08:00",
+        json["desc"]??"Sans description",
+        DateTime.parse(json["date"]),
         json["duration"]??"01:00",
         json["loc"],
         json["img"]??"",
-        json["url"]
     );
   }
 
   void addToCalendar(){
-    final startDate = DateTime.parse("$date $hour");
     final Event event = Event(
       title: title,
       description: title,
       location: location,
-      startDate: startDate,
-      endDate: startDate.add(Duration(hours:int.parse(duration.split(":")[0]))),
+      startDate: date,
+      endDate: date.add(Duration(hours:int.parse(duration.split(":")[0]))),
       timeZone: DateTime.now().timeZoneName,
     );
     Add2Calendar.addEvent2Cal(event);
@@ -73,9 +69,8 @@ class Cop1Event {
 
   void showImmediateNotification(){
     final text = "N'oubliez pas votre évènement COP1 \"$title\" "
-        "le $date à $hour. Ne pas y aller alors que vous y êtes inscrit peut vous pénaliser!";
-    final eventDate = DateTime.parse("$date $hour");
-    if (DateTime.now().compareTo(eventDate) <= 0) {
+        "le ${DateFormat.yMEd("fr").add_jm().format(date)}. Ne pas y aller alors que vous y êtes inscrit peut vous pénaliser!";
+    if (!isPast) {
       NotificationAPI.showNotif(
           id: 10 * id + 2,
           title: title,
@@ -87,8 +82,8 @@ class Cop1Event {
 
   bool scheduleHourPriorNotification() {
     final text = "N'oubliez pas votre évènement COP1 \"$title\" "
-        "le $date à $hour. Ne pas y aller alors que vous y êtes inscrit peut vous pénaliser!";
-    final notifyDate = DateTime.parse("$date $hour").subtract(const Duration(hours: 2));
+        "le ${DateFormat.yMEd("fr").add_jm().format(date)}. Ne pas y aller alors que vous y êtes inscrit peut vous pénaliser!";
+    final notifyDate = date.subtract(const Duration(hours: 2));
     if (DateTime.now().compareTo(notifyDate) < 0){
       NotificationAPI.scheduleEventNotification(
           id: 10 * id,
@@ -107,8 +102,8 @@ class Cop1Event {
 
   bool scheduleDayPriorNotification(){
     final text = "N'oubliez pas votre évènement COP1 \"$title\" "
-        "le $date à $hour. Ne pas y aller alors que vous y êtes inscrit peut vous pénaliser!";
-    final notifyDate = DateTime.parse("$date $hour").subtract(const Duration(days: 1));
+        "le ${DateFormat.yMEd("fr").add_jm().format(date)}. Ne pas y aller alors que vous y êtes inscrit peut vous pénaliser!";
+    final notifyDate = date.subtract(const Duration(days: 1));
     if (DateTime.now().compareTo(notifyDate) < 0){
       NotificationAPI.scheduleEventNotification(
           id: 10*id+1,

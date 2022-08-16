@@ -167,7 +167,7 @@ class API {
   /// Fetch a json object from the distant server
   static Future<Map<String, dynamic>> _post(String url, Map<String, dynamic> data, [Map<String, String>? headers]) async {
     final response = await http
-        .post(Uri.parse(url), headers: {"accept": "application/json", "Content-Type": "application/json", ...?headers}, body: jsonEncode(data));
+        .post(Uri.parse(url), headers: {"accept": "application/json", "Content-Type": "application/json", ...?headers}, body: jsonEncode(data), encoding: Encoding.getByName("UTF-8"));
 
     if (response.statusCode == 200) {
       // If the server did return a 200 OK response,
@@ -208,7 +208,7 @@ class API {
   /// Fetch a json object from the distant server
   static Future<Map<String, dynamic>> _delete(String url, [Map<String, String>? headers]) async {
     final response = await http
-        .delete(Uri.parse(url), headers: {"accept": "application/json", ...?headers});
+        .delete(Uri.parse(url), headers: {"accept": "application/json", ...?headers}, encoding: Encoding.getByName("UTF-8"));
 
     if (response.statusCode == 200) {
       // If the server did return a 200 OK response,

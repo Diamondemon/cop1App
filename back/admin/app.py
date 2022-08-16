@@ -1,7 +1,8 @@
 from datetime import datetime
 from functools import wraps
+from traceback import print_exception
 
-from flask import Flask
+from flask import Flask, jsonify
 from flask import session
 from flask import request
 from flask_limiter import Limiter
@@ -12,6 +13,7 @@ from math import ceil as top
 
 from admin.utils import ENV, ADMIN
 from app.database.tables import Event, DB
+from weezevent import WEEZEVENT
 
 app = Flask(__name__)
 item_per_page = 10
@@ -65,11 +67,10 @@ def index():
     page = min(max(1, get_int('page', 1)), max_page)
     events = [
         {
-            'title': x.title,
-            'date': x.date,
-            'url': x.url,
             'id': x.id,
-            'img': x.img
+            'title': x.title,
+            'img': x.img,
+            'date': x.date.replace("T", " à ")
         }
         for x in Event.select().order_by(Event.date).paginate(page, item_per_page)
     ]
@@ -100,12 +101,13 @@ def event(evt_id):
         return redirect('/')
     return render_template(
         'event.html',
-        url=evt.url,
-        date=evt.date,
         title=evt.title,
+        desc=evt.desc,
+        id=evt.id,
+        date=evt.date.replace("T", " à "),
+        duration=evt.duration,
         img=evt.img,
         loc=evt.loc,
-        id=evt.id
     )
 
 
@@ -114,18 +116,39 @@ def event(evt_id):
 @limiter.exempt
 def new_event():
     if request.method == 'POST':
+        try:
+            evt_id = int(request.form['id'])
+        except:
+            return render_template(
+                'new.html',
+                date=datetime.now().date(),
+                error="ID is required"
+            )
         Event.create(
-            url=request.form['url'],
+            id=evt_id,
             date=request.form['date'],
+            duration=request.form['duration'],
+            desc=request.form['desc'],
             title=request.form['title'],
             img=request.form['img'],
-            loc=request.form['loc']
+            loc=request.form['loc'],
         )
         return redirect('/')
     return render_template(
         'new.html',
-        date= datetime.now().date(),
-        )
+        date=datetime.now().date(),
+    )
+
+
+@app.route('/event_info/<evt_id>', methods=['GET'])
+@protect
+@limiter.exempt
+def info(evt_id):
+    try:
+        return jsonify({'error': None, 'data': WEEZEVENT.event(evt_id)})
+    except Exception as e:
+        print_exception(e)
+        return jsonify({'error': str(e), 'data': None})
 
 
 @app.route('/login', methods=['GET', 'POST'])

@@ -20,27 +20,30 @@ class SubscribeButton extends StatefulWidget {
 class _SubscribeButtonState extends State<SubscribeButton> {
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: session(context).user,
-      builder: (BuildContext ctxt, snapshot){
-        if (snapshot.connectionState == ConnectionState.done){
-          if (snapshot.hasError && snapshot.error is! SocketException){
-            return Text(snapshot.error.toString());
+    return ValueListenableBuilder(valueListenable: session(context).connectionListenable,
+      builder: (BuildContext listenCtxt, value, _){
+        return FutureBuilder(
+          future: session(context).user,
+          builder: (BuildContext ctxt, snapshot){
+            if (snapshot.connectionState == ConnectionState.done){
+              if (snapshot.hasError && snapshot.error is! SocketException){
+                return Text(snapshot.error.toString());
+              }
+              else if (snapshot.data==null){
+                return _buildButton(ctxt, false);
+              }
+              else {
+                final UserProfile user = snapshot.data as UserProfile;
+                return _buildButton(ctxt, user.isSubscribedTo(widget.event));
+              }
+            }
+            else {
+              return const Scaffold();
+            }
           }
-          else if (snapshot.data==null){
-            return _buildButton(ctxt, false);
-          }
-          else {
-            final UserProfile user = snapshot.data as UserProfile;
-            return _buildButton(ctxt, user.isSubscribedTo(widget.event));
-          }
-        }
-        else {
-          return const Scaffold();
-        }
+        );
       }
     );
-
   }
 
   void _toggleParticipation(BuildContext context, bool participate) async {
@@ -51,12 +54,11 @@ class _SubscribeButtonState extends State<SubscribeButton> {
         if (!s.isConnected) return;
       }
       if (!mounted) return;
-      const subscribed = true; //SubscriptionPage.throughIframe(context, widget.event.url); //
-      if (subscribed) s.subscribe(widget.event);
+      await s.subscribe(widget.event);
       setState((){});
     }
     else {
-      s.unsubscribe(widget.event.id);
+      s.unsubscribe(widget.event);
       setState((){});
     }
   }

@@ -7,12 +7,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:hive_flutter/adapters.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:provider/provider.dart';
 import 'data/session_data.dart';
 
 Future<void> initAll() async {
   await Hive.initFlutter();
   await NotificationAPI.initialize();
+  await initializeDateFormatting();
 }
 
 void main() {
