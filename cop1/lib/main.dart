@@ -1,16 +1,15 @@
 import 'package:cop1/app_theme.dart';
-import 'package:cop1/constants.dart';
 import 'package:cop1/data/notification_api.dart';
 import 'package:cop1/ui/profile_tab.dart';
 import 'package:cop1/ui/tabs.dart';
 import 'package:cop1/ui/thread_tab.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:provider/provider.dart';
 import 'data/session_data.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 Future<void> initAll() async {
   await Hive.initFlutter();
@@ -37,12 +36,8 @@ class MyApp extends StatelessWidget {
         title: 'COP1',
         theme: AppTheme.themeData,
         home:  const HomePage(),
-        localizationsDelegates: const [
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-          GlobalCupertinoLocalizations.delegate,
-        ],
-        supportedLocales: allLocales
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales
       ),
     );
   }
@@ -62,7 +57,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(vsync: this, length: tabs.length);
+    _tabController = TabController(vsync: this, length: tabsLength);
 
     session(context).loadAssets(context).then(
             (_) => FlutterNativeSplash.remove()
@@ -82,7 +77,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
       bottomNavigationBar: Material(
         color: Theme.of(context).primaryColor,
         child: TabBar(
-          tabs: tabs,
+          tabs: tabs(context),
           controller: _tabController,
         ),
       ),

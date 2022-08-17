@@ -7,6 +7,7 @@ import 'package:cop1/utils/user_profile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../common.dart';
 import '../utils/connected_widget_state.dart';
 
 class ProfileEdit extends StatefulWidget {
@@ -81,7 +82,7 @@ class _ProfileEditState extends State<ProfileEdit> implements ConnectedWidgetSta
                 regEx: mailRE,
                 keyboardType: TextInputType.emailAddress,
             ),
-            Center( child: ElevatedButton(onPressed: ()=>_saveNewInfo(context), child: const Text("Sauvegarder")))
+            Center( child: ElevatedButton(onPressed: ()=>_saveNewInfo(context), child: Text(AppLocalizations.of(context)!.saveButton)))
           ],
         )
     );

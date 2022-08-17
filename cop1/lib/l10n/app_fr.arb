@@ -1,6 +1,6 @@
 {
     "@@locale": "fr",
-    "@@last_modified": "2022-08-17T11:46:59+00:00",
+    "@@last_modified": "2022-08-17T14:47:56+00:00",
     "newsFeed": "Événements",
     "@newsFeed": {
         "description": "Title for the events list page"
@@ -87,5 +87,10 @@
     "connectionErrorMessage": "Impossible de contacter le serveur. Veuillez vérifier votre connexion internet.",
     "@connectionErrorMessage": {
         "description": "Error displayed if the app cannot reach the server"
-    }
+    },
+    "profileCreation": "Création du profil",
+    "@profileCreation": {
+        "description": "Title for the creation of a profile"
+    },
+    "cancel": "Annuler"
 }

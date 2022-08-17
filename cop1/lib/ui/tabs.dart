@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../common.dart';
 import '../constants.dart';
 
 TextStyle tabStyle([double? fontSize]) => TextStyle(
@@ -7,17 +8,21 @@ TextStyle tabStyle([double? fontSize]) => TextStyle(
 );
 
 /// The 5 tabs of the main tab view
-List<Tab> tabs = <Tab>[
-  /*Tab(
+List<Tab> tabs(BuildContext context) {
+  return <Tab>[
+    /*Tab(
       icon: const Icon(Icons.scoreboard, color: main2),
       child: Text('Scores', style: tabStyle(10.0))),*/
-  Tab(
-      icon: const Icon(Icons.house),
-      child: Text('Actualités', style: tabStyle(10.0), maxLines: 2, textAlign: TextAlign.center,)),
-  Tab(
-      icon: const Icon(Icons.person),
-      child: Text('Profil', style: tabStyle(10.0), maxLines: 2, textAlign: TextAlign.center,)),
-];
+    Tab(
+        icon: const Icon(Icons.house),
+        child: Text(AppLocalizations.of(context)!.newsFeed_title, style: tabStyle(10.0), maxLines: 2, textAlign: TextAlign.center,)),
+    Tab(
+        icon: const Icon(Icons.person),
+        child: Text(AppLocalizations.of(context)!.userProfile_title, style: tabStyle(10.0), maxLines: 2, textAlign: TextAlign.center,)),
+  ];
+}
+
+get tabsLength => 2;
 
 /// Nicknames for the tabs so that we don't have to remember their index
 Map<String, int> tabIndex = {

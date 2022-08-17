@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:cop1/ui/profile_edit.dart';
 import 'package:flutter/material.dart';
 
+import '../common.dart';
 import '../data/session_data.dart';
 import '../utils/connected_widget_state.dart';
 
@@ -18,7 +19,7 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Edition du profil"),
+        title: Text(AppLocalizations.of(context)!.profileEdit),
         actions: [
           IconButton(onPressed: () => _deleteUserForever(context), icon: const Icon(Icons.delete_forever))
         ],
