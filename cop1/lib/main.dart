@@ -1,20 +1,21 @@
 import 'package:cop1/app_theme.dart';
+import 'package:cop1/constants.dart';
 import 'package:cop1/data/notification_api.dart';
 import 'package:cop1/ui/profile_tab.dart';
 import 'package:cop1/ui/tabs.dart';
 import 'package:cop1/ui/thread_tab.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:hive_flutter/adapters.dart';
-import 'package:intl/date_symbol_data_local.dart';
 import 'package:provider/provider.dart';
 import 'data/session_data.dart';
 
 Future<void> initAll() async {
   await Hive.initFlutter();
   await NotificationAPI.initialize();
-  await initializeDateFormatting();
+  //await initializeDateFormatting(); not needed if added flutter_localizations
 }
 
 void main() {
@@ -35,7 +36,13 @@ class MyApp extends StatelessWidget {
       child:MaterialApp(
         title: 'COP1',
         theme: AppTheme.themeData,
-        home:  const HomePage()
+        home:  const HomePage(),
+        localizationsDelegates: const [
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: allLocales
       ),
     );
   }

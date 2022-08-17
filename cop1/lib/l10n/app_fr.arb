@@ -1,0 +1,7 @@
+
+{
+    "events": "Événements",
+    "@events": {
+        "description": "Title for the events list page"
+    }
+}
