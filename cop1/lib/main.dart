@@ -7,14 +7,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:hive_flutter/adapters.dart';
-import 'package:intl/date_symbol_data_local.dart';
 import 'package:provider/provider.dart';
 import 'data/session_data.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 Future<void> initAll() async {
   await Hive.initFlutter();
   await NotificationAPI.initialize();
-  await initializeDateFormatting();
+  //await initializeDateFormatting(); not needed if added flutter_localizations
 }
 
 void main() {
@@ -35,7 +35,9 @@ class MyApp extends StatelessWidget {
       child:MaterialApp(
         title: 'COP1',
         theme: AppTheme.themeData,
-        home:  const HomePage()
+        home:  const HomePage(),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales
       ),
     );
   }
@@ -55,7 +57,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(vsync: this, length: tabs.length);
+    _tabController = TabController(vsync: this, length: tabsLength);
 
     session(context).loadAssets(context).then(
             (_) => FlutterNativeSplash.remove()
@@ -71,11 +73,12 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
 
   @override
   Widget build(BuildContext context) {
+    session(context).localizations = AppLocalizations.of(context);
     return Scaffold(
       bottomNavigationBar: Material(
         color: Theme.of(context).primaryColor,
         child: TabBar(
-          tabs: tabs,
+          tabs: tabs(context),
           controller: _tabController,
         ),
       ),

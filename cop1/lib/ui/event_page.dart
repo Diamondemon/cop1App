@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
+import '../common.dart';
 import '../utils/cop1_event.dart';
 
 class EventPage extends StatefulWidget {
@@ -42,21 +43,20 @@ class _EventPageState extends State<EventPage> {
           const SizedBox(height: 10,),
           _buildImage(context, event),
           const SizedBox(height: 10,),
-          _buildIconText(context, Icons.calendar_month, " Calendrier"),
+          _buildIconText(context, Icons.calendar_month, " ${AppLocalizations.of(context)!.calendar}"),
           TextButton(onPressed: event.addToCalendar,
               child: Text(
-                  //TODO make locale dynamic
-                  DateFormat.yMEd("fr").add_jm().format(event.date),
+                  DateFormat.yMEd(AppLocalizations.of(context)!.localeName).add_jm().format(event.date),
                   style: const TextStyle(fontSize: 12)
               )
           ),
-          _buildIconText(context, CupertinoIcons.location, " Lieu"),
+          _buildIconText(context, CupertinoIcons.location, " ${AppLocalizations.of(context)!.place}"),
           TextButton(onPressed: event.lookoutLocationOnMaps, child:Text(event.location, style: const TextStyle(fontSize: 12))),
-          _buildIconText(context, CupertinoIcons.timer, " Durée"),
+          _buildIconText(context, CupertinoIcons.timer, " ${AppLocalizations.of(context)!.duration}"),
           Padding(padding: const EdgeInsets.all(5),
             child: Text(event.duration)
           ),
-          _buildIconText(context, CupertinoIcons.info, " Informations complémentaires"),
+          _buildIconText(context, CupertinoIcons.info, " ${AppLocalizations.of(context)!.complemInfo}"),
           Padding(
             padding: const EdgeInsets.only(top:5, left: 10, right: 10),
             child: Text(
@@ -103,7 +103,7 @@ class _EventPageState extends State<EventPage> {
             if (user.isSubscribedToId(widget.eventId)){
               return IconButton(
                 icon: const Icon(Icons.qr_code),
-                onPressed: ()=>_displayQRCodeAlert(context, user.barcodes[widget.eventId]??"1234567"),
+                onPressed: ()=>_displayQRCodeAlert(context, user.barcodes[widget.eventId]!),
               );
             }
             else {
