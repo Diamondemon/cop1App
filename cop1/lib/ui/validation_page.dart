@@ -38,8 +38,7 @@ class _ValidationPageState extends State<ValidationPage> {
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
                   Text(
-                    //TODO: AppLocalizations.of(context)!
-                    'Un code a été renvoyé au ${s.phoneNumber}. Veuillez le renseigner ci-dessous.',
+                    AppLocalizations.of(context)!.verificationCodeMessage(s.phoneNumber),
                     style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontSize: 20),
                     textAlign: TextAlign.justify,
                   ),

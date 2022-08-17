@@ -73,6 +73,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
 
   @override
   Widget build(BuildContext context) {
+    session(context).localizations = AppLocalizations.of(context);
     return Scaffold(
       bottomNavigationBar: Material(
         color: Theme.of(context).primaryColor,

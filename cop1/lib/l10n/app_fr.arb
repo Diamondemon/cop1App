@@ -5,9 +5,22 @@
     "@newsFeed": {
         "description": "Title for the events list page"
     },
-    "notificationsMessage": "N'oubliez pas votre événement COP1 {nom} le {date}. Ne pas y aller alors que vous êtes inscrit vous pénalisera!",
+    "notificationsMessage": "N'oubliez pas votre événement COP1 \"{title}\" le {date} à {time}. Ne pas y aller alors que vous êtes inscrit vous pénalisera!",
     "@notificationsMessage": {
-        "description": "Message for event notifications"
+        "description": "Message for event notifications",
+        "placeholders": {
+            "title": {
+                "type": "String"
+            },
+            "date": {
+                "type": "DateTime",
+                "format": "yMEd"
+            },
+            "time": {
+                "type": "DateTime",
+                "format": "jm"
+            }
+        }
     },
     "subButton_sub": "Je m'inscris",
     "@subButton_sub": {
@@ -77,9 +90,14 @@
         "description": "Body message for the connection page"
     },
     "verificationCode": "Code de vérification",
-    "verificationCodeMessage": "Un code de vérification a été renvoyé au {phone number}. Veuillez le renseigner ci-dessous.",
+    "verificationCodeMessage": "Un code de vérification a été envoyé au {phoneNumber}. Veuillez le renseigner ci-dessous.",
     "@verificationCodeMessage": {
-        "description": "Body message for the verification page"
+        "description": "Body message for the verification page",
+        "placeholders": {
+            "phoneNumber": {
+                "type": "String"
+            }
+        }
     },
     "digitsCode": "Code à 6 chiffres",
     "validate": "Valider",
