@@ -1,5 +1,3 @@
-//TODO remove
-import 'dart:developer' as dev;
 import 'dart:math';
 
 import 'package:cached_network_image/cached_network_image.dart';
@@ -9,6 +7,8 @@ import 'package:cop1/utils/cop1_event.dart';
 import 'package:cop1/ui/subscribe_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+
+import '../common.dart';
 
 
 class EventTile extends StatefulWidget {
@@ -63,16 +63,15 @@ class _EventTileState extends State<EventTile> {
                       child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            _buildIconText(context, Icons.calendar_month, " Calendrier"),
+                            _buildIconText(context, Icons.calendar_month, " ${AppLocalizations.of(context)!.calendar}"),
                             TextButton(
                                 onPressed: widget.event.addToCalendar,
                                 child: Text(
-                                    //TODO make locale dynamic
-                                    DateFormat.yMEd("fr").add_jm().format(widget.event.date),
+                                    DateFormat.yMEd(AppLocalizations.of(context)!.localeName).add_jm().format(widget.event.date),
                                     style: const TextStyle(fontSize: 12)
                                 )
                             ),
-                            _buildIconText(context, CupertinoIcons.location, " Lieu"),
+                            _buildIconText(context, CupertinoIcons.location, " ${AppLocalizations.of(context)!.place}"),
                             TextButton(onPressed: widget.event.lookoutLocationOnMaps, child:Text(widget.event.location, style: const TextStyle(fontSize: 12))),
                             const Spacer(),
                             Expanded(flex: 2, child: Center(
@@ -102,7 +101,6 @@ class _EventTileState extends State<EventTile> {
           );
         },
         errorWidget: (BuildContext context, String url, error){
-          dev.log("$error");
           return Center(
                   child: Icon(Icons.image_not_supported, size: imageSize,)
           );
