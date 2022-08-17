@@ -1,7 +1,91 @@
-
 {
-    "events": "Événements",
-    "@events": {
+    "@@locale": "fr",
+    "@@last_modified": "2022-08-17T11:46:59+00:00",
+    "newsFeed": "Événements",
+    "@newsFeed": {
         "description": "Title for the events list page"
+    },
+    "notificationsMessage": "N'oubliez pas votre événement COP1 {nom} le {date}. Ne pas y aller alors que vous êtes inscrit vous pénalisera!",
+    "@notificationsMessage": {
+        "description": "Message for event notifications"
+    },
+    "subButton_sub": "Je m'inscris",
+    "@subButton_sub": {
+        "description": "Registration button text"
+    },
+    "subButton_unSub": "Je me retire",
+    "@subButton_unSub": {
+        "description": "Registration button text for un-registering"
+    },
+    "subButton_past": "Passé",
+    "@subButton_past": {
+        "description": "Registration button text for past events"
+    },
+    "newsFeed_title": "Actualités",
+    "@newsFeed_title": {
+        "description": "Title for the newFeed tab in the bottom navigation bar"
+    },
+    "calendar": "Calendrier",
+    "place": "Lieu",
+    "userProfile": "Profil Utilisateur",
+    "@userProfile": {
+        "description": "User Profile AppBar title"
+    },
+    "userProfile_title": "Profil",
+    "@userProfile_title": {
+        "description": "userProfile tab title on bottom navigation bar"
+    },
+    "nextEvents": "Événements à venir",
+    "pastEvents": "Évènements passés",
+    "connect": "Me connecter",
+    "disconnect": "Me déconnecter",
+    "profileEdit": "Édition du profil",
+    "@profileEdit": {
+        "description": "Title for profile edition"
+    },
+    "firstName": "Prénom",
+    "lastName": "Nom",
+    "email": "E-Mail",
+    "saveButton": "Sauvegarder",
+    "deletionConfirm": "Action irréversible",
+    "@deletionConfirm": {
+        "description": "Title for alert message before deleting account"
+    },
+    "deletionConfirm_text": "Voulez-vous vraiment supprimer votre compte pour toujours ?",
+    "@deletionConfirm_text": {
+        "description": "Body text for the deletion alert message"
+    },
+    "loggedOutMessage": "Veuillez vous inscrire pour avoir un profil utilisateur.",
+    "@loggedOutMessage": {
+        "description": "Message to display when the user is not logged in the app."
+    },
+    "connection": "Connexion",
+    "@connection": {
+        "description": "Title for connection page"
+    },
+    "phoneNumber": "Numéro de téléphone*",
+    "invalidPhoneNumber": "Numéro de téléphone non valide.",
+    "invalidFirstName": "Veuillez renseigner un prénom",
+    "invalidLastName": "Veuillez renseigner un nom",
+    "invalidEmail": "Le format de mail ne correspond pas.",
+    "rgdpDisclaimer": "Je consens à ce que mes données soient utilisées sur la plateforme Weezevent dans le cadre de la réservation des événements organisés par l'association COP1. *",
+    "@rgdpDisclaimer": {
+        "description": "Message for rgdp consent"
+    },
+    "connectionMessage": "Pour vous identifier, veuillez renseigner votre numéro de téléphone.",
+    "@connectionMessage": {
+        "description": "Body message for the connection page"
+    },
+    "verificationCode": "Code de vérification",
+    "verificationCodeMessage": "Un code de vérification a été renvoyé au {phone number}. Veuillez le renseigner ci-dessous.",
+    "@verificationCodeMessage": {
+        "description": "Body message for the verification page"
+    },
+    "digitsCode": "Code à 6 chiffres",
+    "validate": "Valider",
+    "sendAgain": "Renvoyer",
+    "connectionErrorMessage": "Impossible de contacter le serveur. Veuillez vérifier votre connexion internet.",
+    "@connectionErrorMessage": {
+        "description": "Error displayed if the app cannot reach the server"
     }
 }

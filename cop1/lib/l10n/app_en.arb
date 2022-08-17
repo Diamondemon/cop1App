@@ -1,3 +1,91 @@
 {
-    "events": "Events"
+    "@@locale": "en",
+    "@@last_modified": "2022-08-17T11:47:04+00:00",
+    "newsFeed": "Events",
+    "@newsFeed": {
+        "description": "Title for the events list page"
+    },
+    "notificationsMessage": "Do not forget your event COP1 {name} on {date}. Not going while being registered will lead to penalties.",
+    "@notificationsMessage": {
+        "description": "Message for event notifications"
+    },
+    "subButton_sub": "Register",
+    "@subButton_sub": {
+        "description": "Registration button text"
+    },
+    "subButton_unSub": "Unregister",
+    "@subButton_unSub": {
+        "description": "Registration button text for un-registering"
+    },
+    "subButton_past": "Past",
+    "@subButton_past": {
+        "description": "Registration button text for past events"
+    },
+    "newsFeed_title": "News & Events",
+    "@newsFeed_title": {
+        "description": "Title for the newFeed tab in the bottom navigation bar"
+    },
+    "calendar": "Calendar",
+    "place": "Place",
+    "userProfile": "User Profile",
+    "@userProfile": {
+        "description": "User Profile AppBar title"
+    },
+    "userProfile_title": "Profile",
+    "@userProfile_title": {
+        "description": "userProfile tab title on bottom navigation bar"
+    },
+    "nextEvents": "Upcoming Events",
+    "pastEvents": "Past events",
+    "connect": "Log in",
+    "disconnect": "Log out",
+    "profileEdit": "Profile edition",
+    "@profileEdit": {
+        "description": "Title for profile edition"
+    },
+    "firstName": "First Name",
+    "lastName": "Last name",
+    "email": "Email",
+    "saveButton": "Save",
+    "deletionConfirm": "Are you sure?",
+    "@deletionConfirm": {
+        "description": "Title for alert message before deleting account"
+    },
+    "deletionConfirm_text": "Do you really want to delete your account forever?",
+    "@deletionConfirm_text": {
+        "description": "Body text for the deletion alert message"
+    },
+    "loggedOutMessage": "Please log in to have a user profile.",
+    "@loggedOutMessage": {
+        "description": "Message to display when the user is not logged in the app."
+    },
+    "connection": "Connection",
+    "@connection": {
+        "description": "Title for connection page"
+    },
+    "phoneNumber": "Phone number*",
+    "invalidPhoneNumber": "Invalid phone number.",
+    "invalidFirstName": "Please give a first name",
+    "invalidLastName": "Please give a last name",
+    "invalidEmail": "Email format does not comply.",
+    "rgdpDisclaimer": "I consent that my data will be used on the Weezevent platform for the registration to events organised by the association COP1. *",
+    "@rgdpDisclaimer": {
+        "description": "Message for rgdp consent"
+    },
+    "connectionMessage": "To log in, please give your phone number.",
+    "@connectionMessage": {
+        "description": "Body message for the connection page"
+    },
+    "verificationCode": "Verification code",
+    "verificationCodeMessage": "A verification code has been sent to {phone number}. Please give it below.",
+    "@verificationCodeMessage": {
+        "description": "Body message for the verification page"
+    },
+    "digitsCode": "6-digit code",
+    "validate": "Confirm",
+    "sendAgain": "Resend",
+    "connectionErrorMessage": "The server seems to be unreachable. Please verify your Internet connection.",
+    "@connectionErrorMessage": {
+        "description": "Error displayed if the app cannot reach the server"
+    }
 }
