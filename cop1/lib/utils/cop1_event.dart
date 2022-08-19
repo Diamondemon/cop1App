@@ -49,7 +49,7 @@ class Cop1Event {
   void addToCalendar(){
     final Event event = Event(
       title: title,
-      description: title,
+      description: description,
       location: location,
       startDate: date,
       endDate: date.add(Duration(hours:int.parse(duration.split(":")[0]), minutes: int.parse(duration.split(":")[1]))),
