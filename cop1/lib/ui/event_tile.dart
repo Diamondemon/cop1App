@@ -43,6 +43,12 @@ class _EventTileState extends State<EventTile> {
                 textAlign: TextAlign.start,
               )
             ),
+            const Expanded (
+                flex: 0,
+                child: SizedBox(
+                  height: 10,
+                )
+            ),
             Expanded(
                 child:Row(
                 children: [
