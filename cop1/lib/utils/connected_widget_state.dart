@@ -1,12 +1,14 @@
 
 import 'package:flutter/material.dart';
 
+import '../common.dart';
+
 class ConnectedWidgetState {
   static void displayConnectionAlert(BuildContext context){
     showDialog(
         context: context,
         builder: (BuildContext alertContext){
-          return _buildAlertDialog(alertContext, "Impossible de contacter le serveur, vérifiez votre connexion internet.");
+          return _buildAlertDialog(alertContext, AppLocalizations.of(context)!.connectionErrorMessage);
         }
     );
   }
@@ -15,18 +17,18 @@ class ConnectedWidgetState {
     return await showDialog(
         context: context,
         builder: (BuildContext alertContext){
-          return _buildYesNoDialog(alertContext, "Cela supprimera définitivement votre compte.");
+          return _buildYesNoDialog(alertContext, AppLocalizations.of(context)!.deletionConfirm_text);
         }
     );
   }
 
   static AlertDialog _buildYesNoDialog(BuildContext context, String text){
     return AlertDialog(
-      title: const Text("Êtes-vous sûr(e)?"),
+      title: Text(AppLocalizations.of(context)!.deletionConfirm),
       actions: [
         TextButton(
           onPressed: (){Navigator.of(context).pop(false);},
-          child: const Text("Annuler"),
+          child: Text(AppLocalizations.of(context)!.cancel),
         ),
         TextButton(
           onPressed: (){Navigator.of(context).pop(true);},

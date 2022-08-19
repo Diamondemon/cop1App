@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 
 
+import '../common.dart';
 import '../utils/connected_widget_state.dart';
 
 class CreationPage extends StatefulWidget {
@@ -26,7 +27,7 @@ class _CreationPageState extends State<CreationPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title:const Text("Connexion"),
+          title:Text(AppLocalizations.of(context)!.connection),
         ),
         body: Center(
           child: Padding(
@@ -35,22 +36,21 @@ class _CreationPageState extends State<CreationPage> {
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
                 Text(
-                  'Pour vous identifier, veuillez rentrer votre numéro de téléphone.',
+                  AppLocalizations.of(context)!.connectionMessage,
                   style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontSize: 20),
                   textAlign: TextAlign.justify,
                 ),
                 const SizedBox(height: 20,),
-                TextFieldWidget(label: "Numéro de Téléphone*",
+                TextFieldWidget(label: AppLocalizations.of(context)!.phoneNumber,
                   text: "",
                   hintText: "+33 6 XX XX XX XX",
                   onChanged: (phone){phoneNumber = phone;},
                   keyboardType: TextInputType.phone,
                   regEx: phoneNumRE,
-                  errorText: "Numéro de téléphone non valide.",
+                  errorText: AppLocalizations.of(context)!.invalidPhoneNumber,
                 ),
                 CheckboxListTile(
-                  title: const Text("Je consens à ce que mes données soient utilisées sur la plateforme Weezevent dans "
-                      "le cadre de la réservation des évènements organisés par l'association COP1. *"),
+                  title: Text(AppLocalizations.of(context)!.rgdpDisclaimer),
                   value: _rgpdChecked,
                   onChanged: (bool? value){
                     setState(() {
@@ -59,7 +59,7 @@ class _CreationPageState extends State<CreationPage> {
                   }),
                 ElevatedButton(
                   onPressed: ()=>goToValidation(context),
-                  child: const Text('Valider'),
+                  child: Text(AppLocalizations.of(context)!.validate),
                 )
               ],
             ),

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:cop1/common.dart';
 import 'package:cop1/utils/user_profile.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
@@ -33,6 +34,7 @@ class SessionData with ChangeNotifier {
   UserProfile? _localUser;
   List<Cop1Event> _events = [];
   final ValueNotifier<bool> _connectionListenable = ValueNotifier(false);
+  AppLocalizations? localizations;
 
   String get token => _token;
   String get phoneNumber => _phoneNumber;
@@ -43,6 +45,7 @@ class SessionData with ChangeNotifier {
     try {
       if (_localUser==null && isConnected && _phoneNumber.isNotEmpty){
         _localUser = UserProfile.fromJSON(await API.getUser(_token));
+        _localUser?.scheduleUserNotifications(_events, localizations!);
       }
     }
     on HTTP401Exception {
@@ -130,6 +133,7 @@ class SessionData with ChangeNotifier {
       final subscription = await API.subscribeToEvent(token, event.id);
       if (subscription["success"]){
         _localUser?.subscribeToEvent(event, subscription["barcode"]??"123456");
+        event.scheduleNotifications(localizations!);
       }
     }
     catch (e, sT){
@@ -141,6 +145,7 @@ class SessionData with ChangeNotifier {
   void unsubscribe(Cop1Event event){
     API.unsubscribeFromEvent(token, event.id);
     _localUser?.unsubscribeFromEvent(event);
+    event.cancelNotifications();
   }
 
   Future<bool> setPhoneNumber(phoneNumber) async{

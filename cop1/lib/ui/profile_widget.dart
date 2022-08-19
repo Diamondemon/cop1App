@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:sentry/sentry.dart';
 import 'package:tuple/tuple.dart';
 
+import '../common.dart';
 import '../utils/cop1_event.dart';
 import '../data/session_data.dart';
 
@@ -52,14 +53,14 @@ class ProfileWidget extends StatelessWidget implements ConnectedWidgetState{
         const SizedBox(height: 30),
         _buildMainInfo(context, user),
         const SizedBox(height: 30),
-        const Padding(padding: EdgeInsets.symmetric(horizontal: 20), child: Text("Evènements à venir", style: TextStyle(fontSize: 16))),
+        Padding(padding: const EdgeInsets.symmetric(horizontal: 20), child: Text(AppLocalizations.of(context)!.nextEvents, style: const TextStyle(fontSize: 16))),
         _buildEventsList(context, user.events, events),
         const SizedBox(height: 20,),
-        const Padding(padding: EdgeInsets.symmetric(horizontal: 20), child: Text("Evènements passés", style: TextStyle(fontSize: 16))),
+        Padding(padding: const EdgeInsets.symmetric(horizontal: 20), child: Text(AppLocalizations.of(context)!.pastEvents, style: const TextStyle(fontSize: 16))),
         _buildEventsList(context, user.pastEvents, events),
         const SizedBox(height: 20,),
         Center(
-          child: ElevatedButton(onPressed: session(context).disconnectUser, child: const Text("Me déconnecter")),
+          child: ElevatedButton(onPressed: session(context).disconnectUser, child: Text(AppLocalizations.of(context)!.disconnect)),
         ),
         const SizedBox(height: 20,),
       ],

@@ -6,6 +6,7 @@ import 'package:cop1/ui/text_field_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 
+import '../common.dart';
 import '../utils/connected_widget_state.dart';
 
 class ValidationPage extends StatefulWidget {
@@ -29,7 +30,7 @@ class _ValidationPageState extends State<ValidationPage> {
     final SessionData s = session(context);
     return Scaffold(
         appBar: AppBar(
-          title:const Text("Code de vérification"),
+          title: Text(AppLocalizations.of(context)!.verificationCode),
         ),
         body: Center(
             child: Padding(
@@ -38,12 +39,12 @@ class _ValidationPageState extends State<ValidationPage> {
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
                   Text(
-                    'Un code a été renvoyé au ${s.phoneNumber}. Veuillez le renseigner ci-dessous.',
+                    AppLocalizations.of(context)!.verificationCodeMessage(s.phoneNumber),
                     style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontSize: 20),
                     textAlign: TextAlign.justify,
                   ),
                   const SizedBox(height: 20,),
-                  TextFieldWidget(label: "Code à 6 chiffres",
+                  TextFieldWidget(label: AppLocalizations.of(context)!.digitsCode,
                     text: "",
                     onChanged: (code){_code = code;},
                     keyboardType: TextInputType.number,
@@ -53,11 +54,11 @@ class _ValidationPageState extends State<ValidationPage> {
                       children: [
                         ElevatedButton(
                           onPressed: ()=>resendCode(context),
-                          child: const Text('Renvoyer'),
+                          child: Text(AppLocalizations.of(context)!.sendAgain),
                         ),
                         ElevatedButton(
                           onPressed: ()=>finalizeConnection(context),
-                          child: const Text('Valider'),
+                          child: Text(AppLocalizations.of(context)!.validate),
                         ),
                       ]
                   )

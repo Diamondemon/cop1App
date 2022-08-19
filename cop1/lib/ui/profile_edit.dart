@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 
+import '../common.dart';
 import '../utils/connected_widget_state.dart';
 
 class ProfileEdit extends StatefulWidget {
@@ -61,29 +62,29 @@ class _ProfileEditState extends State<ProfileEdit> implements ConnectedWidgetSta
         padding: const EdgeInsets.all(10),
         child: ListView(
           children: [
-            TextFieldWidget(label: "Prénom",
+            TextFieldWidget(label: AppLocalizations.of(context)!.firstName,
                 text: user.firstName.value,
                 onChanged: (name)=>_firstName=name,
                 inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r"[a-zàâçéèêëîïôûùüÿñæœ .-]*$", caseSensitive: false))],
                 regEx: nameRE,
-                errorText: "Veuillez renseigner un prénom.",
+                errorText: AppLocalizations.of(context)!.invalidFirstName,
             ),
-            TextFieldWidget(label: "Nom",
+            TextFieldWidget(label: AppLocalizations.of(context)!.lastName,
                 text: user.lastName.value,
                 onChanged: (surname)=>_lastName=surname,
                 inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r"[a-zàâçéèêëîïôûùüÿñæœ .-]*$", caseSensitive: false))],
                 regEx: nameRE,
-                errorText: "Veuillez renseigner un nom.",
+                errorText: AppLocalizations.of(context)!.invalidLastName,
             ),
-            TextFieldWidget(label: "E-mail",
+            TextFieldWidget(label: AppLocalizations.of(context)!.email,
                 text: user.email.value,
                 hintText: "user@example.com",
-                errorText: "Le format de mail ne correspond pas.",
+                errorText: AppLocalizations.of(context)!.invalidEmail,
                 onChanged: (email)=>_email=email,
                 regEx: mailRE,
                 keyboardType: TextInputType.emailAddress,
             ),
-            Center( child: ElevatedButton(onPressed: ()=>_saveNewInfo(context), child: const Text("Sauvegarder")))
+            Center( child: ElevatedButton(onPressed: ()=>_saveNewInfo(context), child: Text(AppLocalizations.of(context)!.saveButton)))
           ],
         )
     );

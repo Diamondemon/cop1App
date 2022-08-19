@@ -1,5 +1,7 @@
+import 'package:cop1/common.dart';
 import 'package:cop1/utils/cop1_event.dart';
 import 'package:cop1/utils/set_notifier.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 
 class UserProfile{
@@ -21,13 +23,11 @@ class UserProfile{
     if (!event.isPast){
       events.add(event.id);
       barcodes[event.id]=barcode;
-      event.scheduleNotifications();
     }
   }
 
   void unsubscribeFromEvent(Cop1Event event){
     int toRemove = events.firstWhere((eventId) => eventId == event.id);
-    event.cancelNotifications();
     events.remove(toRemove);
   }
 
@@ -50,7 +50,6 @@ class UserProfile{
         user.pastEvents.add(event.id);
       }
       else {
-        //TODO fix this
         user.subscribeToEvent(event, item["barcode"]);
       }
     }
@@ -62,10 +61,10 @@ class UserProfile{
     return "User $firstName.value $lastName.value, identified by phone number $phoneNumber.\nMail: $email.value\nSubscribed to events $events";
   }
 
-  void scheduleUserNotifications(List<Cop1Event> evts){
+  void scheduleUserNotifications(List<Cop1Event> evts, AppLocalizations localizations){
     cancelUserNotifications(evts);
     for (Cop1Event element in evts) {
-      if (events.contains(element.id)) element.scheduleNotifications();
+      if (events.contains(element.id)) element.scheduleNotifications(localizations);
     }
   }
 

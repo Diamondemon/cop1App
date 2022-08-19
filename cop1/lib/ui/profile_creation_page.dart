@@ -2,6 +2,8 @@ import 'package:cop1/data/session_data.dart';
 import 'package:cop1/ui/profile_edit.dart';
 import 'package:flutter/material.dart';
 
+import '../common.dart';
+
 class ProfileCreationPage extends StatefulWidget {
   const ProfileCreationPage({Key? key}) : super(key: key);
 
@@ -14,7 +16,7 @@ class _ProfileCreationPageState extends State<ProfileCreationPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Création du profil"),
+        title: Text(AppLocalizations.of(context)!.profileCreation),
         leading: BackButton(
           onPressed: (){
             session(context).disconnectUser();

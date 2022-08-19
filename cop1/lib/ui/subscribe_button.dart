@@ -1,6 +1,7 @@
 //import 'dart:developer';
 import 'dart:io';
 
+import 'package:cop1/common.dart';
 import 'package:cop1/ui/creation_page.dart';
 //import 'package:cop1/ui/subscription_page.dart';
 import 'package:cop1/utils/cop1_event.dart';
@@ -66,7 +67,8 @@ class _SubscribeButtonState extends State<SubscribeButton> {
   }
 
   Widget _buildButton(BuildContext context, bool participated) {
-    final String text = widget.event.isPast? "Passé": (participated? "Je me retire": "Je m'inscris");
+    final String text = widget.event.isPast? AppLocalizations.of(context)!.subButton_past:
+      (participated? AppLocalizations.of(context)!.subButton_unSub: AppLocalizations.of(context)!.subButton_sub);
     return RawMaterialButton(
       onPressed: widget.event.isPast? null : ()=>_toggleParticipation(context, !participated),
       fillColor: widget.event.isPast? Theme.of(context).primaryColor.withOpacity(0.5): Theme.of(context).primaryColor,

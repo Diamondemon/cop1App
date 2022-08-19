@@ -4,6 +4,7 @@ import 'package:cop1/ui/profile_edit_page.dart';
 import 'package:cop1/ui/profile_widget.dart';
 import 'package:flutter/material.dart';
 
+import '../common.dart';
 import '../data/session_data.dart';
 
 class ProfileTab extends StatefulWidget {
@@ -32,7 +33,7 @@ class _ProfileTabState extends State<ProfileTab> {
       builder: (BuildContext ctxt, bool value, _) {
         return Scaffold(
           appBar: AppBar(
-            title: const Text("Profil Utilisateur"),
+            title: Text(AppLocalizations.of(ctxt)!.userProfile),
             elevation: 0,
             actions: value ? [
               IconButton(
@@ -48,23 +49,23 @@ class _ProfileTabState extends State<ProfileTab> {
           ),
           body: value
               ? const ProfileWidget()
-              : _buildNoProfile(),
+              : _buildNoProfile(ctxt),
         );
       }
     );
   }
 
-  Widget _buildNoProfile(){
+  Widget _buildNoProfile(BuildContext context){
     return Center(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10.0),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Text(
-                "Veuillez vous inscrire pour avoir un profil utilisateur."
+            Text(
+                AppLocalizations.of(context)!.loggedOutMessage
             ),
-            ElevatedButton(onPressed: _launchConnection, child: const Text("Me connecter")),
+            ElevatedButton(onPressed: _launchConnection, child: Text(AppLocalizations.of(context)!.connect)),
           ]
         )
       )
