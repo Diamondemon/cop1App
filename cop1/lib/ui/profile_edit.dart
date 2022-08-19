@@ -6,6 +6,7 @@ import 'package:cop1/ui/text_field_widget.dart';
 import 'package:cop1/utils/user_profile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 
 import '../utils/connected_widget_state.dart';
 
@@ -38,7 +39,8 @@ class _ProfileEditState extends State<ProfileEdit> implements ConnectedWidgetSta
                 });
                 return const Scaffold();
               }
-              return Text(snapshot.error.toString());
+              Sentry.captureException(snapshot.error, stackTrace: snapshot.stackTrace);
+              return const Scaffold();
             }
             else{
               return _buildView(ctxt, snapshot.data!);
@@ -100,8 +102,11 @@ class _ProfileEditState extends State<ProfileEdit> implements ConnectedWidgetSta
           return;
         }
       }
-      on SocketException {
+      on SocketException{
         ConnectedWidgetState.displayConnectionAlert(context);
+      }
+      catch (e, sT){
+        Sentry.captureException(e, stackTrace: sT);
       }
     }
   }

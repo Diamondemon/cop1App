@@ -6,6 +6,7 @@ import 'package:cop1/ui/creation_page.dart';
 import 'package:cop1/utils/cop1_event.dart';
 import 'package:cop1/utils/user_profile.dart';
 import 'package:flutter/material.dart';
+import 'package:sentry/sentry.dart';
 
 import '../data/session_data.dart';
 
@@ -27,7 +28,8 @@ class _SubscribeButtonState extends State<SubscribeButton> {
           builder: (BuildContext ctxt, snapshot){
             if (snapshot.connectionState == ConnectionState.done){
               if (snapshot.hasError && snapshot.error is! SocketException){
-                return Text(snapshot.error.toString());
+                Sentry.captureException(snapshot.error, stackTrace: snapshot.stackTrace);
+                return _buildDisabledButton(ctxt);
               }
               else if (snapshot.data==null){
                 return _buildButton(ctxt, false);
@@ -66,8 +68,8 @@ class _SubscribeButtonState extends State<SubscribeButton> {
   Widget _buildButton(BuildContext context, bool participated) {
     final String text = widget.event.isPast? "Passé": (participated? "Je me retire": "Je m'inscris");
     return RawMaterialButton(
-      onPressed: widget.event.isPast? (){} : ()=>_toggleParticipation(context, !participated),
-      fillColor: Theme.of(context).primaryColor,
+      onPressed: widget.event.isPast? null : ()=>_toggleParticipation(context, !participated),
+      fillColor: widget.event.isPast? Theme.of(context).primaryColor.withOpacity(0.5): Theme.of(context).primaryColor,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(9),
       ),
@@ -75,6 +77,21 @@ class _SubscribeButtonState extends State<SubscribeButton> {
         padding: const EdgeInsets.all(5.0),
         child: Text(text, style: Theme.of(context).primaryTextTheme.bodyLarge),
       )
+    );
+  }
+
+  Widget _buildDisabledButton(BuildContext context){
+    final String text = widget.event.isPast? "Passé": "Je m'inscris";
+    return RawMaterialButton(
+        onPressed: null,
+        fillColor: Theme.of(context).primaryColor.withOpacity(0.5),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(9),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(5.0),
+          child: Text(text, style: Theme.of(context).primaryTextTheme.bodyLarge),
+        )
     );
   }
 

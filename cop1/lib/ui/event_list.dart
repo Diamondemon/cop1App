@@ -1,8 +1,10 @@
+//import 'dart:developer';
 import 'dart:io';
 
 import 'package:cop1/utils/cop1_event.dart';
 import 'package:cop1/ui/event_tile.dart';
 import 'package:flutter/material.dart';
+import 'package:sentry/sentry.dart';
 
 import '../data/session_data.dart';
 import '../utils/connected_widget_state.dart';
@@ -31,7 +33,8 @@ class _EventListState extends State<EventList> {
                 });
                 return _buildListView(ctxt, []);
               }
-              return Text(snapshot.error.toString());
+              Sentry.captureException(snapshot.error, stackTrace: snapshot.stackTrace);
+              return const Scaffold();
             }
             else{
               return _buildListView(ctxt, snapshot.data);
@@ -64,6 +67,9 @@ class _EventListState extends State<EventList> {
     }
     on SocketException {
       ConnectedWidgetState.displayConnectionAlert(context);
+    }
+    catch (e, sT){
+      Sentry.captureException(e, stackTrace: sT);
     }
   }
 

@@ -6,6 +6,7 @@ import 'package:cop1/utils/set_notifier.dart';
 import 'package:cop1/utils/user_profile.dart';
 import 'package:cop1/ui/event_tile.dart';
 import 'package:flutter/material.dart';
+import 'package:sentry/sentry.dart';
 import 'package:tuple/tuple.dart';
 
 import '../utils/cop1_event.dart';
@@ -28,7 +29,8 @@ class ProfileWidget extends StatelessWidget implements ConnectedWidgetState{
                 });
                 return const Scaffold();
               }
-              return Text(snapshot.error.toString());
+              Sentry.captureException(snapshot.error, stackTrace: snapshot.stackTrace);
+              return const Scaffold();
             }
             else if (snapshot.hasData){
               return _buildListView(ctxt, snapshot.data!.item1!, snapshot.data!.item2);

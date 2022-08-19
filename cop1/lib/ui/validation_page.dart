@@ -4,6 +4,7 @@ import 'package:cop1/data/session_data.dart';
 import 'package:cop1/ui/profile_creation_page.dart';
 import 'package:cop1/ui/text_field_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 
 import '../utils/connected_widget_state.dart';
 
@@ -76,13 +77,14 @@ class _ValidationPageState extends State<ValidationPage> {
         else {
           Navigator.of(context).popUntil((route)=>route.isFirst);
         }
-        return;
       }
     }
     on SocketException {
       ConnectedWidgetState.displayConnectionAlert(context);
     }
-
+    catch (e, sT){
+      Sentry.captureException(e, stackTrace: sT);
+    }
   }
 
 
@@ -93,6 +95,9 @@ class _ValidationPageState extends State<ValidationPage> {
     }
     on SocketException {
       ConnectedWidgetState.displayConnectionAlert(context);
+    }
+    catch (e, sT){
+      Sentry.captureException(e, stackTrace: sT);
     }
   }
 }
