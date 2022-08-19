@@ -4,6 +4,7 @@ import 'package:cop1/data/session_data.dart';
 import 'package:cop1/ui/text_field_widget.dart';
 import 'package:cop1/ui/validation_page.dart';
 import 'package:flutter/material.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 
 
 import '../common.dart';
@@ -83,7 +84,9 @@ class _CreationPageState extends State<CreationPage> {
       on SocketException {
         ConnectedWidgetState.displayConnectionAlert(context);
       }
-
+      catch (e, sT){
+        Sentry.captureException(e, stackTrace: sT);
+      }
     }
   }
 }

@@ -8,6 +8,7 @@ import 'package:hive/hive.dart';
 //import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 //import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
+import 'package:sentry/sentry.dart';
 import '../utils/cop1_event.dart';
 
 import 'api.dart';
@@ -49,6 +50,9 @@ class SessionData with ChangeNotifier {
     }
     on HTTP401Exception {
       disconnectUser();
+    }
+    catch (e, sT){
+      Sentry.captureException(e, stackTrace: sT);
     }
     return _localUser;
   }
@@ -105,8 +109,8 @@ class SessionData with ChangeNotifier {
       disconnectUser();
       return false;
     }
-    on Exception{
-      //log("Error: $e");
+    catch (e, sT){
+      Sentry.captureException(e, stackTrace: sT);
       return false;
     }
   }
@@ -118,14 +122,23 @@ class SessionData with ChangeNotifier {
     on SocketException {
       rethrow;
     }
+    on Exception{
+      rethrow;
+    }
     disconnectUser();
   }
 
   Future<void> subscribe(Cop1Event event) async {
-    final subscription = await API.subscribeToEvent(token, event.id);
-    if (subscription["success"]){
-      _localUser?.subscribeToEvent(event, subscription["barcode"]??"123456");
-      event.scheduleNotifications(localizations!);
+    try{
+      final subscription = await API.subscribeToEvent(token, event.id);
+      if (subscription["success"]){
+        _localUser?.subscribeToEvent(event, subscription["barcode"]??"123456");
+        event.scheduleNotifications(localizations!);
+      }
+    }
+    catch (e, sT){
+      Sentry.captureException(e, stackTrace: sT);
+      return;
     }
   }
 
@@ -147,6 +160,10 @@ class SessionData with ChangeNotifier {
       _phoneNumber = "";
       return false;
     }
+    catch (e, sT){
+      Sentry.captureException(e, stackTrace: sT);
+      return false;
+    }
   }
 
   Future<String> getToken(String code) async {
@@ -156,6 +173,9 @@ class SessionData with ChangeNotifier {
     }
     on SocketException {
       rethrow;
+    }
+    catch (e, sT){
+      Sentry.captureException(e, stackTrace: sT);
     }
     if (token.isNotEmpty) _connectionListenable.value = true;
     _storeCreds();

@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:cop1/constants.dart' show apiURL;
 import 'package:cop1/utils/user_profile.dart';
 import 'package:http/http.dart' as http;
+import 'package:sentry/sentry.dart';
 // TODO Remove all calls to dart:developer for prod
 //import 'dart:developer' as dev;
 
@@ -38,8 +39,8 @@ class API {
     on SocketException {
       rethrow;
     }
-    on Exception catch (e){
-      //dev.log("Boom Error $e");
+    catch (e, sT){
+      Sentry.captureException(e, stackTrace: sT);
       return false;
     }
   }
@@ -54,8 +55,8 @@ class API {
     on SocketException {
       rethrow;
     }
-    on Exception catch (e){
-      //dev.log("Boom Error $e");
+    catch (e, sT){
+      Sentry.captureException(e, stackTrace: sT);
       return false;
     }
   }
@@ -70,8 +71,7 @@ class API {
     on SocketException {
       rethrow;
     }
-    on Exception catch (e){
-      //dev.log("Boom Error $e");
+    on Exception {
       rethrow;
     }
   }
@@ -134,6 +134,7 @@ class API {
 
   }
 
+  /// Unsubscribe the user from an event
   static Future<Map<String, dynamic>> unsubscribeFromEvent(String token, int id){
     String request = "$apiURL/events/subscribe/$id";
     Map<String,String> headers = {"bearer":token};
@@ -148,6 +149,7 @@ class API {
     }
   }
 
+  /// Get the list of COP1 events
   static Future<Map<String, dynamic>?> events() async {
     String request = "$apiURL/events";
     try {
@@ -158,13 +160,13 @@ class API {
     on SocketException {
       rethrow;
     }
-    on Exception catch (e){
-      //dev.log("Boom Error $e");
+    catch (e, sT){
+      Sentry.captureException(e, stackTrace: sT);
       return null;
     }
   }
 
-  /// Fetch a json object from the distant server
+  /// Send data to the distant server
   static Future<Map<String, dynamic>> _post(String url, Map<String, dynamic> data, [Map<String, String>? headers]) async {
     final response = await http
         .post(Uri.parse(url), headers: {"accept": "application/json", "Content-Type": "application/json", ...?headers}, body: jsonEncode(data), encoding: Encoding.getByName("UTF-8"));
@@ -184,7 +186,7 @@ class API {
     }
   }
 
-  /// Fetch a json object from the distant server
+  /// Fetch a json object from the distant server without providing data
   static Future<Map<String, dynamic>> _get(String url, [Map<String, String>? headers]) async {
     final response = await http
         .get(Uri.parse(url), headers: {"accept": "application/json", ...?headers});
@@ -205,7 +207,7 @@ class API {
     }
   }
 
-  /// Fetch a json object from the distant server
+  /// Delete an object of the distant server
   static Future<Map<String, dynamic>> _delete(String url, [Map<String, String>? headers]) async {
     final response = await http
         .delete(Uri.parse(url), headers: {"accept": "application/json", ...?headers}, encoding: Encoding.getByName("UTF-8"));

@@ -9,18 +9,28 @@ import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:provider/provider.dart';
 import 'data/session_data.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 Future<void> initAll() async {
   await Hive.initFlutter();
   await NotificationAPI.initialize();
+  await SentryFlutter.init(
+    (options) {
+      options.dsn = 'https://6c7c9a6f8392454f819e2e39856caf40@o1363652.ingest.sentry.io/6656629';
+      // Set tracesSampleRate to 1.0 to capture 100% of transactions for performance monitoring.
+      // We recommend adjusting this value in production.
+      options.tracesSampleRate = 0.5;
+    },
+    appRunner: () => runApp(const MyApp())
+  );
   //await initializeDateFormatting(); not needed if added flutter_localizations
 }
 
 void main() {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
-  initAll().then((_) => runApp(const MyApp()));
+  initAll();
 }
 
 class MyApp extends StatelessWidget {

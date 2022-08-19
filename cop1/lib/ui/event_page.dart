@@ -7,6 +7,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import 'package:sentry/sentry.dart';
 
 import '../common.dart';
 import '../utils/cop1_event.dart';
@@ -92,7 +93,7 @@ class _EventPageState extends State<EventPage> {
       builder: (BuildContext context, AsyncSnapshot<UserProfile?> snapshot){
         if (snapshot.connectionState == ConnectionState.done){
           if (snapshot.hasError && snapshot.error is! SocketException){
-            //return Text(snapshot.error.toString());
+            Sentry.captureException(snapshot.error, stackTrace: snapshot.stackTrace);
             return Container();
           }
           else if (snapshot.data==null){

@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:cop1/ui/profile_edit.dart';
 import 'package:flutter/material.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 
 import '../common.dart';
 import '../data/session_data.dart';
@@ -33,8 +34,12 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
       try {
         await session(context).deleteUser();
       }
-      on SocketException {
+      on SocketException{
         ConnectedWidgetState.displayConnectionAlert(context);
+        return;
+      }
+      catch (e, sT){
+        Sentry.captureException(e, stackTrace: sT);
         return;
       }
       if (mounted) Navigator.of(context).pop();
