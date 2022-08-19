@@ -83,7 +83,7 @@ class _SubscribeButtonState extends State<SubscribeButton> {
   }
 
   Widget _buildDisabledButton(BuildContext context){
-    final String text = widget.event.isPast? "Passé": "Je m'inscris";
+    final String text = widget.event.isPast? AppLocalizations.of(context)!.subButton_past: AppLocalizations.of(context)!.subButton_sub;
     return RawMaterialButton(
         onPressed: null,
         fillColor: Theme.of(context).primaryColor.withOpacity(0.5),
