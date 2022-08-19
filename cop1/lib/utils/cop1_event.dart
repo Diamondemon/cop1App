@@ -52,7 +52,7 @@ class Cop1Event {
       description: title,
       location: location,
       startDate: date,
-      endDate: date.add(Duration(hours:int.parse(duration.split(":")[0]))),
+      endDate: date.add(Duration(hours:int.parse(duration.split(":")[0]), minutes: int.parse(duration.split(":")[1]))),
       timeZone: DateTime.now().timeZoneName,
     );
     Add2Calendar.addEvent2Cal(event);

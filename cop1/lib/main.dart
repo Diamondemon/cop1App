@@ -1,4 +1,5 @@
 import 'package:cop1/app_theme.dart';
+import 'package:cop1/constants.dart' show sentryDsn;
 import 'package:cop1/data/notification_api.dart';
 import 'package:cop1/ui/profile_tab.dart';
 import 'package:cop1/ui/tabs.dart';
@@ -17,7 +18,7 @@ Future<void> initAll() async {
   await NotificationAPI.initialize();
   await SentryFlutter.init(
     (options) {
-      options.dsn = 'https://6c7c9a6f8392454f819e2e39856caf40@o1363652.ingest.sentry.io/6656629';
+      options.dsn = sentryDsn;
       // Set tracesSampleRate to 1.0 to capture 100% of transactions for performance monitoring.
       // We recommend adjusting this value in production.
       options.tracesSampleRate = 0.5;
