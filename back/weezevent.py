@@ -105,7 +105,10 @@ class Api(CoreApi):
     PARTICIPANTS = "/participants"
 
     def __init__(self):
-        auth = Auth()
+        try:
+            auth = Auth()
+        except Exception as e:
+            raise EnvironmentError('Invalid auth') from e
         self.headers = auth.headers
         self.api_key = auth.key
         self.access_token = auth.token
