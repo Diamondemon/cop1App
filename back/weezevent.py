@@ -3,7 +3,11 @@ from os import getenv
 import requests
 import json
 from urllib import parse
+from typing import Tuple
 
+
+def d(x):
+    print(json.dumps(x, indent=2))
 
 def quote(x: str) -> str:
     return parse.quote(x.encode('utf-8'))
@@ -160,6 +164,9 @@ class Api(CoreApi):
 
 
 class Weezevent:
+    PARTICIPANTS = '/v3/participants'
+    FORMS = '/v3/form'
+    
     def __init__(self) -> None:
         self.api = Api()
 
@@ -221,9 +228,67 @@ class Weezevent:
     def _has_not_check(obj: dict) -> bool:
         return obj.get('deleted') == '0' and obj.get('control_status', {}).get('status') == '0'
 
+    def billet_id(self, evt_id: int) -> int:
+        full = self.api.get_tickets({'id_event': evt_id}).json()
+        return full['events'][0]['tickets'][0]['id']
 
-def d(x):
-    print(json.dumps(x, indent=2))
+
+    def form_question(self, evt_id: int) -> str:
+        full = self.api._request_get(self.FORMS ,{'id_event': evt_id}).json()
+        for x in full:
+            if x['id_evenement'] == str(evt_id):
+                q = x['questions_participant'][0]
+                if q['type'] == 'custom':
+                    return q['id']
+                return q['type']
+        return 'telephone'
+
+    def add_participant(
+            self,
+            evt_id: int,
+            email: str,
+            first_name: str,
+            last_name: str,
+            phone: str,
+        ) -> Tuple[int, int]:
+        billet_id = self.billet_id(evt_id)
+        form_question = self.form_question(evt_id)
+        data = {
+            "participants": [
+                {
+                    "id_evenement": evt_id,
+                    "id_billet": billet_id,
+                    "email": email,
+                    "nom": last_name,
+                    "prenom": first_name,
+                    "form": {
+                        form_question: phone
+                    },
+                    "notify": False
+                }
+            ]
+        }
+        res = self.api._request_post(self.PARTICIPANTS, data=data)
+        print(res)
+        return res
+    
+    
+    def delete_participant(
+            self,
+            evt_id: int,
+            barcode: str,
+        ) -> Tuple[int, int]:
+        data = {
+            "participants": [
+                {
+                    "id_evenement": evt_id,
+                    "barcode_id": barcode
+                }
+            ]
+        }
+        res = self.api._request_delete(self.PARTICIPANTS, data=data)
+        print(res)
+        return res
 
 
 WEEZEVENT = Weezevent()
