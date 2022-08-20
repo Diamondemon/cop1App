@@ -1,4 +1,0 @@
-textract
-flask
-gunicorn
-selenium

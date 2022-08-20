@@ -250,7 +250,7 @@ class Weezevent:
             first_name: str,
             last_name: str,
             phone: str,
-        ) -> Tuple[int, int]:
+        ) -> str:
         billet_id = self.billet_id(evt_id)
         form_question = self.form_question(evt_id)
         data = {
@@ -269,15 +269,15 @@ class Weezevent:
             ]
         }
         res = self.api._request_post(self.PARTICIPANTS, data=data)
-        print(res)
-        return res
+        barcode = res.json()['participants'][0]['barcode_id']
+        return barcode
     
     
     def delete_participant(
             self,
             evt_id: int,
             barcode: str,
-        ) -> Tuple[int, int]:
+        ) -> None:
         data = {
             "participants": [
                 {
@@ -286,9 +286,7 @@ class Weezevent:
                 }
             ]
         }
-        res = self.api._request_delete(self.PARTICIPANTS, data=data)
-        print(res)
-        return res
+        self.api._request_delete(self.PARTICIPANTS, data=data)
 
 
 WEEZEVENT = Weezevent()

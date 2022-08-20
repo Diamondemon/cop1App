@@ -1,12 +1,4 @@
-import requests
-from os import getenv
-import json
-
-
-SUBSCRIPTION_URL = getenv('SUBSCRIPTION_URL', '')
-if not SUBSCRIPTION_URL:
-    raise EnvironmentError('SUBSCRIPTION_URL not set')
-
+from weezevent import WEEZEVENT
 
 class SubscriptionException(Exception):
     pass
@@ -19,19 +11,26 @@ def subscribe(
     last_name: str,
     email: str
 ) -> str:
-    res = requests.post(
-        SUBSCRIPTION_URL,
-        data=json.dumps({
-            'evt_id': evt_id,
-            'phone': phone,
-            'first_name': first_name,
-            'last_name': last_name,
-            'email': email
-        })
-    )
-    data = res.json()
-    if data['error'] is not None:
-        raise SubscriptionException(data['error'])
-    if not data['barcode']:
-        raise SubscriptionException('Unknow error')
-    return data['barcode']
+    try:
+        barcode = WEEZEVENT.add_participant(
+            evt_id=int(evt_id),
+            email=email,
+            first_name=first_name,
+            last_name=last_name,
+            phone=phone,
+        )
+    except Exception as e:
+        raise SubscriptionException('Unknow error') from e
+    return barcode
+
+def unsubscribe(
+    evt_id: str,
+    barcode: str
+) -> None:
+    try:
+        WEEZEVENT.delete_participant(
+            evt_id=int(evt_id),
+            barcode=barcode
+        )
+    except Exception as e:
+        raise SubscriptionException('Unknow error') from e

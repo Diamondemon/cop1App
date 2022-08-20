@@ -27,8 +27,7 @@ class User(Table):
 class Inscription(Table):
     user = ForeignKeyField(User, backref='inscription')
     event = ForeignKeyField(Event, backref='inscription')
-    barcode = CharField()
-    id = CharField(index=True)
+    barcode = CharField(index=True)
 
 
 DB.create_tables([User, Event, Inscription])

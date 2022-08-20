@@ -6,7 +6,7 @@ from app.api.login import token
 
 from app.login import user_from_token
 from app.logger import logger
-from auto_subscribe import subscribe
+from auto_subscribe import subscribe, unsubscribe
 
 app = APIRouter(tags=["events"])
 
@@ -47,8 +47,9 @@ async def subscribe_to_an_event(item_id: int, _token: str = Depends(token)) -> S
             user.last_name,
             user.email
         )
-    except:
+    except Exception as e:
         logger.error('Unable to subscribe to event %d', item_id)
+        logger.error(e)
         barcode=''
     with DB:
         InscriptionInDB.create(
@@ -65,7 +66,14 @@ async def unsubscribe_to_an_event(item_id: int, _token: str = Depends(token)) ->
     """Unsubscribe from an event."""
     user = user_from_token(_token)
     try:
-        user.events.remove([EventInDB.get(EventInDB.id == item_id)])
+        insc = InscriptionInDB.get(InscriptionInDB.user == user.phone and InscriptionInDB.event == item_id)
+        logger.info(insc)
+        try:
+            barcode = insc.barcode
+            unsubscribe(str(item_id), barcode)
+        except Exception as e:
+            logger.error(e)
+            user.events.remove([EventInDB.get(EventInDB.id == item_id)])
         return BoolResponse()
-    except:
+    except Exception as e:
         return BoolResponse(valid=False, message=f"Unable to access event {item_id}")
