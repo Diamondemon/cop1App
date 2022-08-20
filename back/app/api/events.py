@@ -2,6 +2,7 @@ from fastapi import Depends, APIRouter
 
 from app.interfaces.main import Events, Event, BoolResponse, SubscribeResponse
 from app.database.tables import User as UserInDB, Event as EventInDB, Inscription as InscriptionInDB, DB
+from app.database.main import user_can_subscribe_to_event
 from app.api.login import token
 
 from app.login import user_from_token
@@ -39,6 +40,8 @@ async def subscribe_to_an_event(item_id: int, _token: str = Depends(token)) -> S
     except:
         logger.info('Invalid event')
         return SubscribeResponse(success=False, barcode='')
+    if not user_can_subscribe_to_event(user, evt):
+        return SubscribeResponse(success=False, barcode='')
     try:
         barcode = subscribe(
             str(item_id),
@@ -55,8 +58,7 @@ async def subscribe_to_an_event(item_id: int, _token: str = Depends(token)) -> S
         InscriptionInDB.create(
             user=user,
             event=evt,
-            barcode=barcode,
-            id='TODO'
+            barcode=barcode
         )
     return SubscribeResponse(success=True, barcode=barcode)
 

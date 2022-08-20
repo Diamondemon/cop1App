@@ -1,7 +1,9 @@
+from asyncio.log import logger
 from traceback import print_exception
+import datetime
 
 from app.database.utils import DB
-from app.database.tables import User as UserInDB
+from app.database.tables import User as UserInDB, Event as EventInDB, Inscription as InscriptionInDB
 
 
 def get_user(phone: str) -> UserInDB | None:
@@ -45,3 +47,17 @@ def update_db_user_password(
         raise ValueError('User not found')
     with DB:
         user.hashed_password = hashed_password
+
+def user_can_subscribe_to_event(user: UserInDB, event: EventInDB) -> bool:
+    user_date = datetime.datetime.strptime(event.date, '%Y-%m-%dT%H:%M')
+    delta = datetime.timedelta(days=user.min_event_delay_days)
+    start = user_date - delta
+    stop = user_date + delta
+    events = EventInDB.select(EventInDB).join(InscriptionInDB) \
+        .where(InscriptionInDB.user == user.phone)
+    for _event in events:
+        evt_date = datetime.datetime.strptime(_event.date, '%Y-%m-%dT%H:%M')
+        print(evt_date)
+        if start < evt_date < stop:
+            return False
+    return True

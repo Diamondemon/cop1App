@@ -1,4 +1,4 @@
-from playhouse.db_url import connect
+from playhouse.db_url import connect  # type: ignore
 from peewee import Database, Model  # type: ignore
 from os import getenv
 

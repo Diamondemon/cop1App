@@ -52,6 +52,7 @@ async def read_users_me(_token: str = Depends(token)) -> UserModel:
         email=user.email,
         first_name=user.first_name,
         last_name=user.last_name,
+        min_event_delay_days=user.min_event_delay_days,
         events=[
             EventInscrit(
                 id=str(e.id),

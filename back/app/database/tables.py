@@ -1,4 +1,4 @@
-from peewee import CharField, TextField, ForeignKeyField  # type: ignore
+from peewee import CharField, IntegerField, TextField, ForeignKeyField  # type: ignore
 
 from app.database.utils import Table, DB
 
@@ -21,7 +21,7 @@ class User(Table):
     email = CharField()
     first_name = CharField()
     last_name = CharField()
-    # status = CharField(default='normal')
+    min_event_delay_days = IntegerField(default=14)
 
 
 class Inscription(Table):
