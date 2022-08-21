@@ -25,7 +25,9 @@ limiter = Limiter(
 )
 
 app.secret_key = ENV.FLASK_SECRET_KEY
-
+apps = {
+    'Events': '/events'
+}
 
 def get_int(name: str, default: int) -> int:
     try:
@@ -63,6 +65,21 @@ def after_request(response):
 @limiter.exempt
 @protect
 def index():
+    return render_template(
+        'index.html',
+        apps=[
+            {
+                'name': k,
+                'path': v
+            }
+            for k, v in apps.items()
+        ]
+    )
+
+@app.route('/events')
+@limiter.exempt
+@protect
+def events():
     max_page = top(Event.select().count() / item_per_page)
     page = min(max(1, get_int('page', 1)), max_page)
     events = [
@@ -98,7 +115,7 @@ def event(evt_id):
     if request.method == 'POST':
         Event.delete().where(Event.id == evt_id).execute()
         print(f'Event {evt_id} deleted.')
-        return redirect('/')
+        return redirect(apps['Events'])
     return render_template(
         'event.html',
         title=evt.title,
@@ -133,7 +150,7 @@ def new_event():
             img=request.form['img'],
             loc=request.form['loc'],
         )
-        return redirect('/')
+        return redirect(apps['Events'])
     return render_template(
         'new.html',
         date=datetime.now().date(),

@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <head>
-  <title>Gestion des évènements</title>
+  <title>Page admin</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
   <link
     rel="preload"
@@ -25,48 +25,8 @@
   />
 </head>
 <body>
-  <div class="headerDiv">
-    <span>
-      Page : {{ page }}/{{ max_page }} {% if page != max_page %}
-      <a href="/?page={{ page + 1 }}"> + </a>
-      {% endif %} {% if page != 1 %}
-      <a href="/?page={{ page - 1 }}"> - </a>
-      {% endif %}
-    </span>
-    <input
-      type="submit"
-      href="/logout"
-      value="Déconnexion"
-      class="button"
-      onclick="logout()"
-    />
-  </div>
-
-  <div id="tableDiv">
-    <table>
-      <thead>
-        <th></th>
-        <th>ID</th>
-        <th>Titre</th>
-        <th>Date</th>
-      </thead>
-      {% for evt in events %}
-      <tr>
-        <td>
-          <img
-            src="{{ evt.img }}"
-            alt="Image de l'évènement"
-            class="eventImage"
-          />
-        </td>
-        <td><a href="/event/{{ evt.id }}"> {{ evt.id }}</a></td>
-        <td>{{ evt.title }}</td>
-        <td>{{ evt.date }}</td>
-      </tr>
-      {% endfor %}
-    </table>
-  </div>
-
-  <input type="submit" value="Ajouter" class="button" onclick="addEvent()" />
-  <script src="static/js/index.js"></script>
+  <h1>Choisissez :</h1>
+  {% for app in apps %}
+    <a href="{{ app.path }}"> {{app.name}} </a>
+  {% endfor %}
 </body>
