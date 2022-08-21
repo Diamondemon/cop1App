@@ -1,6 +1,7 @@
 from datetime import datetime
 from functools import wraps
 from traceback import print_exception
+from typing import Mapping
 
 from flask import Flask, jsonify
 from flask import session
@@ -12,7 +13,7 @@ from math import ceil as top
 
 
 from admin.utils import ENV, ADMIN
-from app.database.tables import Event, DB
+from app.database.tables import User, Event, DB
 from weezevent import WEEZEVENT
 
 app = Flask(__name__)
@@ -26,7 +27,8 @@ limiter = Limiter(
 
 app.secret_key = ENV.FLASK_SECRET_KEY
 apps = {
-    'Events': '/events'
+    'Events': '/events',
+    'Users': '/users'
 }
 
 def get_int(name: str, default: int) -> int:
@@ -76,7 +78,7 @@ def index():
         ]
     )
 
-@app.route('/events')
+@app.route(apps['Events'])
 @limiter.exempt
 @protect
 def events():
@@ -92,10 +94,43 @@ def events():
         for x in Event.select().order_by(Event.date).paginate(page, item_per_page)
     ]
     return render_template(
-        'index.html',
+        'events.html',
         page=page,
         max_page=max_page,
         events=events,
+    )
+
+
+@app.route(apps['Users'])
+@limiter.exempt
+@protect
+def users():
+    max_page = top(User.select().count() / item_per_page)
+    page = min(max(1, get_int('page', 1)), max_page)
+    mapping = {
+        'phone': User.phone,
+        'email': User.email,
+        'delay': User.min_event_delay_days,
+        'skiped': User.skiped
+    }
+    _order = request.args.get('order', 'phone')
+    order = mapping.get(_order, User.phone)
+    req = User.select().order_by(order).paginate(page, item_per_page).prefetch()
+    users = [
+        {
+            'phone': x.phone,
+            'email': x.email,
+            'delay': x.min_event_delay_days,
+            'skiped': x.skiped
+        }
+        for x in req
+    ]
+    return render_template(
+        'users.html',
+        page=page,
+        max_page=max_page,
+        users=users,
+        order=_order
     )
 
 

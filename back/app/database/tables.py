@@ -22,6 +22,7 @@ class User(Table):
     first_name = CharField()
     last_name = CharField()
     min_event_delay_days = IntegerField(default=14)
+    skiped = IntegerField(default=0)
 
 
 class Inscription(Table):

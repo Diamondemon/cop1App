@@ -6,3 +6,7 @@ addEvent = () => {
 logout = () => {
     window.location.href = "/logout";
 }
+
+home = () => {
+    window.location.href = "/";
+}

@@ -41,12 +41,18 @@
       onclick="logout()"
     />
   </div>
-  
+
   <form>
     <label>Page :</label>
     <input type="number" id="page" name="page" min="1" max="{{ max_page }}" value="{{ page }}">
     <label>/{{ max_page }}</label>
     <br>
+    <select name="order" id="order">
+      <option value="phone">Phone</option>
+      <option value="email">Email</option>
+      <option value="delay">Delay</option>
+      <option value="skiped">Skiped</option>
+    </select>
     {% if page != max_page %}
     <input type="submit" value="+" class="button" onclick="document.getElementById('page').value = {{ page + 1 }}"/>
     {% endif %} {% if page != 1 %}
@@ -55,26 +61,21 @@
     <input type="submit" value="Ok" class="button"/>
   </form>
 
+
   <div id="tableDiv">
     <table>
       <thead>
-        <th></th>
-        <th>ID</th>
-        <th>Titre</th>
-        <th>Date</th>
+        <th>Phone</th>
+        <th>Email</th>
+        <th>Delay</th>
+        <th>Skiped</th>
       </thead>
-      {% for evt in events %}
+      {% for user in users %}
       <tr>
-        <td>
-          <img
-            src="{{ evt.img }}"
-            alt="Image de l'évènement"
-            class="eventImage"
-          />
-        </td>
-        <td><a href="/event/{{ evt.id }}"> {{ evt.id }}</a></td>
-        <td>{{ evt.title }}</td>
-        <td>{{ evt.date }}</td>
+        <td><a href="/user/{{ user.phone }}"> {{ user.phone }}</a></td>
+        <td>{{ user.email }}</td>
+        <td>{{ user.delay }}</td>
+        <td>{{ user.skiped }}</td>
       </tr>
       {% endfor %}
     </table>
