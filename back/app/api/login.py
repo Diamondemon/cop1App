@@ -103,9 +103,8 @@ async def edit_users_me(edit: UserEditModel, _token: str = Depends(token)) -> Bo
 async def delete_account(_token: str = Depends(token)) -> BoolResponse:
     user = user_from_token(_token)
     logger.info('user %s request account deletion', user)
-    evt = EventInDB \
-        .select(EventInDB, InscriptionInDB) \
-        .join(InscriptionInDB) \
+    evt = InscriptionInDB \
+        .select(InscriptionInDB) \
         .where(InscriptionInDB.user == user)
     for e in evt:
         e.delete_instance()

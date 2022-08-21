@@ -75,7 +75,7 @@ async def unsubscribe_to_an_event(item_id: int, _token: str = Depends(token)) ->
             unsubscribe(str(item_id), barcode)
         except Exception as e:
             logger.error(e)
-            user.events.remove([EventInDB.get(EventInDB.id == item_id)])
+            insc.delete_instance()
         return BoolResponse()
     except Exception as e:
         return BoolResponse(valid=False, message=f"Unable to access event {item_id}")
