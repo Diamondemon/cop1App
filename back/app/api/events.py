@@ -1,4 +1,5 @@
 from fastapi import Depends, APIRouter
+import datetime
 
 from app.interfaces.main import Events, Event, BoolResponse, SubscribeResponse
 from app.database.tables import User as UserInDB, Event as EventInDB, Inscription as InscriptionInDB, DB
@@ -70,6 +71,8 @@ async def unsubscribe_to_an_event(item_id: int, _token: str = Depends(token)) ->
     try:
         insc = InscriptionInDB.get(InscriptionInDB.user == user.phone and InscriptionInDB.event == item_id)
         logger.info(insc)
+        if datetime.datetime.strptime(insc.event.date, '%Y-%m-%dT%H:%M') < datetime.datetime.now():
+            return BoolResponse(valid=False, message="Unable to unsubscribe to previous event.")
         try:
             barcode = insc.barcode
             unsubscribe(str(item_id), barcode)
