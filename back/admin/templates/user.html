@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<head>
+  <title>Evènement {{ title }}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+  <link
+    rel="preload"
+    href="{{ url_for('static', filename='hk-grotesk.bold.ttf') }}"
+    as="font"
+    type="font/truetype"
+    crossorigin
+  />
+  <link
+    rel="preload"
+    href="{{ url_for('static', filename='hk-grotesk.medium.ttf') }}"
+    as="font"
+    type="font/truetype"
+    crossorigin
+  />
+  <link
+    rel="preload"
+    href="{{ url_for('static', filename='Raleway-VariableFont_wght.ttf') }}"
+    as="font"
+    type="font/truetype"
+    crossorigin
+  />
+</head>
+<body>
+  <table>
+    <tr>
+      <td colspan="2" style="text-align: center">
+        <h1>{{ phone }}</h1>
+      </td>
+    </tr>
+    <tr><td>Email:</td><td>{{ email }}</td></tr>
+    <tr><td>First name :</td><td>{{ first_name }}</td></tr>
+    <tr><td>Last name :</td><td>{{ last_name }}</td></tr>
+    <tr><td>Delay :</td><td>{{ delay }}</td></tr>
+    <tr><td>Skiped :</td><td>{{ skiped }}</td></tr>
+  </table>
+  <form method="POST">
+    <p><input type="submit" value="Supprimer" class="button" /></p>
+  </form>
+</body>

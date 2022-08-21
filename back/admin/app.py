@@ -134,6 +134,28 @@ def users():
     )
 
 
+@app.route('/user/<phone>', methods=['GET', 'POST'])
+@protect
+@limiter.exempt
+def user(phone):
+    try:
+        user = User.get(User.phone == phone)
+    except:
+        abort(404)
+    if request.method == 'POST':
+        # TODO edit user
+        return redirect(apps['Users'])
+    return render_template(
+        'user.html',
+        phone=user.phone,
+        email=user.email,
+        first_name=user.first_name,
+        last_name=user.last_name,
+        delay=user.min_event_delay_days,
+        skiped=user.skiped,
+    )
+
+
 @app.route('/event/<evt_id>', methods=['GET', 'POST'])
 @protect
 @limiter.exempt
