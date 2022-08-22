@@ -18,13 +18,9 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin {
 
-  late TabController _tabController;
-
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(vsync: this, length: tabsLength);
-
     session(context).loadAssets(context).then(
             (_) => FlutterNativeSplash.remove()
     );
@@ -32,7 +28,6 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
 
   @override
   void dispose() {
-    _tabController.dispose();
     Hive.close();
     super.dispose();
   }
@@ -40,21 +35,27 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
   @override
   Widget build(BuildContext context) {
     session(context).localizations = AppLocalizations.of(context);
-    return AutoTabsScaffold(
+    return AutoTabsRouter.tabBar(
         routes: const [
           EventsRouter(),
           ProfileRouter()
         ],
-      bottomNavigationBuilder: (ctxt, tabsRouter){
-        return Material(
-          color: Theme.of(context).primaryColor,
-          child: TabBar(
-            tabs: tabs(context),
-            controller: _tabController,
-            onTap: tabsRouter.setActiveIndex,
-          )
-        );
-      },
+      builder: (ctxt, child, tabController){
+          return Scaffold(
+            bottomNavigationBar: Material(
+              color: Theme.of(ctxt).primaryColor,
+              child: TabBar(
+                tabs: tabs(ctxt),
+                controller: tabController,
+              ),
+            ),
+            body: GestureDetector( // May need SafeArea
+              onTap: () => FocusScope.of(ctxt).requestFocus(FocusNode()),
+              child: child,
+            )
+          );
+      }
+
     );
   }
 }
