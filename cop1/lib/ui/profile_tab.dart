@@ -70,7 +70,7 @@ class _ProfileTabState extends State<ProfileTab> {
   }
 
   void _launchConnection() async{
-    await AutoRouter.of(context).pushNamed('connection');
+    await AutoRouter.of(context).pushNamed('/connection', includePrefixMatches: true);
     if (mounted) setState((){});
   }
 }

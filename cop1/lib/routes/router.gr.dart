@@ -12,12 +12,12 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:auto_route/auto_route.dart' as _i10;
-import 'package:auto_route/empty_router_widgets.dart' as _i2;
+import 'package:auto_route/empty_router_widgets.dart' as _i1;
 import 'package:flutter/material.dart' as _i11;
 
 import '../ui/creation_page.dart' as _i7;
 import '../ui/event_page.dart' as _i4;
-import '../ui/home_page.dart' as _i1;
+import '../ui/home_page.dart' as _i2;
 import '../ui/profile_creation_page.dart' as _i9;
 import '../ui/profile_edit_page.dart' as _i6;
 import '../ui/profile_tab.dart' as _i5;
@@ -32,19 +32,23 @@ class AppRouter extends _i10.RootStackRouter {
   final Map<String, _i10.PageFactory> pagesMap = {
     MainRouter.name: (routeData) {
       return _i10.MaterialPageX<dynamic>(
-          routeData: routeData, child: const _i1.HomePage());
+          routeData: routeData, child: const _i1.EmptyRouterPage());
+    },
+    HomeRouter.name: (routeData) {
+      return _i10.MaterialPageX<dynamic>(
+          routeData: routeData, child: const _i2.HomePage());
     },
     ConnectionRouter.name: (routeData) {
       return _i10.MaterialPageX<dynamic>(
-          routeData: routeData, child: const _i2.EmptyRouterPage());
+          routeData: routeData, child: const _i1.EmptyRouterPage());
     },
     EventsRouter.name: (routeData) {
       return _i10.MaterialPageX<dynamic>(
-          routeData: routeData, child: const _i2.EmptyRouterPage());
+          routeData: routeData, child: const _i1.EmptyRouterPage());
     },
     ProfileRouter.name: (routeData) {
       return _i10.MaterialPageX<dynamic>(
-          routeData: routeData, child: const _i2.EmptyRouterPage());
+          routeData: routeData, child: const _i1.EmptyRouterPage());
     },
     ThreadTabRoute.name: (routeData) {
       return _i10.MaterialPageX<dynamic>(
@@ -84,40 +88,53 @@ class AppRouter extends _i10.RootStackRouter {
   @override
   List<_i10.RouteConfig> get routes => [
         _i10.RouteConfig(MainRouter.name, path: '/', children: [
-          _i10.RouteConfig(EventsRouter.name,
-              path: 'events',
+          _i10.RouteConfig('#redirect',
+              path: '',
+              parent: MainRouter.name,
+              redirectTo: 'home',
+              fullMatch: true),
+          _i10.RouteConfig(HomeRouter.name,
+              path: 'home',
               parent: MainRouter.name,
               children: [
-                _i10.RouteConfig(ThreadTabRoute.name,
-                    path: '', parent: EventsRouter.name),
-                _i10.RouteConfig(EventPageRoute.name,
-                    path: ':eventId', parent: EventsRouter.name)
+                _i10.RouteConfig(EventsRouter.name,
+                    path: 'events',
+                    parent: HomeRouter.name,
+                    children: [
+                      _i10.RouteConfig(ThreadTabRoute.name,
+                          path: '', parent: EventsRouter.name),
+                      _i10.RouteConfig(EventPageRoute.name,
+                          path: ':eventId', parent: EventsRouter.name)
+                    ]),
+                _i10.RouteConfig(ProfileRouter.name,
+                    path: 'profile',
+                    parent: HomeRouter.name,
+                    children: [
+                      _i10.RouteConfig(ProfileTabRoute.name,
+                          path: '', parent: ProfileRouter.name),
+                      _i10.RouteConfig(ProfileEditPageRoute.name,
+                          path: 'edit', parent: ProfileRouter.name),
+                      _i10.RouteConfig(EventPageRoute.name,
+                          path: ':eventId', parent: ProfileRouter.name)
+                    ])
               ]),
-          _i10.RouteConfig(ProfileRouter.name,
-              path: 'profile',
+          _i10.RouteConfig(ConnectionRouter.name,
+              path: 'connection',
               parent: MainRouter.name,
               children: [
-                _i10.RouteConfig(ProfileTabRoute.name,
-                    path: '', parent: ProfileRouter.name),
-                _i10.RouteConfig(ProfileEditPageRoute.name,
-                    path: 'edit', parent: ProfileRouter.name),
-                _i10.RouteConfig(EventPageRoute.name,
-                    path: ':eventId', parent: ProfileRouter.name)
+                _i10.RouteConfig(CreationPageRoute.name,
+                    path: '', parent: ConnectionRouter.name),
+                _i10.RouteConfig(ValidationPageRoute.name,
+                    path: 'validation', parent: ConnectionRouter.name),
+                _i10.RouteConfig(ProfileCreationPageRoute.name,
+                    path: 'userCreation', parent: ConnectionRouter.name)
               ])
-        ]),
-        _i10.RouteConfig(ConnectionRouter.name, path: 'connection', children: [
-          _i10.RouteConfig(CreationPageRoute.name,
-              path: '', parent: ConnectionRouter.name),
-          _i10.RouteConfig(ValidationPageRoute.name,
-              path: 'validation', parent: ConnectionRouter.name),
-          _i10.RouteConfig(ProfileCreationPageRoute.name,
-              path: 'userCreation', parent: ConnectionRouter.name)
         ])
       ];
 }
 
 /// generated route for
-/// [_i1.HomePage]
+/// [_i1.EmptyRouterPage]
 class MainRouter extends _i10.PageRouteInfo<void> {
   const MainRouter({List<_i10.PageRouteInfo>? children})
       : super(MainRouter.name, path: '/', initialChildren: children);
@@ -126,7 +143,16 @@ class MainRouter extends _i10.PageRouteInfo<void> {
 }
 
 /// generated route for
-/// [_i2.EmptyRouterPage]
+/// [_i2.HomePage]
+class HomeRouter extends _i10.PageRouteInfo<void> {
+  const HomeRouter({List<_i10.PageRouteInfo>? children})
+      : super(HomeRouter.name, path: 'home', initialChildren: children);
+
+  static const String name = 'HomeRouter';
+}
+
+/// generated route for
+/// [_i1.EmptyRouterPage]
 class ConnectionRouter extends _i10.PageRouteInfo<void> {
   const ConnectionRouter({List<_i10.PageRouteInfo>? children})
       : super(ConnectionRouter.name,
@@ -136,7 +162,7 @@ class ConnectionRouter extends _i10.PageRouteInfo<void> {
 }
 
 /// generated route for
-/// [_i2.EmptyRouterPage]
+/// [_i1.EmptyRouterPage]
 class EventsRouter extends _i10.PageRouteInfo<void> {
   const EventsRouter({List<_i10.PageRouteInfo>? children})
       : super(EventsRouter.name, path: 'events', initialChildren: children);
@@ -145,7 +171,7 @@ class EventsRouter extends _i10.PageRouteInfo<void> {
 }
 
 /// generated route for
-/// [_i2.EmptyRouterPage]
+/// [_i1.EmptyRouterPage]
 class ProfileRouter extends _i10.PageRouteInfo<void> {
   const ProfileRouter({List<_i10.PageRouteInfo>? children})
       : super(ProfileRouter.name, path: 'profile', initialChildren: children);

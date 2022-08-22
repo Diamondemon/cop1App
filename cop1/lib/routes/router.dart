@@ -17,39 +17,47 @@ import '../ui/validation_page.dart';
     AutoRoute(
       path: '/',
       name: "MainRouter",
-      page: HomePage,
+      page: EmptyRouterPage,
       children: [
         AutoRoute(
-          path: "events",
-          name: "EventsRouter",
-          page: EmptyRouterPage,
+          path: 'home',
+          name: "HomeRouter",
+          page: HomePage,
+          initial: true,
           children: [
-            AutoRoute( path: "", page: ThreadTab, initial: true),
-            AutoRoute( path: ":eventId", page: EventPage)
+            AutoRoute(
+              path: "events",
+              name: "EventsRouter",
+              page: EmptyRouterPage,
+              children: [
+                AutoRoute( path: "", page: ThreadTab, initial: true),
+                AutoRoute( path: ":eventId", page: EventPage)
+              ]
+            ),
+            AutoRoute(
+              path: "profile",
+              name: "ProfileRouter",
+              page: EmptyRouterPage,
+              children: [
+                AutoRoute( path: "", page: ProfileTab),
+                AutoRoute( path: "edit", page: ProfileEditPage),
+                AutoRoute( path: ":eventId", page: EventPage)
+              ]
+            ),
           ]
         ),
         AutoRoute(
-          path: "profile",
-          name: "ProfileRouter",
-          page: EmptyRouterPage,
-          children: [
-            AutoRoute( path: "", page: ProfileTab),
-            AutoRoute( path: "edit", page: ProfileEditPage),
-            AutoRoute( path: ":eventId", page: EventPage)
-          ]
+            path: "connection",
+            name: "ConnectionRouter",
+            page: EmptyRouterPage,
+            children: [
+              AutoRoute( path: "", page: CreationPage),
+              AutoRoute( path: "validation", page: ValidationPage),
+              AutoRoute( path: "userCreation", page: ProfileCreationPage),
+            ]
         )
       ]
     ),
-    AutoRoute(
-      path: "connection",
-      name: "ConnectionRouter",
-      page: EmptyRouterPage,
-      children: [
-        AutoRoute( path: "", page: CreationPage),
-        AutoRoute( path: "validation", page: ValidationPage),
-        AutoRoute( path: "userCreation", page: ProfileCreationPage),
-      ]
-    )
   ],
 )
 class $AppRouter {}

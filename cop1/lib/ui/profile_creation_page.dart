@@ -30,7 +30,7 @@ class _ProfileCreationPageState extends State<ProfileCreationPage> {
   }
 
   void finalizeCreation(BuildContext context) async{
-    AutoRouter.of(context).pushNamed("/profile");
+    AutoRouter.of(context).pushNamed("/home/profile");
   }
 
 }

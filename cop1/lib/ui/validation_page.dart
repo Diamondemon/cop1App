@@ -76,7 +76,7 @@ class _ValidationPageState extends State<ValidationPage> {
           AutoRouter.of(context).pushNamed('userCreation');
         }
         else {
-          AutoRouter.of(context).pushNamed("/profile");
+          AutoRouter.of(context).pushNamed("/home/profile");
         }
       }
     }
