@@ -7,6 +7,7 @@ import 'package:cop1/utils/cop1_event.dart';
 import 'package:cop1/ui/subscribe_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:sentry/sentry.dart';
 
 import '../common.dart';
 
@@ -115,7 +116,10 @@ class _EventTileState extends State<EventTile> {
   }
 
   void _openEventPage(BuildContext context){
-    AutoRouter.of(context).pushNamed("${widget.event.id}");
+    AutoRouter.of(context).pushNamed(
+      "${widget.event.id}",
+      onFailure: (NavigationFailure failure)=> Sentry.captureException(failure)
+    );
   }
 
 

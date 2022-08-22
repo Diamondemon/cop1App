@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:cop1/data/session_data.dart';
 import 'package:cop1/ui/profile_edit.dart';
 import 'package:flutter/material.dart';
+import 'package:sentry/sentry.dart';
 
 import '../common.dart';
 
@@ -30,7 +31,10 @@ class _ProfileCreationPageState extends State<ProfileCreationPage> {
   }
 
   void finalizeCreation(BuildContext context) async{
-    AutoRouter.of(context).pushNamed("/home/profile");
+    AutoRouter.of(context).pushNamed(
+      "/home/profile",
+      onFailure: (NavigationFailure failure)=> Sentry.captureException(failure)
+    );
   }
 
 }
