@@ -1,11 +1,15 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_native_timezone/flutter_native_timezone.dart';
+import 'package:rxdart/rxdart.dart';
 import 'package:timezone/data/latest.dart' as tz_init;
 import 'package:timezone/timezone.dart' as tz;
 
 class NotificationAPI {
  static final _notifications = FlutterLocalNotificationsPlugin();
+ static final onNotifications = BehaviorSubject<String?>();
  static late final tz.Location _location;
+
+ static Future<String?> get hasLaunchedApp async => (await _notifications.getNotificationAppLaunchDetails())?.payload;
 
  static Future<bool?> initialize() async {
    const android = AndroidInitializationSettings('@mipmap/ic_launcher');
@@ -15,7 +19,12 @@ class NotificationAPI {
    final locationName = await FlutterNativeTimezone.getLocalTimezone();
    _location = tz.getLocation(locationName);
    tz.setLocalLocation(_location);
-   return await _notifications.initialize(initSettings);
+   return await _notifications.initialize(
+     initSettings,
+     onSelectNotification: (String? payload){
+       onNotifications.add(payload);
+     }
+   );
  }
 
  static Future _notificationDetails() async {

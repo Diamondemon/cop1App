@@ -12,8 +12,6 @@ import 'package:sentry/sentry.dart';
 import '../utils/cop1_event.dart';
 
 import 'api.dart';
-//import 'dart:developer' as developer;
-
 
 class NoPhoneNumberException implements Exception {
   NoPhoneNumberException();
@@ -71,7 +69,8 @@ class SessionData with ChangeNotifier {
     }).toList();
   }
 
-  Cop1Event getEvent(int eventId) {
+  Future<Cop1Event> getEvent(int eventId) async {
+    if (_events.isEmpty) await refreshEvents();
     return _events.firstWhere((Cop1Event element) => element.id == eventId);
   }
 

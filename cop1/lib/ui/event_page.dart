@@ -23,53 +23,76 @@ class EventPage extends StatefulWidget {
 
 class _EventPageState extends State<EventPage> {
   @override
-  Widget build(BuildContext context) {
-    final Cop1Event event = session(context).getEvent(widget.eventId);
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(event.title),
-        actions: session(context).isConnected? [_buildQRCodeButton(context)] : [],
-        leading: const AutoLeadingButton(),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.only(left: 10, right: 10, top: 5),
-        child: _buildListView(context, event),
-      )
-
+  Widget build(BuildContext ctxt) {
+    return FutureBuilder(
+      future: session(ctxt).getEvent(widget.eventId),
+      builder: (context, AsyncSnapshot<Cop1Event> snapshot){
+        if (snapshot.connectionState == ConnectionState.done){
+          if (snapshot.hasError && snapshot.error is! SocketException){
+            Sentry.captureException(snapshot.error, stackTrace: snapshot.stackTrace);
+            return Container();
+          }
+          else if (snapshot.data==null){
+            Sentry.captureMessage("Snapshot data is null for event id ${widget.eventId}");
+            return Container();
+          }
+          else {
+            return _buildScaffold(context, snapshot.data!);
+          }
+        }
+        else {
+          return Container();
+        }
+      },
     );
   }
 
-    Widget _buildListView(BuildContext context, Cop1Event event){
-      return ListView(
-        children: [
-          Text(event.title, style: Theme.of(context).textTheme.headlineSmall,),
-          const SizedBox(height: 10,),
-          _buildImage(context, event),
-          const SizedBox(height: 10,),
-          _buildIconText(context, Icons.calendar_month, " ${AppLocalizations.of(context)!.calendar}"),
-          TextButton(onPressed: event.addToCalendar,
-              child: Text(
-                  DateFormat.yMEd(AppLocalizations.of(context)!.localeName).add_jm().format(event.date),
-                  style: const TextStyle(fontSize: 12)
-              )
-          ),
-          _buildIconText(context, CupertinoIcons.location, " ${AppLocalizations.of(context)!.place}"),
-          TextButton(onPressed: event.lookoutLocationOnMaps, child:Text(event.location, style: const TextStyle(fontSize: 12))),
-          _buildIconText(context, CupertinoIcons.timer, " ${AppLocalizations.of(context)!.duration}"),
-          Padding(padding: const EdgeInsets.all(5),
-            child: Text(event.duration)
-          ),
-          _buildIconText(context, CupertinoIcons.info, " ${AppLocalizations.of(context)!.complemInfo}"),
-          Padding(
-            padding: const EdgeInsets.only(top:5, left: 10, right: 10),
+  Widget _buildScaffold(BuildContext context, Cop1Event event){
+    return Scaffold(
+        appBar: AppBar(
+          title: Text(event.title),
+          actions: session(context).isConnected? [_buildQRCodeButton(context)] : [],
+          leading: const AutoLeadingButton(),
+        ),
+        body: Padding(
+          padding: const EdgeInsets.only(left: 10, right: 10, top: 5),
+          child: _buildListView(context, event),
+        )
+    );
+  }
+
+
+  Widget _buildListView(BuildContext context, Cop1Event event){
+    return ListView(
+      children: [
+        Text(event.title, style: Theme.of(context).textTheme.headlineSmall,),
+        const SizedBox(height: 10,),
+        _buildImage(context, event),
+        const SizedBox(height: 10,),
+        _buildIconText(context, Icons.calendar_month, " ${AppLocalizations.of(context)!.calendar}"),
+        TextButton(onPressed: event.addToCalendar,
             child: Text(
-                event.description,
-              textAlign: TextAlign.justify,
-            ),
-          )
-        ],
-      );
-    }
+                DateFormat.yMEd(AppLocalizations.of(context)!.localeName).add_jm().format(event.date),
+                style: const TextStyle(fontSize: 12)
+            )
+        ),
+        _buildIconText(context, CupertinoIcons.location, " ${AppLocalizations.of(context)!.place}"),
+        TextButton(onPressed: event.lookoutLocationOnMaps, child:Text(event.location, style: const TextStyle(fontSize: 12))),
+        _buildIconText(context, CupertinoIcons.timer, " ${AppLocalizations.of(context)!.duration}"),
+        Padding(padding: const EdgeInsets.all(5),
+          child: Text(event.duration)
+        ),
+        _buildIconText(context, CupertinoIcons.info, " ${AppLocalizations.of(context)!.complemInfo}"),
+        Padding(
+          padding: const EdgeInsets.only(top:5, left: 10, right: 10),
+          child: Text(
+              event.description,
+            textAlign: TextAlign.justify,
+          ),
+        )
+      ],
+    );
+  }
 
   Widget _buildImage(BuildContext context, Cop1Event event){
     return CachedNetworkImage(

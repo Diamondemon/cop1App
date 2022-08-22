@@ -1,10 +1,11 @@
-
 import 'package:auto_route/auto_route.dart';
+import 'package:cop1/data/notification_api.dart';
 import 'package:cop1/routes/router.gr.dart';
 import 'package:cop1/ui/tabs.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:hive/hive.dart';
+import 'package:sentry/sentry.dart';
 
 import '../common.dart';
 import '../data/session_data.dart';
@@ -24,6 +25,33 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
     session(context).loadAssets(context).then(
             (_) => FlutterNativeSplash.remove()
     );
+    listenNotifications();
+  }
+
+  Future<void> listenNotifications() async {
+    NotificationAPI.onNotifications.stream.listen(
+      (String? payload){
+        WidgetsBinding.instance.addPostFrameCallback(
+          (_) {
+            onClickedNotification(payload);
+          }
+        );
+      }
+    );
+
+    final payload = await NotificationAPI.hasLaunchedApp;
+    if ( payload !=null){
+      NotificationAPI.onNotifications.add(payload);
+    }
+  }
+
+  void onClickedNotification(String? payload) {
+    if (payload != null){
+      AutoRouter.of(context).navigateNamed(
+        payload,
+        onFailure: (NavigationFailure failure)=> Sentry.captureException(failure)
+      );
+    }
   }
 
   @override

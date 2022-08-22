@@ -73,7 +73,7 @@ class Cop1Event {
           id: 10 * id + 2,
           title: title,
           body: text,
-          payload: "/event/$id"
+          payload: "events/$id"
       );
     }
   }
@@ -87,7 +87,7 @@ class Cop1Event {
           title: title,
           text: text,
           scheduledDate: notifyDate,
-          payload: "/event/$id"
+          payload: "/home/profile/$id"
       );
       return true;
     }
@@ -106,7 +106,7 @@ class Cop1Event {
           title: title,
           text: text,
           scheduledDate: notifyDate,
-          payload: "/event/$id"
+          payload: "/home/profile/$id"
       );
       return true;
     }

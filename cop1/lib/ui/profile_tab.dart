@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:cop1/ui/profile_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:sentry/sentry.dart';
 
 import '../common.dart';
 import '../data/session_data.dart';
@@ -39,8 +40,11 @@ class _ProfileTabState extends State<ProfileTab> {
                   Icons.edit,
                 ),
                 onPressed: () async {
-                  await AutoRouter.of(ctxt).pushNamed("edit");
-                  },
+                  await AutoRouter.of(ctxt).pushNamed(
+                    "edit",
+                    onFailure: (NavigationFailure failure)=> Sentry.captureException(failure)
+                  );
+                },
               ),
             ] : [],
           ),
@@ -70,7 +74,10 @@ class _ProfileTabState extends State<ProfileTab> {
   }
 
   void _launchConnection() async{
-    await AutoRouter.of(context).pushNamed('/connection', includePrefixMatches: true);
+    await AutoRouter.of(context).pushNamed(
+      '/connection',
+      onFailure: (NavigationFailure failure)=> Sentry.captureException(failure)
+    );
     if (mounted) setState((){});
   }
 }
