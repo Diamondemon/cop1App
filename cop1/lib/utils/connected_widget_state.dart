@@ -13,7 +13,7 @@ class ConnectedWidgetState {
     );
   }
 
-  static Future<bool> displayYesNoDialog(BuildContext context) async {
+  static Future<bool?> displayYesNoDialog(BuildContext context) async {
     return await showDialog(
         context: context,
         builder: (BuildContext alertContext){

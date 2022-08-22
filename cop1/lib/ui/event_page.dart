@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:auto_route/auto_route.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cop1/data/session_data.dart';
 import 'package:cop1/utils/user_profile.dart';
@@ -13,7 +14,7 @@ import '../common.dart';
 import '../utils/cop1_event.dart';
 
 class EventPage extends StatefulWidget {
-  const EventPage({Key? key, required this.eventId}) : super(key: key);
+  const EventPage({Key? key, @PathParam() required this.eventId}) : super(key: key);
   final int eventId;
 
   @override
@@ -28,6 +29,7 @@ class _EventPageState extends State<EventPage> {
       appBar: AppBar(
         title: Text(event.title),
         actions: session(context).isConnected? [_buildQRCodeButton(context)] : [],
+        leading: const AutoLeadingButton(),
       ),
       body: Padding(
         padding: const EdgeInsets.only(left: 10, right: 10, top: 5),

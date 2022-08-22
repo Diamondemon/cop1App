@@ -1,8 +1,8 @@
 import 'dart:io';
 
+import 'package:auto_route/auto_route.dart';
 import 'package:cop1/data/session_data.dart';
 import 'package:cop1/ui/text_field_widget.dart';
-import 'package:cop1/ui/validation_page.dart';
 import 'package:flutter/material.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 
@@ -28,6 +28,7 @@ class _CreationPageState extends State<CreationPage> {
     return Scaffold(
         appBar: AppBar(
           title:Text(AppLocalizations.of(context)!.connection),
+          leading: const AutoLeadingButton(),
         ),
         body: Center(
           child: Padding(
@@ -77,7 +78,7 @@ class _CreationPageState extends State<CreationPage> {
         phoneNumber = phoneNumber.replaceAll(" ", "");
         if (await session(context).setPhoneNumber(phoneNumber)){
           if (await session(context).askValidation()) {
-            Navigator.push(context, MaterialPageRoute(builder: (cntxt)=> const ValidationPage()));
+            AutoRouter.of(context).pushNamed('validation');
           }
         }
       }

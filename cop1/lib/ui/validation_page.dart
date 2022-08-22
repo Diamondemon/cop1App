@@ -1,7 +1,7 @@
 import 'dart:io';
 
+import 'package:auto_route/auto_route.dart';
 import 'package:cop1/data/session_data.dart';
-import 'package:cop1/ui/profile_creation_page.dart';
 import 'package:cop1/ui/text_field_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
@@ -73,10 +73,10 @@ class _ValidationPageState extends State<ValidationPage> {
     try {
       if ((await session(context).getToken(_code)).isNotEmpty){
         if ((await session(context).user)!.firstName.value.isEmpty){
-          await Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context)=>const ProfileCreationPage()));
+          AutoRouter.of(context).pushNamed('userCreation');
         }
         else {
-          Navigator.of(context).popUntil((route)=>route.isFirst);
+          AutoRouter.of(context).pushNamed("/profile");
         }
       }
     }

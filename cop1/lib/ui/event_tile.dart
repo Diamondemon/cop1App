@@ -1,8 +1,8 @@
 import 'dart:math';
 
+import 'package:auto_route/auto_route.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:intl/intl.dart';
-import 'package:cop1/ui/event_page.dart';
 import 'package:cop1/utils/cop1_event.dart';
 import 'package:cop1/ui/subscribe_button.dart';
 import 'package:flutter/cupertino.dart';
@@ -12,7 +12,7 @@ import '../common.dart';
 
 
 class EventTile extends StatefulWidget {
-  const EventTile({Key? key, required this.event}) : super(key: key);
+  const EventTile({Key? key, required this.event }) : super(key: key);
   final Cop1Event event;
 
   @override
@@ -115,7 +115,7 @@ class _EventTileState extends State<EventTile> {
   }
 
   void _openEventPage(BuildContext context){
-    Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context)=>EventPage(eventId: widget.event.id)));
+    AutoRouter.of(context).pushNamed("${widget.event.id}");
   }
 
 
