@@ -10,9 +10,6 @@ TextStyle tabStyle([double? fontSize]) => TextStyle(
 /// The 5 tabs of the main tab view
 List<Tab> tabs(BuildContext context) {
   return <Tab>[
-    /*Tab(
-      icon: const Icon(Icons.scoreboard, color: main2),
-      child: Text('Scores', style: tabStyle(10.0))),*/
     Tab(
         icon: const Icon(Icons.house),
         child: Text(AppLocalizations.of(context)!.newsFeed_title, style: tabStyle(10.0), maxLines: 2, textAlign: TextAlign.center,)),
@@ -20,23 +17,4 @@ List<Tab> tabs(BuildContext context) {
         icon: const Icon(Icons.person),
         child: Text(AppLocalizations.of(context)!.userProfile_title, style: tabStyle(10.0), maxLines: 2, textAlign: TextAlign.center,)),
   ];
-}
-
-get tabsLength => 2;
-
-/// Nicknames for the tabs so that we don't have to remember their index
-Map<String, int> tabIndex = {
-  'match': 0, 'current match': 0,
-  'score': 1, 'scores': 1,
-  'new': 2, 'new impro': 2,
-  'preparation': 3, 'all matches': 3,
-  'database': 4,
-};
-
-/// Switches to the tab defined by a nickname [s]
-///
-/// Tab nicknames are defined in the [tabIndex] map in tabs.dart.
-void switchToTab(TabController tabController, String s) {
-  int? i = tabIndex[s.toLowerCase()];
-  if (i != null) tabController.animateTo(i);
 }

@@ -1,4 +1,3 @@
-
 import 'dart:io';
 
 import 'package:cop1/utils/connected_widget_state.dart';
@@ -79,7 +78,9 @@ class ProfileWidget extends StatelessWidget implements ConnectedWidgetState{
                 (BuildContext ctxt, int index) {
               return Padding(
                   padding: const EdgeInsets.all(5.0),
-                  child: EventTile(event: events.firstWhere((element) => (element.id == evts.elementAt(index))))
+                  child: EventTile(
+                    event: events.firstWhere((element) => (element.id == evts.elementAt(index))),
+                  )
               );
             },
           );

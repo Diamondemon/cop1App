@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:auto_route/auto_route.dart';
 import 'package:cop1/ui/profile_edit.dart';
 import 'package:flutter/material.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
@@ -30,7 +31,7 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
   }
 
   void _deleteUserForever(BuildContext context) async {
-    if (await ConnectedWidgetState.displayYesNoDialog(context)){
+    if (await ConnectedWidgetState.displayYesNoDialog(context) ?? false){
       try {
         await session(context).deleteUser();
       }
@@ -42,7 +43,7 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
         Sentry.captureException(e, stackTrace: sT);
         return;
       }
-      if (mounted) Navigator.of(context).pop();
+      if (mounted) AutoRouter.of(context).pop();
     }
   }
 }

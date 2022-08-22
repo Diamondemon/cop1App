@@ -1,6 +1,4 @@
-
-import 'package:cop1/ui/creation_page.dart';
-import 'package:cop1/ui/profile_edit_page.dart';
+import 'package:auto_route/auto_route.dart';
 import 'package:cop1/ui/profile_widget.dart';
 import 'package:flutter/material.dart';
 
@@ -41,8 +39,7 @@ class _ProfileTabState extends State<ProfileTab> {
                   Icons.edit,
                 ),
                 onPressed: () async {
-                  await Navigator.of(ctxt).push(MaterialPageRoute(builder:
-                    (BuildContext buildContext) => const ProfileEditPage()));
+                  await AutoRouter.of(ctxt).pushNamed("edit");
                   },
               ),
             ] : [],
@@ -73,7 +70,7 @@ class _ProfileTabState extends State<ProfileTab> {
   }
 
   void _launchConnection() async{
-    await Navigator.of(context).push(MaterialPageRoute(builder: (buildContext){return const CreationPage();}));
+    await AutoRouter.of(context).pushNamed('connection');
     if (mounted) setState((){});
   }
 }

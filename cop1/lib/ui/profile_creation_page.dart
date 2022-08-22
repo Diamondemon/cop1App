@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:cop1/data/session_data.dart';
 import 'package:cop1/ui/profile_edit.dart';
 import 'package:flutter/material.dart';
@@ -29,7 +30,7 @@ class _ProfileCreationPageState extends State<ProfileCreationPage> {
   }
 
   void finalizeCreation(BuildContext context) async{
-    Navigator.of(context).popUntil((route)=>route.isFirst);
+    AutoRouter.of(context).pushNamed("/profile");
   }
 
 }
