@@ -31,7 +31,7 @@ class _ProfileCreationPageState extends State<ProfileCreationPage> {
   }
 
   void finalizeCreation(BuildContext context) async{
-    AutoRouter.of(context).pushNamed(
+    AutoRouter.of(context).navigateNamed(
       "/home/profile",
       onFailure: (NavigationFailure failure)=> Sentry.captureException(failure)
     );

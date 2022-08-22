@@ -78,7 +78,7 @@ class _CreationPageState extends State<CreationPage> {
         phoneNumber = phoneNumber.replaceAll(" ", "");
         if (await session(context).setPhoneNumber(phoneNumber)){
           if (await session(context).askValidation()) {
-            AutoRouter.of(context).pushNamed(
+            AutoRouter.of(context).navigateNamed(
               'validation',
               onFailure: (NavigationFailure failure)=> Sentry.captureException(failure)
             );
