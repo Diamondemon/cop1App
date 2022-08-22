@@ -116,7 +116,7 @@ class _EventTileState extends State<EventTile> {
   }
 
   void _openEventPage(BuildContext context){
-    AutoRouter.of(context).pushNamed(
+    AutoRouter.of(context).navigateNamed(
       "${widget.event.id}",
       onFailure: (NavigationFailure failure)=> Sentry.captureException(failure)
     );

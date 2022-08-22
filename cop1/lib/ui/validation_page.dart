@@ -73,13 +73,13 @@ class _ValidationPageState extends State<ValidationPage> {
     try {
       if ((await session(context).getToken(_code)).isNotEmpty){
         if ((await session(context).user)!.firstName.value.isEmpty){
-          AutoRouter.of(context).pushNamed(
+          AutoRouter.of(context).navigateNamed(
             'userCreation',
             onFailure: (NavigationFailure failure)=> Sentry.captureException(failure)
           );
         }
         else {
-          AutoRouter.of(context).pushNamed(
+          AutoRouter.of(context).navigateNamed(
             "/home/profile",
             onFailure: (NavigationFailure failure)=> Sentry.captureException(failure)
           );

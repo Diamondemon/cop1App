@@ -40,7 +40,7 @@ class _ProfileTabState extends State<ProfileTab> {
                   Icons.edit,
                 ),
                 onPressed: () async {
-                  await AutoRouter.of(ctxt).pushNamed(
+                  await AutoRouter.of(ctxt).navigateNamed(
                     "edit",
                     onFailure: (NavigationFailure failure)=> Sentry.captureException(failure)
                   );
@@ -74,7 +74,7 @@ class _ProfileTabState extends State<ProfileTab> {
   }
 
   void _launchConnection() async{
-    await AutoRouter.of(context).pushNamed(
+    await AutoRouter.of(context).navigateNamed(
       '/connection',
       onFailure: (NavigationFailure failure)=> Sentry.captureException(failure)
     );
