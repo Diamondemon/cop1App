@@ -25,6 +25,20 @@
   />
 </head>
 <body>
+  <div class="headerDiv">
+    <input
+      type="submit"
+      value="Events"
+      class="button"
+      onclick="window.location.href = '/events';"
+    />
+    <input
+      type="submit"
+      value="Déconnexion"
+      class="button"
+      onclick="window.location.href = '/logout';"
+    />
+  </div>
   <h1>Nouvel évènement</h1>
   <p style="color: red">{{ error | default("") }}</p>
   <button onclick="autoFill()">Auto fill</button>

@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <head>
-  <title>Evènement {{ title }}</title>
+  <title>{{ phone }}</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
   <link
     rel="preload"
@@ -25,6 +25,20 @@
   />
 </head>
 <body>
+  <div class="headerDiv">
+    <input
+      type="submit"
+      value="Users"
+      class="button"
+      onclick="window.location.href = '/users';"
+    />
+    <input
+      type="submit"
+      value="Déconnexion"
+      class="button"
+      onclick="window.location.href = '/logout';"
+    />
+  </div>
   <form method="POST">
   <table>
     <tr>

@@ -28,17 +28,15 @@
   <div class="headerDiv">
     <input
       type="submit"
-      href="/"
       value="Home"
       class="button"
-      onclick="home()"
+      onclick="window.location.href = '/'"
     />
     <input
       type="submit"
-      href="/logout"
       value="Déconnexion"
       class="button"
-      onclick="logout()"
+      onclick="window.location.href = '/logout';"
     />
   </div>
   
@@ -72,7 +70,7 @@
             class="eventImage"
           />
         </td>
-        <td><a href="/event/{{ evt.id }}"> {{ evt.id }}</a></td>
+        <td><a href="/event/view/{{ evt.id }}"> {{ evt.id }}</a></td>
         <td>{{ evt.title }}</td>
         <td>{{ evt.date }}</td>
       </tr>
@@ -80,6 +78,5 @@
     </table>
   </div>
 
-  <input type="submit" value="Ajouter" class="button" onclick="addEvent()" />
-  <script src="static/js/index.js"></script>
+  <input type="submit" value="Ajouter" class="button" onclick="window.location.href = '/event/create';" />
 </body>

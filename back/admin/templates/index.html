@@ -28,23 +28,19 @@
   <div class="headerDiv">
     <input
       type="submit"
-      href="/"
       value="Home"
       class="button"
-      onclick="home()"
+      onclick="window.location.href = '/'"
     />
     <input
       type="submit"
-      href="/logout"
       value="Déconnexion"
       class="button"
-      onclick="logout()"
+      onclick="window.location.href = '/logout';"
     />
   </div>
   <h1>Choisissez :</h1>
   {% for app in apps %}
     <a href="{{ app.path }}"> {{app.name}} </a>
   {% endfor %}
-
-  <script src="static/js/index.js"></script>
 </body>

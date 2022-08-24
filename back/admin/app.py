@@ -93,7 +93,7 @@ def events():
         for x in Event.select().order_by(Event.date).paginate(page, item_per_page)
     ]
     return render_template(
-        'events.html',
+        'events/index.html',
         page=page,
         max_page=max_page,
         events=events,
@@ -125,7 +125,7 @@ def users():
         for x in req
     ]
     return render_template(
-        'users.html',
+        'users/index.html',
         page=page,
         max_page=max_page,
         users=users,
@@ -142,7 +142,7 @@ def view_user(phone):
     except:
         abort(404)
     return render_template(
-        'view_user.html',
+        'users/view.html',
         phone=user.phone,
         email=user.email,
         first_name=user.first_name,
@@ -172,7 +172,7 @@ def edit_user(phone):
             print_exception(e)
         return redirect(f'/user/view/{phone}')
     return render_template(
-        'edit_user.html',
+        'users/edit.html',
         phone=user.phone,
         email=user.email,
         first_name=user.first_name,
@@ -182,7 +182,7 @@ def edit_user(phone):
     )
 
 
-@app.route('/event/<evt_id>', methods=['GET', 'POST'])
+@app.route('/event/view/<evt_id>', methods=['GET', 'POST'])
 @protect
 @limiter.exempt
 def event(evt_id):
@@ -200,7 +200,7 @@ def event(evt_id):
         print(f'Event {evt_id} deleted.')
         return redirect(apps['Events'])
     return render_template(
-        'event.html',
+        'events/view.html',
         title=evt.title,
         desc=evt.desc,
         id=evt.id,
@@ -211,7 +211,7 @@ def event(evt_id):
     )
 
 
-@app.route('/new', methods=['GET', 'POST'])
+@app.route('/event/create', methods=['GET', 'POST'])
 @protect
 @limiter.exempt
 def new_event():
@@ -220,7 +220,7 @@ def new_event():
             evt_id = int(request.form['id'])
         except:
             return render_template(
-                'new.html',
+                'events/create.html',
                 date=datetime.now().date(),
                 error="ID is required"
             )
@@ -235,7 +235,7 @@ def new_event():
         )
         return redirect(apps['Events'])
     return render_template(
-        'new.html',
+        'events/create.html',
         date=datetime.now().date(),
     )
 
@@ -260,7 +260,7 @@ def login():
         if token:
             session['token'] = ADMIN.gen_token()
             return redirect('/')
-    return render_template('login.html')
+    return render_template('login/index.html')
 
 
 @app.route('/logout')

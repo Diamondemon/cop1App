@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <head>
-  <title>Gestion des évènements</title>
+  <title>Gestion des utilisateurs</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
   <link
     rel="preload"
@@ -28,17 +28,15 @@
   <div class="headerDiv">
     <input
       type="submit"
-      href="/"
       value="Home"
       class="button"
-      onclick="home()"
+      onclick="window.location.href = '/'"
     />
     <input
       type="submit"
-      href="/logout"
       value="Déconnexion"
       class="button"
-      onclick="logout()"
+      onclick="window.location.href = '/logout';"
     />
   </div>
 
@@ -80,7 +78,4 @@
       {% endfor %}
     </table>
   </div>
-
-  <input type="submit" value="Ajouter" class="button" onclick="addEvent()" />
-  <script src="static/js/index.js"></script>
 </body>
