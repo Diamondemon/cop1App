@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<head>
+  <title>Evènement {{ title }}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+  <link
+    rel="preload"
+    href="{{ url_for('static', filename='hk-grotesk.bold.ttf') }}"
+    as="font"
+    type="font/truetype"
+    crossorigin
+  />
+  <link
+    rel="preload"
+    href="{{ url_for('static', filename='hk-grotesk.medium.ttf') }}"
+    as="font"
+    type="font/truetype"
+    crossorigin
+  />
+  <link
+    rel="preload"
+    href="{{ url_for('static', filename='Raleway-VariableFont_wght.ttf') }}"
+    as="font"
+    type="font/truetype"
+    crossorigin
+  />
+</head>
+<body>
+  <div class="headerDiv">
+    <input
+      type="submit"
+      value="Events"
+      class="button"
+      onclick="window.location.href = '/events';"
+    />
+    <input
+      type="submit"
+      value="Déconnexion"
+      class="button"
+      onclick="window.location.href = '/logout';"
+    />
+  </div>
+  <h1>Nouvel évènement</h1>
+  <p style="color: red">{{ error | default("") }}</p>
+  <button onclick="autoFill()">Auto fill</button>
+  <form method="post">
+    <table>
+      <tr>
+        <td>ID Weezevent:</td>
+        <td>
+          <td>{{ id }}</td>
+        </td>
+      </tr>
+      <tr>
+        <td>Titre:</td>
+        <td>
+          <input id="title" type="text" value="{{ title }}" name="title" size="40" />
+        </td>
+      </tr>
+      <tr>
+        <td>Description:</td>
+        <td>
+          <textarea id="desc" value="{{ desc }}" name="desc" cols="40" rows="5"></textarea>
+        </td>
+      </tr>
+      <tr>
+        <td>Lien d'image:</td>
+        <td>
+          <input id="img" type="url" value="{{ img }}" name="img" size="40" />
+        </td>
+      </tr>
+      <tr>
+        <td>Date:</td>
+        <td>
+          <input
+            id="date"
+            type="datetime-local"
+            name="date"
+            value="{{ date }}"
+            size="40"
+          />
+        </td>
+      </tr>
+      <tr>
+        <td>Duree:</td>
+        <td>
+          <input id="duration" type="time" value="{{ duration }}" name="duration" size="40" />
+        </td>
+      </tr>
+      <tr>
+        <td>Lieu:</td>
+        <td>
+          <input id="loc" type="text" value="{{ loc }}" name="loc" size="40" />
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2" id="buttonTd">
+          <input type="submit" value="Ok" class="button" />
+          <input type="submit" value="Cancel" class="button" onclick="window.location.href = '/event/view/{{ id }}';" />
+        </td>
+      </tr>
+    </table>
+  </form>
+  <script>
+    function autoFill() {
+      const error = "border-block-color: red;";
+      const evt_id = document.getElementById("weezeventId").value;
+      console.log(evt_id);
+      if (evt_id == "") {
+        document.getElementById("weezeventId").style = error;
+      } else {
+        document.getElementById("weezeventId").style = "";
+        fetch(`/event_info/${evt_id}`)
+          .then((x) => x.json())
+          .then((obj) => {
+            data = obj.data;
+            console.log(data);
+            document.getElementById("title").value = data.title;
+            document.getElementById("desc").value = data.desc;
+            document.getElementById("img").value = data.img;
+            document.getElementById("date").value = data.date;
+            document.getElementById("duration").value = data.duration;
+            document.getElementById("loc").value = data.loc;
+          })
+          .catch((err) => {
+            document.getElementById("weezeventId").style = error;
+            console.log(err);
+          });
+      }
+    }
+  </script>
+</body>

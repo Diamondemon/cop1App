@@ -1,5 +1,6 @@
 from datetime import datetime
 from functools import wraps
+from logging import INFO
 from traceback import print_exception
 
 from flask import Flask, jsonify
@@ -12,12 +13,13 @@ from math import ceil as top
 
 
 from admin.utils import ENV, ADMIN
-from app.database.tables import User, Event, DB
+from app.database.tables import Inscription, User, Event, DB
 from weezevent import WEEZEVENT
 
 app = Flask(__name__)
-item_per_page = 10
+app.logger.setLevel(INFO)
 
+item_per_page = 10
 limiter = Limiter(
     app,
     key_func=get_remote_address,
@@ -182,10 +184,54 @@ def edit_user(phone):
     )
 
 
-@app.route('/event/view/<evt_id>', methods=['GET', 'POST'])
+@app.route('/event/view/<evt_id>')
 @protect
 @limiter.exempt
-def event(evt_id):
+def view_event(evt_id):
+    try:
+        evt_id = int(evt_id)
+    except:
+        evt_id = -1
+    evt = None
+    try:
+        evt = Event.get(Event.id == evt_id)
+    except:
+        abort(404)
+    return render_template(
+        'events/view.html',
+        title=evt.title,
+        desc=evt.desc,
+        id=evt.id,
+        date=evt.date.replace("T", " à "),
+        duration=evt.duration,
+        img=evt.img,
+        loc=evt.loc,
+    )
+
+
+@app.route('/event/delete/<evt_id>', methods=['POST'])
+@protect
+@limiter.exempt
+def delete_event(evt_id):
+    try:
+        evt_id = int(evt_id)
+    except:
+        evt_id = -1
+    evt = None
+    try:
+        evt = Event.get(Event.id == evt_id)
+    except:
+        abort(404)
+    Inscription.delete().where(Inscription.event == evt_id).execute()
+    evt.delete_instance()
+    app.logger.info(f'Event {evt_id} deleted.')
+    return redirect(apps['Events'])
+
+
+@app.route('/event/edit/<evt_id>', methods=['GET', 'POST'])
+@protect
+@limiter.exempt
+def edit_event(evt_id):
     try:
         evt_id = int(evt_id)
     except:
@@ -196,15 +242,23 @@ def event(evt_id):
     except:
         abort(404)
     if request.method == 'POST':
-        Event.delete().where(Event.id == evt_id).execute()
-        print(f'Event {evt_id} deleted.')
-        return redirect(apps['Events'])
+        try:
+            evt.date=request.form['date']
+            evt.duration=request.form['duration']
+            evt.desc=request.form['desc']
+            evt.title=request.form['title']
+            evt.img=request.form['img']
+            evt.loc=request.form['loc']
+            evt.save()
+        except Exception as e:
+            print_exception(e)
+        return redirect(f'/event/view/{evt_id}')
     return render_template(
-        'events/view.html',
+        'events/edit.html',
         title=evt.title,
         desc=evt.desc,
         id=evt.id,
-        date=evt.date.replace("T", " à "),
+        date=evt.date,
         duration=evt.duration,
         img=evt.img,
         loc=evt.loc,

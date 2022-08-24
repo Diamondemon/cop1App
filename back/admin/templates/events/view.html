@@ -77,7 +77,12 @@
       <td>{{ loc }}</td>
     </tr>
   </table>
-  <form method="POST">
-    <p><input type="submit" value="Supprimer" class="button" /></p>
+  <form method="post" action="/event/delete/{{ id }}" >
+    <p>
+      <input type="submit" value="Supprimer" class="button" />
+    </p>
   </form>
+  <p>
+    <input type="submit" value="Edit" class="button" onclick="window.location.href = '/event/edit/{{ id }}';" />
+  </p>
 </body>
