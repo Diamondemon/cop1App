@@ -265,6 +265,44 @@ def edit_event(evt_id):
     )
 
 
+@app.route('/event/unscan/<evt_id>', methods=['GET', 'POST'])
+@protect
+@limiter.exempt
+def unscan_event(evt_id):
+    try:
+        evt_id = int(evt_id)
+    except:
+        evt_id = -1
+    evt = None
+    try:
+        evt = Event.get(Event.id == evt_id)
+    except:
+        abort(404)
+    if request.method == 'POST':
+        try:
+            users_phones = request.form.getlist('selected')
+            app.logger.info(users_phones)
+            users = User.select().where(User.phone.in_(users_phones))
+            for user in users:
+                user.get()
+                user.skiped += 1
+                user.save()
+        except Exception as e:
+            print_exception(e)
+        return redirect(f'/event/view/{evt_id}')
+    users = [
+        {
+            'phone': x,
+        }
+        for x in WEEZEVENT.list_unscanned_users(evt_id)
+    ]
+    return render_template(
+        'events/unscan.html',
+        id=evt.id,
+        users=users
+    )
+
+
 @app.route('/event/create', methods=['GET', 'POST'])
 @protect
 @limiter.exempt

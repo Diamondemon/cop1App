@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<head>
+  <title>Utilisateurs non scannes</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+  <link
+    rel="preload"
+    href="{{ url_for('static', filename='hk-grotesk.bold.ttf') }}"
+    as="font"
+    type="font/truetype"
+    crossorigin
+  />
+  <link
+    rel="preload"
+    href="{{ url_for('static', filename='hk-grotesk.medium.ttf') }}"
+    as="font"
+    type="font/truetype"
+    crossorigin
+  />
+  <link
+    rel="preload"
+    href="{{ url_for('static', filename='Raleway-VariableFont_wght.ttf') }}"
+    as="font"
+    type="font/truetype"
+    crossorigin
+  />
+</head>
+<body>
+  <div class="headerDiv">
+    <input
+      type="submit"
+      value="Events"
+      class="button"
+      onclick="window.location.href = '/events';"
+    />
+    <input
+      type="submit"
+      value="Déconnexion"
+      class="button"
+      onclick="window.location.href = '/logout';"
+    />
+  </div>
+
+  <form method='post'>
+
+
+    <div id="tableDiv">
+      <table>
+        <thead>
+          <th style="width: 150px"><input type="checkbox" onClick="toggle(this)" />Select all</th>
+          <th>Phone ({{ users | length }})</th>
+        </thead>
+        {% for user in users %}
+        <tr>
+          <td><input type="checkbox" name="selected" value="{{ user.phone }}" /></td>
+          <td>{{ user.phone }}</td>
+        </tr>
+        {% endfor %}
+      </table>
+    </div>
+
+    <input type="submit" value="Ok" class="button"/>
+  </form>
+  <input type="submit" value="Cancel" class="button" onclick="window.location.href = '/event/view/{{ id }}';" />
+  <script>
+  function toggle(source) {
+    checkboxes = document.getElementsByName('selected');
+    for(const checkbox of checkboxes)
+    {
+      checkbox.checked = source.checked;
+    }
+  }
+  </script>
+</body>

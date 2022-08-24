@@ -77,12 +77,11 @@
       <td>{{ loc }}</td>
     </tr>
   </table>
-  <form method="post" action="/event/delete/{{ id }}" >
-    <p>
-      <input type="submit" value="Supprimer" class="button" />
-    </p>
-  </form>
   <p>
+    <form method="post" action="/event/delete/{{ id }}" >
+        <input type="submit" value="Supprimer" class="button" />
+    </form>
     <input type="submit" value="Edit" class="button" onclick="window.location.href = '/event/edit/{{ id }}';" />
+    <input type="submit" value="Calculer les inscrits non scannes" class="button" onclick="window.location.href = '/event/unscan/{{ id }}';" />
   </p>
 </body>
