@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<head>
+  <title>Evènement {{ title }}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+  <link
+    rel="preload"
+    href="{{ url_for('static', filename='hk-grotesk.bold.ttf') }}"
+    as="font"
+    type="font/truetype"
+    crossorigin
+  />
+  <link
+    rel="preload"
+    href="{{ url_for('static', filename='hk-grotesk.medium.ttf') }}"
+    as="font"
+    type="font/truetype"
+    crossorigin
+  />
+  <link
+    rel="preload"
+    href="{{ url_for('static', filename='Raleway-VariableFont_wght.ttf') }}"
+    as="font"
+    type="font/truetype"
+    crossorigin
+  />
+</head>
+<body>
+  <form method="POST">
+  <table>
+    <tr>
+      <td colspan="2" style="text-align: center">
+        <h1>{{ phone }}</h1>
+      </td>
+    </tr>
+    <tr><td>Email:</td><td><input type="text"  name="email" value="{{ email }}" /></td></tr>
+    <tr><td>First name :</td><td><input type="text"  name="first_name" value="{{ first_name }}" /></td></tr>
+    <tr><td>Last name :</td><td><input type="text"  name="last_name" value="{{ last_name }}" /></td></tr>
+    <tr><td>Delay :</td><td><input type="text"  name="delay" value="{{ delay }}" /></td></tr>
+    <tr><td>Skiped :</td><td><input type="text"  name="skiped" value="{{ skiped }}" /></td></tr>
+  </table>
+    <p>
+      <input type="submit" value="Ok" />
+      <input type="submit" value="Cancel" class="button" onclick="window.location.href = '/user/view/{{ phone }}';" />
+    </p>
+  </form>
+</body>

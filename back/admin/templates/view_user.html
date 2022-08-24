@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <head>
-  <title>Evènement {{ title }}</title>
+  <title>{{ phone }}</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
   <link
     rel="preload"
@@ -37,7 +37,7 @@
     <tr><td>Delay :</td><td>{{ delay }}</td></tr>
     <tr><td>Skiped :</td><td>{{ skiped }}</td></tr>
   </table>
-  <form method="POST">
-    <p><input type="submit" value="Supprimer" class="button" /></p>
-  </form>
+    <p>
+      <input type="submit" value="Edit" class="button" onclick="window.location.href = '/user/edit/{{ phone }}';" />
+    </p>
 </body>

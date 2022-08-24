@@ -72,7 +72,7 @@
       </thead>
       {% for user in users %}
       <tr>
-        <td><a href="/user/{{ user.phone }}"> {{ user.phone }}</a></td>
+        <td><a href="/user/view/{{ user.phone }}"> {{ user.phone }}</a></td>
         <td>{{ user.email }}</td>
         <td>{{ user.delay }}</td>
         <td>{{ user.skiped }}</td>

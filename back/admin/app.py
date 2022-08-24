@@ -1,7 +1,6 @@
 from datetime import datetime
 from functools import wraps
 from traceback import print_exception
-from typing import Mapping
 
 from flask import Flask, jsonify
 from flask import session
@@ -134,19 +133,46 @@ def users():
     )
 
 
-@app.route('/user/<phone>', methods=['GET', 'POST'])
+@app.route('/user/view/<phone>')
 @protect
 @limiter.exempt
-def user(phone):
+def view_user(phone):
+    try:
+        user = User.get(User.phone == phone)
+    except:
+        abort(404)
+    return render_template(
+        'view_user.html',
+        phone=user.phone,
+        email=user.email,
+        first_name=user.first_name,
+        last_name=user.last_name,
+        delay=user.min_event_delay_days,
+        skiped=user.skiped,
+    )
+
+
+@app.route('/user/edit/<phone>', methods=['GET', 'POST'])
+@protect
+@limiter.exempt
+def edit_user(phone):
     try:
         user = User.get(User.phone == phone)
     except:
         abort(404)
     if request.method == 'POST':
-        # TODO edit user
-        return redirect(apps['Users'])
+        try:
+            user.email=request.form['email']
+            user.first_name=request.form['first_name']
+            user.last_name=request.form['last_name']
+            user.min_event_delay_days=int(request.form['delay'])
+            user.skiped=int(request.form['skiped'])
+            user.save()
+        except Exception as e:
+            print_exception(e)
+        return redirect(f'/user/view/{phone}')
     return render_template(
-        'user.html',
+        'edit_user.html',
         phone=user.phone,
         email=user.email,
         first_name=user.first_name,
