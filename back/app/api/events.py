@@ -69,8 +69,10 @@ async def unsubscribe_to_an_event(item_id: int, _token: str = Depends(token)) ->
     """Unsubscribe from an event."""
     user = user_from_token(_token)
     try:
-        insc = InscriptionInDB.get(InscriptionInDB.user == user.phone and InscriptionInDB.event == item_id)
-        logger.info(insc)
+        insc = InscriptionInDB.get(
+            (InscriptionInDB.user == user.phone) &
+            (InscriptionInDB.event == item_id)
+        )
         if datetime.datetime.strptime(insc.event.date, '%Y-%m-%dT%H:%M') < datetime.datetime.now():
             return BoolResponse(valid=False, message="Unable to unsubscribe to previous event.")
         try:
@@ -78,7 +80,8 @@ async def unsubscribe_to_an_event(item_id: int, _token: str = Depends(token)) ->
             unsubscribe(str(item_id), barcode)
         except Exception as e:
             logger.error(e)
-            insc.delete_instance()
+        insc.delete_instance()
         return BoolResponse()
     except Exception as e:
+        logger.error(e)
         return BoolResponse(valid=False, message=f"Unable to access event {item_id}")
