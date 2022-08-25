@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 
 class UserProfile{
+  static const int allowedMillisMultip = 24 * 60 * 60 * 1000;
   ValueNotifier<String> firstName=ValueNotifier("");
   ValueNotifier<String> lastName=ValueNotifier("");
   final String _phoneNumber;
@@ -13,6 +14,7 @@ class UserProfile{
   SetNotifier<int> events = SetNotifier();
   SetNotifier<int> pastEvents = SetNotifier();
   Map<int, String> barcodes = {};
+  int minDelayDays = 0;
 
   String get phoneNumber => _phoneNumber;
   bool get isAdmin =>_isAdmin;
@@ -24,6 +26,22 @@ class UserProfile{
       events.add(event.id);
       barcodes[event.id]=barcode;
     }
+  }
+
+  int checkEventConflicts(Cop1Event newEvent, List<Cop1Event> allEvents){
+    final int millis = newEvent.date.millisecondsSinceEpoch;
+    final int allowedMillis = minDelayDays*allowedMillisMultip;
+    final int conflictingId = events.firstWhere(
+      (eventId) {
+        final Cop1Event event = allEvents.firstWhere((evt) => evt.id == eventId);
+        final int deltaMillis = (event.date.millisecondsSinceEpoch - millis).abs();
+        if (deltaMillis < allowedMillis) return true;
+        return false;
+      },
+      orElse: ()=>-1,
+    );
+
+    return conflictingId;
   }
 
   void unsubscribeFromEvent(Cop1Event event){
@@ -44,6 +62,7 @@ class UserProfile{
     user.firstName.value = json["first_name"];
     user.lastName.value = json["last_name"];
     user.email.value = json["email"];
+    user.minDelayDays = json["min_event_delay_days"];
     for (var item in json["events"]) {
       final Cop1Event event = Cop1Event.fromJSON(item);
       if (event.isPast){

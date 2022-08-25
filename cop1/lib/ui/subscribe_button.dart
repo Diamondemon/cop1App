@@ -55,7 +55,12 @@ class _SubscribeButtonState extends State<SubscribeButton> {
         if (!s.isConnected) return;
       }
       if (!mounted) return;
-      await s.subscribe(widget.event);
+      try {
+        await s.subscribe(widget.event);
+      }
+      on EventConflictError catch (e) {
+        _showEventConflict(context, e.conflictingEvent);
+      }
       setState((){});
     }
     else {
@@ -92,6 +97,15 @@ class _SubscribeButtonState extends State<SubscribeButton> {
           padding: const EdgeInsets.all(5.0),
           child: Text(text, style: Theme.of(context).primaryTextTheme.bodyLarge),
         )
+    );
+  }
+
+  void _showEventConflict(BuildContext context, Cop1Event event) {
+    showDialog(context: context, builder:
+      (BuildContext dialogContext)
+        {
+          return const AlertDialog(title: Text("Conflit d'événement"));
+        }
     );
   }
 

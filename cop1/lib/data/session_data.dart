@@ -21,6 +21,11 @@ class NotConnectedException implements Exception {
   NotConnectedException();
 }
 
+class EventConflictError implements Exception {
+  final Cop1Event conflictingEvent;
+  EventConflictError(this.conflictingEvent);
+}
+
 SessionData session(context) => Provider.of<SessionData>(context, listen: false);
 
 /// Data that is exposed to all the widgets
@@ -128,6 +133,10 @@ class SessionData with ChangeNotifier {
   }
 
   Future<void> subscribe(Cop1Event event) async {
+    final int conflictingId = _localUser!.checkEventConflicts(event, _events);
+    if (conflictingId != -1){
+      throw EventConflictError(_events.firstWhere((evt) => evt.id == conflictingId));
+    }
     try{
       final subscription = await API.subscribeToEvent(token, event.id);
       if (subscription["success"]){
