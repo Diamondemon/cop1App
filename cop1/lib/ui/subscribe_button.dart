@@ -101,11 +101,13 @@ class _SubscribeButtonState extends State<SubscribeButton> {
     );
   }
 
-  void _showEventConflict(BuildContext context, EventConflictError event) {
-    ScaffoldMessenger.of(context).showSnackBar(
+  void _showEventConflict(BuildContext context, EventConflictError error) {
+    ScaffoldMessenger.of(context)
+      ..removeCurrentSnackBar()
+      ..showSnackBar(
       ConnectedWidgetState.timedSnackBar(
-        child: const Text("Conflit d'événement!"),
-        action: SnackBarAction(label: "Cacher", onPressed: (){}),
+        child: Text(AppLocalizations.of(context)!.eventConflict(error.conflictingEvent.title, error.allowedDelayDays)),
+        action: SnackBarAction(label: AppLocalizations.of(context)!.dismiss, onPressed: (){}),
       ),
     );
   }

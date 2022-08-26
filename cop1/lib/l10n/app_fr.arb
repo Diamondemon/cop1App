@@ -1,6 +1,6 @@
 {
     "@@locale": "fr",
-    "@@last_modified": "2022-08-17T20:01:28+00:00",
+    "@@last_modified": "2022-08-26T00:21:32+00:00",
     "newsFeed": "Événements",
     "@newsFeed": {
         "description": "Title for the events list page"
@@ -115,5 +115,18 @@
     "@complemInfo": {
         "description": "Complementary information title"
     },
-    "duration": "Durée"
+    "duration": "Durée",
+    "dismiss": "Ignorer",
+    "eventConflict": "L'événement \"{title}\" est en conflit avec cet événement. Vous devez attendre au moins {count} jours entre 2 événements.",
+    "@eventConflict": {
+        "description": "Message to display when there is a conflict between events.",
+        "placeholders": {
+            "title": {
+                "type": "String"
+            },
+            "count": {
+                "type": "int"
+            }
+        }
+    }
 }
