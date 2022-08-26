@@ -38,16 +38,7 @@ def gen_smsmode_generator(access_token: str) -> Callable[[str], str]:
 
 if api_key is not None:
     logger.info('Logging in to smsmode')
-    try:
-        res = requests.get('https://api.smsmode.com/http/2.0/createAuthorisation.do', params={'accessToken': api_key})
-        if not res.ok:
-            raise requests.exceptions.HTTPError(str(res.status_code))
-        data = res.json()
-        access_token = data['accessToken']
-        generate_and_send_token = gen_smsmode_generator(access_token)
-    except Exception as e:
-        logger.error('Unable to connect to smsmode')
-        raise e
+    generate_and_send_token = gen_smsmode_generator(api_key)
     logger.info('Done')
 else:
     logger.warning('Using fake code generator')
