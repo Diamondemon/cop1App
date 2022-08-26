@@ -7,11 +7,13 @@ const Duration _snackBarDisplayDuration = Duration(milliseconds: 4000);
 
 class ConnectedWidgetState {
   static void displayConnectionAlert(BuildContext context){
-    showDialog(
-        context: context,
-        builder: (BuildContext alertContext){
-          return _buildAlertDialog(alertContext, AppLocalizations.of(context)!.connectionErrorMessage);
-        }
+    ScaffoldMessenger.of(context)
+      ..removeCurrentSnackBar()
+      ..showSnackBar(
+      ConnectedWidgetState.timedSnackBar(
+        child: Text(AppLocalizations.of(context)!.connectionErrorMessage),
+        action: SnackBarAction(label: AppLocalizations.of(context)!.dismiss, onPressed: (){}),
+      ),
     );
   }
 
@@ -38,17 +40,6 @@ class ConnectedWidgetState {
         )
       ],
       content: Text(text),
-    );
-  }
-
-  static Widget _buildAlertDialog(BuildContext context, String text){
-    Widget discardButton = TextButton(
-      child: const Text("Ok"),
-      onPressed: () {Navigator.of(context).pop();},
-    );
-    return AlertDialog(
-      title: Text(text),
-      actions: [discardButton],
     );
   }
 
