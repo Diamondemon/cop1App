@@ -31,7 +31,11 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
   }
 
   void _deleteUserForever(BuildContext context) async {
-    if (await ConnectedWidgetState.displayYesNoDialog(context) ?? false){
+    if (await ConnectedWidgetState.displayYesNoDialog(
+        context, AppLocalizations.of(context)!.deletionConfirm,
+        AppLocalizations.of(context)!.deletionConfirm_text
+    ) ?? false)
+    {
       try {
         await session(context).deleteUser();
       }

@@ -17,18 +17,18 @@ class ConnectedWidgetState {
     );
   }
 
-  static Future<bool?> displayYesNoDialog(BuildContext context) async {
+  static Future<bool?> displayYesNoDialog(BuildContext context, String title, String text) async {
     return await showDialog(
         context: context,
         builder: (BuildContext alertContext){
-          return _buildYesNoDialog(alertContext, AppLocalizations.of(context)!.deletionConfirm_text);
+          return _buildYesNoDialog(alertContext, title, text);
         }
     );
   }
 
-  static AlertDialog _buildYesNoDialog(BuildContext context, String text){
+  static AlertDialog _buildYesNoDialog(BuildContext context, String title, String text){
     return AlertDialog(
-      title: Text(AppLocalizations.of(context)!.deletionConfirm),
+      title: Text(title),
       actions: [
         TextButton(
           onPressed: (){Navigator.of(context).pop(false);},
