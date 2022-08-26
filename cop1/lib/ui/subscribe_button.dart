@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:cop1/common.dart';
 import 'package:cop1/ui/creation_page.dart';
+import 'package:cop1/utils/connected_widget_state.dart';
 import 'package:cop1/utils/cop1_event.dart';
 import 'package:cop1/utils/user_profile.dart';
 import 'package:flutter/material.dart';
@@ -59,7 +60,7 @@ class _SubscribeButtonState extends State<SubscribeButton> {
         await s.subscribe(widget.event);
       }
       on EventConflictError catch (e) {
-        _showEventConflict(context, e.conflictingEvent);
+        _showEventConflict(context, e);
       }
       setState((){});
     }
@@ -100,12 +101,12 @@ class _SubscribeButtonState extends State<SubscribeButton> {
     );
   }
 
-  void _showEventConflict(BuildContext context, Cop1Event event) {
-    showDialog(context: context, builder:
-      (BuildContext dialogContext)
-        {
-          return const AlertDialog(title: Text("Conflit d'événement"));
-        }
+  void _showEventConflict(BuildContext context, EventConflictError event) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      ConnectedWidgetState.timedSnackBar(
+        child: const Text("Conflit d'événement!"),
+        action: SnackBarAction(label: "Cacher", onPressed: (){}),
+      ),
     );
   }
 
