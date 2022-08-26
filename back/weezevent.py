@@ -289,4 +289,19 @@ class Weezevent:
         self.api._request_delete(self.PARTICIPANTS, data=data)
 
 
+    def is_participent_unscanned(self, evt_id: str, barcode: str) -> bool:
+        try:
+            res = self.api.get_participant_list({'id_event[]': evt_id}).json()['participants']
+        except:
+            return False
+        for user in res:
+            if user.get('barcode') == barcode:
+                if self._has_not_check(user):
+                    return True
+                else:
+                    return False
+        else:
+            return False
+
+
 WEEZEVENT = Weezevent()

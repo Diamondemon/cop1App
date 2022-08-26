@@ -9,6 +9,7 @@ from app.logger import logger
 from app.database.tables import User as UserInDB, Event as EventInDB, Inscription as InscriptionInDB
 from app.database.main import get_user
 from app.tools import check_email, check_username
+from weezevent import WEEZEVENT
 
 app = APIRouter(tags=["login"])
 
@@ -110,3 +111,18 @@ async def delete_account(_token: str = Depends(token)) -> BoolResponse:
         e.delete_instance()
     user.delete_instance()
     return BoolResponse()
+
+
+@app.get("/unscanned/{event_id}")
+async def unscanned(event_id: str, _token: str = Depends(token)) -> ScanResponse:
+    """Subscribe to an event."""
+    user = user_from_token(_token)
+    try:
+        barcode = InscriptionInDB.get(
+                (InscriptionInDB.user == user.phone) &
+                (InscriptionInDB.event == event_id)
+            ).barcode
+        return ScanResponse(scanned=not WEEZEVENT.is_participent_unscanned(event_id, barcode))
+    except Exception as e:
+        logger.error(e)
+        return ScanResponse(scanned=False)

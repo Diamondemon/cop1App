@@ -64,6 +64,10 @@ class BoolResponse(BaseModel):
     message: str = "Ok"
 
 
+class ScanResponse(BaseModel):
+    scanned: bool = True
+
+
 class UserCreationResponse(BoolResponse):
     pass
 
