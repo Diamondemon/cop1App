@@ -1,9 +1,8 @@
-//import 'dart:developer';
 import 'dart:io';
 
 import 'package:cop1/common.dart';
 import 'package:cop1/ui/creation_page.dart';
-//import 'package:cop1/ui/subscription_page.dart';
+import 'package:cop1/utils/connected_widget_state.dart';
 import 'package:cop1/utils/cop1_event.dart';
 import 'package:cop1/utils/user_profile.dart';
 import 'package:flutter/material.dart';
@@ -57,7 +56,12 @@ class _SubscribeButtonState extends State<SubscribeButton> {
         if (!s.isConnected) return;
       }
       if (!mounted) return;
-      await s.subscribe(widget.event);
+      try {
+        await s.subscribe(widget.event);
+      }
+      on EventConflictError catch (e) {
+        _showEventConflict(context, e);
+      }
       setState((){});
     }
     else {
@@ -94,6 +98,17 @@ class _SubscribeButtonState extends State<SubscribeButton> {
           padding: const EdgeInsets.all(5.0),
           child: Text(text, style: Theme.of(context).primaryTextTheme.bodyLarge),
         )
+    );
+  }
+
+  void _showEventConflict(BuildContext context, EventConflictError error) {
+    ScaffoldMessenger.of(context)
+      ..removeCurrentSnackBar()
+      ..showSnackBar(
+      ConnectedWidgetState.timedSnackBar(
+        child: Text(AppLocalizations.of(context)!.eventConflict(error.conflictingEvent.title, error.allowedDelayDays)),
+        action: SnackBarAction(label: AppLocalizations.of(context)!.dismiss, onPressed: (){}),
+      ),
     );
   }
 

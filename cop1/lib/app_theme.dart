@@ -51,7 +51,14 @@ class AppTheme {
     ThemeData t = ThemeData.from(textTheme: txtTheme, colorScheme: colorScheme)
     // We can also add on some extra properties that ColorScheme seems to miss
         .copyWith(highlightColor: _accent1, toggleableActiveColor: _accent1, primaryTextTheme: txtTheme,
-    appBarTheme: const AppBarTheme(elevation:0));
+    appBarTheme: const AppBarTheme(elevation:0),
+      snackBarTheme: SnackBarThemeData(
+          behavior: SnackBarBehavior.floating,
+          backgroundColor: colorScheme.background.withOpacity(0.95),
+          contentTextStyle: txtTheme.bodyMedium
+      ),
+      progressIndicatorTheme: ProgressIndicatorThemeData(color: colorScheme.primary, linearTrackColor: Colors.transparent),
+    );
     /// Return the themeData which MaterialApp can now use
     return t;
   }
