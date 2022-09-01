@@ -9,16 +9,14 @@ class UserProfile{
   ValueNotifier<String> lastName=ValueNotifier("");
   final String _phoneNumber;
   ValueNotifier<String> email=ValueNotifier("");
-  final bool _isAdmin;
   SetNotifier<int> events = SetNotifier();
   SetNotifier<int> pastEvents = SetNotifier();
   Map<int, String> barcodes = {};
   int minDelayDays = 0;
 
   String get phoneNumber => _phoneNumber;
-  bool get isAdmin =>_isAdmin;
 
-  UserProfile(this._phoneNumber, [this._isAdmin = false]);
+  UserProfile(this._phoneNumber);
 
   void subscribeToEvent(Cop1Event event, String barcode){
     if (!event.isPast){
