@@ -1,5 +1,5 @@
 import 'package:cop1/app_theme.dart';
-import 'package:cop1/constants.dart' show sentryDsn;
+import 'package:cop1/constants.dart' show sentryDsn, sentryCaptureRate;
 import 'package:cop1/data/notification_api.dart';
 import 'package:cop1/routes/router.gr.dart';
 import 'package:flutter/material.dart';
@@ -19,7 +19,7 @@ Future<void> initAll() async {
       options.dsn = sentryDsn;
       // Set tracesSampleRate to 1.0 to capture 100% of transactions for performance monitoring.
       // We recommend adjusting this value in production.
-      options.tracesSampleRate = 0.5;
+      options.tracesSampleRate = sentryCaptureRate;
     },
     appRunner: () => runApp(MyApp())
   );

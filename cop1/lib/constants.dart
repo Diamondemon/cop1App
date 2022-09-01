@@ -11,6 +11,7 @@ const Color radioButtonColor = Colors.blue;
 const String apiURL = "https://je222004.rezel.net"; // root url of the API
 
 const String sentryDsn = 'https://6c7c9a6f8392454f819e2e39856caf40@o1363652.ingest.sentry.io/6656629';
+const double sentryCaptureRate = 1.0;
 
 BoxDecoration buttonDecoration() => const BoxDecoration(
   color: Colors.black12,
