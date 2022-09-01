@@ -5,7 +5,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 
 class UserProfile{
-  static const int allowedMillisMultip = 24 * 60 * 60 * 1000;
   ValueNotifier<String> firstName=ValueNotifier("");
   ValueNotifier<String> lastName=ValueNotifier("");
   final String _phoneNumber;
@@ -29,13 +28,13 @@ class UserProfile{
   }
 
   int checkEventConflicts(Cop1Event newEvent, List<Cop1Event> allEvents){
-    final int millis = newEvent.date.millisecondsSinceEpoch;
-    final int allowedMillis = minDelayDays*allowedMillisMultip;
+    final DateTime newDayStart = DateTime(newEvent.date.year, newEvent.date.month, newEvent.date.day);
     final int conflictingId = events.firstWhere(
       (eventId) {
         final Cop1Event event = allEvents.firstWhere((evt) => evt.id == eventId);
-        final int deltaMillis = (event.date.millisecondsSinceEpoch - millis).abs();
-        if (deltaMillis < allowedMillis) return true;
+        final DateTime dayStart = DateTime(event.date.year, event.date.month, event.date.day);
+        final int deltaDays = (dayStart.difference(newDayStart).inDays).abs();
+        if (deltaDays <= minDelayDays) return true;
         return false;
       },
       orElse: ()=>-1,
