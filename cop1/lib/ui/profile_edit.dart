@@ -2,7 +2,10 @@
 import 'dart:io';
 
 import 'package:cop1/data/session_data.dart';
+import 'package:cop1/ui/loading_widget.dart';
+import 'package:cop1/ui/socket_exception_widget.dart';
 import 'package:cop1/ui/text_field_widget.dart';
+import 'package:cop1/ui/unknown_error_widget.dart';
 import 'package:cop1/utils/user_profile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -38,17 +41,17 @@ class _ProfileEditState extends State<ProfileEdit> implements ConnectedWidgetSta
                 Navigator.of(ctxt).pop();
                 ConnectedWidgetState.displayConnectionAlert(ctxt);
                 });
-                return const Scaffold();
+                return SocketExceptionWidget(callBack: (ctx){setState(() {});});
               }
               Sentry.captureException(snapshot.error, stackTrace: snapshot.stackTrace);
-              return const Scaffold();
+              return UnknownErrorWidget(callBack: (ctx){setState(() {});});
             }
             else{
               return _buildView(ctxt, snapshot.data!);
             }
           }
           else {
-            return const Scaffold();
+            return const LoadingWidget();
           }
         }
     );

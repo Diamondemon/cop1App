@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:auto_route/auto_route.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cop1/data/session_data.dart';
+import 'package:cop1/ui/loading_widget.dart';
+import 'package:cop1/ui/unknown_error_widget.dart';
 import 'package:cop1/utils/user_profile.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -30,18 +32,18 @@ class _EventPageState extends State<EventPage> {
         if (snapshot.connectionState == ConnectionState.done){
           if (snapshot.hasError && snapshot.error is! SocketException){
             Sentry.captureException(snapshot.error, stackTrace: snapshot.stackTrace);
-            return Container();
+            return UnknownErrorWidget(callBack: (ctx){setState(() {});});
           }
           else if (snapshot.data==null){
             Sentry.captureMessage("Snapshot data is null for event id ${widget.eventId}");
-            return Container();
+            return UnknownErrorWidget(callBack: (ctx){setState(() {});});
           }
           else {
             return _buildScaffold(context, snapshot.data!);
           }
         }
         else {
-          return Container();
+          return const LoadingWidget();
         }
       },
     );
@@ -133,6 +135,7 @@ class _EventPageState extends State<EventPage> {
               );
             }
             else {
+              Sentry.captureMessage("User not subscribed has access to QR code.");
               return Container();
             }
           }
