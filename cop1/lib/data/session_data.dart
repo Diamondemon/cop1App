@@ -46,18 +46,7 @@ class SessionData with ChangeNotifier {
   bool get isConnected => _token.isNotEmpty;
 
   Future<UserProfile?> get user async {
-    try {
-      if (_localUser==null && isConnected && _phoneNumber.isNotEmpty){
-        _localUser = UserProfile.fromJSON(await API.getUser(_token));
-        _localUser?.scheduleUserNotifications(_events, localizations!);
-      }
-    }
-    on HTTP401Exception {
-      disconnectUser();
-    }
-    catch (e, sT){
-      Sentry.captureException(e, stackTrace: sT);
-    }
+    await connectUser();
     return _localUser;
   }
 
@@ -89,6 +78,21 @@ class SessionData with ChangeNotifier {
   GlobalKey<ScaffoldState> get scaffoldKey{
     return _scaffoldKey;
   }*/
+
+  Future<void> connectUser() async {
+    try {
+      if (_localUser==null && isConnected && _phoneNumber.isNotEmpty){
+        _localUser = UserProfile.fromJSON(await API.getUser(_token));
+        _localUser?.scheduleUserNotifications(_events, localizations!);
+      }
+    }
+    on HTTP401Exception {
+    disconnectUser();
+    }
+    catch (e, sT){
+    Sentry.captureException(e, stackTrace: sT);
+    }
+  }
 
   void disconnectUser(){
     _localUser?.cancelUserNotifications(_events);
@@ -191,7 +195,7 @@ class SessionData with ChangeNotifier {
     return _token;
   }
 
-  void _loadCreds() async {
+  Future<void> _loadCreds() async {
     final credBox = await Hive.openBox("Credentials");
     _phoneNumber = credBox.get("phone",defaultValue:  "");
     _token = credBox.get("token",defaultValue:  "");
@@ -240,9 +244,34 @@ class SessionData with ChangeNotifier {
 
   }*/
 
+  Future<bool> hasMissedEvents() async {
+    await connectUser();
+
+    if (_localUser!=null){
+      for (int eventId in _localUser!.pastEvents){
+        try{
+          final json = await API.unscanned(eventId);
+          if (!json!["scanned"]){
+            return true;
+          }
+        }
+        on SocketException {
+          rethrow;
+        }
+        catch (e, sT){
+          Sentry.captureException(e, stackTrace: sT);
+          return false;
+        }
+      }
+    }
+    return false;
+  }
+
   /// Load all the text assets from the data/ folder
   Future<void> loadAssets(BuildContext context) async {
-    _loadCreds();
+    await _loadCreds();
+    await connectUser();
+    await refreshEvents();
     //loadAsset(context, 'data/database_category.txt').then(readCategories);
   }
 }

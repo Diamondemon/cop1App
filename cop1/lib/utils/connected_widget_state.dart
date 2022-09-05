@@ -17,6 +17,17 @@ class ConnectedWidgetState {
     );
   }
 
+  static void displayUnscannedAlert(BuildContext context){
+    ScaffoldMessenger.of(context)
+      ..removeCurrentSnackBar()
+      ..showSnackBar(
+        ConnectedWidgetState.timedSnackBar(
+          child: Text(AppLocalizations.of(context)!.missedEventMessage),
+          action: SnackBarAction(label: AppLocalizations.of(context)!.dismiss, onPressed: (){}),
+        ),
+      );
+  }
+
   static Future<bool?> displayYesNoDialog(BuildContext context, String title, String text) async {
     return await showDialog(
         context: context,

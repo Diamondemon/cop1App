@@ -154,7 +154,22 @@ class API {
     String request = "$apiURL/events";
     try {
       Map<String, dynamic> retVal = await _get(request);
-      //dev.log("Event List: $retVal");
+      return retVal;
+    }
+    on SocketException {
+      rethrow;
+    }
+    catch (e, sT){
+      Sentry.captureException(e, stackTrace: sT);
+      return null;
+    }
+  }
+
+  /// Get the list of COP1 events
+  static Future<Map<String, dynamic>?> unscanned(int id) async {
+    String request = "$apiURL/unscanned/$id";
+    try {
+      Map<String, dynamic> retVal = await _get(request);
       return retVal;
     }
     on SocketException {
