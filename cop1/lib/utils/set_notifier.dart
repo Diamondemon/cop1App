@@ -1,7 +1,13 @@
 import 'dart:collection';
 import 'package:flutter/foundation.dart';
+import 'package:hive/hive.dart';
 
-class SetNotifier<T> extends ValueListenable<Set<T>> with ChangeNotifier, SetMixin<T> {
+part 'set_notifier.g.dart';
+
+@HiveType(typeId: 1)
+class SetNotifier<T> extends ValueListenable<Set<T>> with ChangeNotifier, SetMixin<T>, HiveObjectMixin {
+
+  @HiveField(0)
   final Set<T> _set = <T>{};
 
   @override

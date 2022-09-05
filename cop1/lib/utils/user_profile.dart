@@ -3,15 +3,28 @@ import 'package:cop1/utils/cop1_event.dart';
 import 'package:cop1/utils/set_notifier.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
+import 'package:hive/hive.dart';
 
-class UserProfile{
+part 'user_profile.g.dart';
+
+@HiveType(typeId: 2)
+class UserProfile extends HiveObject{
+
+  @HiveField(0)
   ValueNotifier<String> firstName=ValueNotifier("");
+  @HiveField(1)
   ValueNotifier<String> lastName=ValueNotifier("");
+  @HiveField(2)
   final String _phoneNumber;
+  @HiveField(3)
   ValueNotifier<String> email=ValueNotifier("");
+  @HiveField(4)
   SetNotifier<int> events = SetNotifier();
+  @HiveField(5)
   SetNotifier<int> pastEvents = SetNotifier();
+  @HiveField(6)
   Map<int, String> barcodes = {};
+  @HiveField(7)
   int minDelayDays = 0;
 
   String get phoneNumber => _phoneNumber;

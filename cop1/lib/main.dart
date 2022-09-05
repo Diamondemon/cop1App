@@ -2,6 +2,9 @@ import 'package:cop1/app_theme.dart';
 import 'package:cop1/constants.dart' show sentryDsn, sentryCaptureRate;
 import 'package:cop1/data/notification_api.dart';
 import 'package:cop1/routes/router.gr.dart';
+import 'package:cop1/utils/cop1_event.dart';
+import 'package:cop1/utils/set_notifier.dart';
+import 'package:cop1/utils/user_profile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
@@ -13,6 +16,9 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 Future<void> initAll() async {
   await Hive.initFlutter();
+  Hive.registerAdapter(UserProfileAdapter());
+  Hive.registerAdapter(Cop1EventAdapter());
+  Hive.registerAdapter(SetNotifierAdapter());
   await NotificationAPI.initialize();
   await SentryFlutter.init(
     (options) {
