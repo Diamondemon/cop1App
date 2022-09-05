@@ -1,6 +1,6 @@
 {
     "@@locale": "fr",
-    "@@last_modified": "2022-08-26T00:21:32+00:00",
+    "@@last_modified": "2022-09-05T08:42:21+00:00",
     "newsFeed": "Événements",
     "@newsFeed": {
         "description": "Title for the events list page"
@@ -128,5 +128,16 @@
                 "type": "int"
             }
         }
-    }
+    },
+    "unknownError": "Il vient de se passer une erreur inconnue. Nous vous prions de nous excuser pour le désagrément, nous étudions le problème.",
+    "@unknownError": {
+        "description": "When there is an unforeseen error."
+    },
+    "error": "Erreur",
+    "loading": "Chargement",
+    "socketExceptionWidgetMessage": "On dirait que le serveur distant n'est pas joignable. Vérifiez votre connexion internet ou réessayez plus tard.",
+    "@socketExceptionWidgetMessage": {
+        "description": "Message for the widget saying there is a problem connecting to the server"
+    },
+    "retry": "Réessayer"
 }

@@ -1,5 +1,8 @@
 import 'dart:io';
 
+import 'package:cop1/ui/loading_widget.dart';
+import 'package:cop1/ui/socket_exception_widget.dart';
+import 'package:cop1/ui/unknown_error_widget.dart';
 import 'package:cop1/utils/connected_widget_state.dart';
 import 'package:cop1/utils/set_notifier.dart';
 import 'package:cop1/utils/user_profile.dart';
@@ -12,8 +15,14 @@ import '../common.dart';
 import '../utils/cop1_event.dart';
 import '../data/session_data.dart';
 
-class ProfileWidget extends StatelessWidget implements ConnectedWidgetState{
+class ProfileWidget extends StatefulWidget {
   const ProfileWidget({Key? key}) : super(key: key);
+
+  @override
+  State<ProfileWidget> createState() => _ProfileWidgetState();
+}
+
+class _ProfileWidgetState extends State<ProfileWidget> {
 
   @override
   Widget build(BuildContext context) {
@@ -27,20 +36,20 @@ class ProfileWidget extends StatelessWidget implements ConnectedWidgetState{
                 WidgetsBinding.instance.addPostFrameCallback((_) {
                   ConnectedWidgetState.displayConnectionAlert(ctxt);
                 });
-                return const Scaffold();
+                return SocketExceptionWidget(callBack: (ctx){setState(() {});});
               }
               Sentry.captureException(snapshot.error, stackTrace: snapshot.stackTrace);
-              return const Scaffold();
+              return UnknownErrorWidget(callBack: (ctx){setState(() {});});
             }
             else if (snapshot.hasData){
               return _buildListView(ctxt, snapshot.data!.item1!, snapshot.data!.item2);
             }
             else {
-              return const Scaffold();
+              return UnknownErrorWidget(callBack: (ctx){setState(() {});});
             }
           }
           else {
-            return const Scaffold();
+            return const LoadingWidget();
           }
         }
     );

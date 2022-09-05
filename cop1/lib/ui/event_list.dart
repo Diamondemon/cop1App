@@ -1,6 +1,8 @@
-//import 'dart:developer';
 import 'dart:io';
 
+import 'package:cop1/ui/loading_widget.dart';
+import 'package:cop1/ui/socket_exception_widget.dart';
+import 'package:cop1/ui/unknown_error_widget.dart';
 import 'package:cop1/utils/cop1_event.dart';
 import 'package:cop1/ui/event_tile.dart';
 import 'package:flutter/material.dart';
@@ -31,17 +33,17 @@ class _EventListState extends State<EventList> {
                     .addPostFrameCallback((_) {
                   ConnectedWidgetState.displayConnectionAlert(ctxt);
                 });
-                return _buildListView(ctxt, []);
+                return SocketExceptionWidget(callBack: (ctx){_refreshList(ctx);});
               }
               Sentry.captureException(snapshot.error, stackTrace: snapshot.stackTrace);
-              return const Scaffold();
+              return UnknownErrorWidget(callBack: (ctx){_refreshList(ctx);});
             }
             else{
               return _buildListView(ctxt, snapshot.data);
             }
           }
           else {
-            return const Scaffold();
+            return const LoadingWidget();
           }
         }
       ),
