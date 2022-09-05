@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:cop1/common.dart';
 import 'package:cop1/ui/creation_page.dart';
+import 'package:cop1/ui/unknown_error_button.dart';
 import 'package:cop1/utils/connected_widget_state.dart';
 import 'package:cop1/utils/cop1_event.dart';
 import 'package:cop1/utils/user_profile.dart';
@@ -40,7 +41,7 @@ class _SubscribeButtonState extends State<SubscribeButton> {
               }
             }
             else {
-              return const Scaffold();
+              return DisabledButton(text: AppLocalizations.of(ctxt)!.loading);
             }
           }
         );

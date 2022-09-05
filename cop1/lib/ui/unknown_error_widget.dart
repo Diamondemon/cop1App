@@ -1,3 +1,4 @@
+import 'package:cop1/common.dart';
 import 'package:flutter/material.dart';
 
 class UnknownErrorWidget extends StatelessWidget {
@@ -9,12 +10,12 @@ class UnknownErrorWidget extends StatelessWidget {
     return Center(
       child: Column(
         children: [
-          const Padding(
-            padding: EdgeInsets.all(10.0),
-            child: Text("Il vient de se passer une erreur inconnue. Nous vous prions de nous excuser pour le désagrément, nous étudions le problème.")
+          Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: Text(AppLocalizations.of(context)!.unknownError)
           ),
           Center(
-              child: ElevatedButton(onPressed: ()=> callBack!(context), child: const Text("Réessayer"))
+              child: ElevatedButton(onPressed: ()=> callBack!(context), child: Text(AppLocalizations.of(context)!.retry))
           )
         ],
       ),

@@ -1,3 +1,4 @@
+import 'package:cop1/common.dart';
 import 'package:flutter/material.dart';
 
 class SocketExceptionWidget extends StatelessWidget {
@@ -8,12 +9,12 @@ class SocketExceptionWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
         children: [
-          const Padding(
-            padding: EdgeInsets.all(10.0),
-            child: Text("On dirait que le serveur distant n'est pas joignable. Vérifiez votre connexion internet ou réessayez plus tard.")
+          Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: Text(AppLocalizations.of(context)!.socketExceptionWidgetMessage)
           ),
           Center(
-            child: ElevatedButton(onPressed: ()=> callBack(context), child: const Text("Réessayer"))
+            child: ElevatedButton(onPressed: ()=> callBack(context), child: Text(AppLocalizations.of(context)!.retry))
           )
         ]
     );

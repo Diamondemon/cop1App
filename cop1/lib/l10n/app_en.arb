@@ -1,6 +1,6 @@
 {
     "@@locale": "en",
-    "@@last_modified": "2022-08-26T00:21:05+00:00",
+    "@@last_modified": "2022-09-05T08:42:50+00:00",
     "newsFeed": "Events",
     "@newsFeed": {
         "description": "Title for the events list page"
@@ -77,7 +77,7 @@
         "description": "Body message for the connection page"
     },
     "verificationCode": "Verification code",
-    "verificationCodeMessage": "A verification code has been sent to {phoneNumber}. Please give it below.",
+    "verificationCodeMessage": "A verification code has been sent to {phoneNumber}. Please enter it below.",
     "@verificationCodeMessage": {
         "description": "Body message for the verification page"
     },
@@ -102,5 +102,16 @@
     "eventConflict": "Event \"{title}\" is conflicting with this event. You must wait at least {count} days between two events.",
     "@eventConflict": {
         "description": "Message to display when there is a conflict between events."
-    }
+    },
+    "unknownError": "There was an unforeseen error. We are sorry for the inconvenience, we are working on the problem.",
+    "@unknownError": {
+        "description": "When there is an unforeseen error."
+    },
+    "error": "Error",
+    "loading": "Loading",
+    "socketExceptionWidgetMessage": "It looks like the remote server is not available. Verify your Internet connection or retry later.",
+    "@socketExceptionWidgetMessage": {
+        "description": "Message for the widget saying there is a problem connecting to the server"
+    },
+    "retry": "Retry"
 }
