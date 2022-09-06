@@ -18,7 +18,7 @@ Future<void> initAll() async {
   await Hive.initFlutter();
   Hive.registerAdapter(UserProfileAdapter());
   Hive.registerAdapter(Cop1EventAdapter());
-  Hive.registerAdapter(SetNotifierAdapter());
+  Hive.registerAdapter(SetNotifierAdapter<int>(typeId: 11));
   await NotificationAPI.initialize();
   await SentryFlutter.init(
     (options) {

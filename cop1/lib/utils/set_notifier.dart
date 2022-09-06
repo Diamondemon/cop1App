@@ -2,13 +2,19 @@ import 'dart:collection';
 import 'package:flutter/foundation.dart';
 import 'package:hive/hive.dart';
 
-part 'set_notifier.g.dart';
 
 @HiveType(typeId: 1)
 class SetNotifier<T> extends ValueListenable<Set<T>> with ChangeNotifier, SetMixin<T>, HiveObjectMixin {
 
   @HiveField(0)
-  final Set<T> _set = <T>{};
+  Set<T> _set = <T>{};
+
+  SetNotifier();
+
+  SetNotifier.fromList(List<T> list){
+    _set = list.toSet();
+  }
+
 
   @override
   int get length => _set.length;
@@ -55,4 +61,38 @@ class SetNotifier<T> extends ValueListenable<Set<T>> with ChangeNotifier, SetMix
   T firstWhere(bool Function(T) test, {T Function()? orElse}){
     return _set.firstWhere(test, orElse:orElse);
   }
+}
+
+class SetNotifierAdapter<T> extends TypeAdapter<SetNotifier<T>> {
+  @override
+  final int typeId;
+
+  SetNotifierAdapter({required this.typeId});
+
+  @override
+  SetNotifier<T> read(BinaryReader reader) {
+    final numOfFields = reader.readByte();
+    final fields = <int, dynamic>{
+      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
+    };
+    return SetNotifier().._set = (fields[0] as List).cast<T>().toSet();
+  }
+
+  @override
+  void write(BinaryWriter writer, SetNotifier obj) {
+    writer
+      ..writeByte(1)
+      ..writeByte(0)
+      ..write(obj._set.toList());
+  }
+
+  @override
+  int get hashCode => typeId.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+          other is SetNotifierAdapter &&
+              runtimeType == other.runtimeType &&
+              typeId == other.typeId;
 }
