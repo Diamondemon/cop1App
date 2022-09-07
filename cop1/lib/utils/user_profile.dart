@@ -86,7 +86,7 @@ class UserProfile extends HiveObject{
 
   @override
   String toString(){
-    return "User $firstName.value $lastName.value, identified by phone number $phoneNumber.\nMail: $email.value\nSubscribed to events $events";
+    return "User ${firstName.value} ${lastName.value}, identified by phone number $phoneNumber.\nMail: ${email.value}\nSubscribed to events $events";
   }
 
   void scheduleUserNotifications(List<Cop1Event> evts, AppLocalizations localizations){
