@@ -85,6 +85,9 @@ class API {
     on SocketException {
       rethrow;
     }
+    on HTTP401Exception {
+      rethrow;
+    }
     on Exception {
       rethrow;
     }
@@ -100,6 +103,9 @@ class API {
     on SocketException {
       rethrow;
     }
+    on HTTP401Exception {
+      rethrow;
+    }
     on Exception {
       rethrow;
     }
@@ -112,6 +118,9 @@ class API {
       return _delete(request, headers);
     }
     on SocketException {
+      rethrow;
+    }
+    on HTTP401Exception {
       rethrow;
     }
     on Exception {
@@ -193,8 +202,8 @@ class API {
     } else if (response.statusCode == 409){
       throw HTTP409Exception(jsonDecode(response.body)["detail"]);
     }
-    else if (response.statusCode == 401 && jsonDecode(response.body)["detail"] == "Invalid authentication credentials"){
-      throw HTTP401Exception("Invalid authentication credentials");
+    else if (response.statusCode == 401){
+      throw HTTP401Exception(jsonDecode(response.body)["detail"]);
     }
     else {
       throw Exception('Error ${response.statusCode} on $url. Detail: ${jsonDecode(response.body)["detail"]}');
@@ -214,8 +223,8 @@ class API {
     } else if (response.statusCode == 409){
       throw HTTP409Exception(jsonDecode(response.body)["detail"]);
     }
-    else if (response.statusCode == 401 && jsonDecode(response.body)["detail"] == "Invalid authentication credentials"){
-      throw HTTP401Exception("Invalid authentication credentials");
+    else if (response.statusCode == 401){
+      throw HTTP401Exception(jsonDecode(response.body)["detail"]);
     }
     else {
       throw Exception('Error ${response.statusCode} on $url. Detail: ${jsonDecode(response.body)["detail"]}');
@@ -235,8 +244,8 @@ class API {
     } else if (response.statusCode == 409){
       throw HTTP409Exception(jsonDecode(response.body)["detail"]);
     }
-    else if (response.statusCode == 401 && jsonDecode(response.body)["detail"] == "Invalid authentication credentials"){
-      throw HTTP401Exception("Invalid authentication credentials");
+    else if (response.statusCode == 401){
+      throw HTTP401Exception(jsonDecode(response.body)["detail"]);
     }
     else {
       throw Exception('Error ${response.statusCode} on $url. Detail: ${jsonDecode(response.body)["detail"]}');

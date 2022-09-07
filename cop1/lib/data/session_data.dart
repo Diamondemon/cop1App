@@ -80,19 +80,25 @@ class SessionData with ChangeNotifier {
   }*/
 
   Future<void> connectUser() async {
+    Map<String,dynamic>? json;
     try {
-      if (_localUser==null && isConnected && _phoneNumber.isNotEmpty){
-        _localUser = UserProfile.fromJSON(await API.getUser(_token));
-        _localUser?.scheduleUserNotifications(_events, localizations!);
+      if (_localUser==null && isConnected && _phoneNumber.isNotEmpty) {
+        json = await API.getUser(_token);
       }
     }
     on HTTP401Exception {
-    disconnectUser();
+      disconnectUser();
+      return;
     }
     catch (e, sT){
-    Sentry.captureException(e, stackTrace: sT);
+      Sentry.captureException(e, stackTrace: sT);
+      return;
     }
+    if (json == null) return;
+    _localUser = UserProfile.fromJSON(json);
+      _localUser?.scheduleUserNotifications(_events, localizations!);
   }
+
 
   void disconnectUser(){
     _localUser?.cancelUserNotifications(_events);
@@ -270,8 +276,12 @@ class SessionData with ChangeNotifier {
   /// Load all the text assets from the data/ folder
   Future<void> loadAssets(BuildContext context) async {
     await _loadCreds();
-    await connectUser();
+    //await loadUser();
     await refreshEvents();
     //loadAsset(context, 'data/database_category.txt').then(readCategories);
+  }
+
+  Future<void> loadUser() async{
+
   }
 }

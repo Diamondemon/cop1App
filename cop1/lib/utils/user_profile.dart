@@ -72,7 +72,7 @@ class UserProfile extends HiveObject{
     user.lastName.value = json["last_name"];
     user.email.value = json["email"];
     user.minDelayDays = json["min_event_delay_days"];
-    for (var item in json["events"]) {
+    for (var item in (json["events"] as List).reversed) {
       final Cop1Event event = Cop1Event.fromJSON(item);
       if (event.isPast){
         user.pastEvents.add(event.id);

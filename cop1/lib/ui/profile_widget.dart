@@ -42,6 +42,9 @@ class _ProfileWidgetState extends State<ProfileWidget> {
               return UnknownErrorWidget(callBack: (ctx){setState(() {});});
             }
             else if (snapshot.hasData){
+              if (snapshot.data!.item1 == null) {
+                return const LoadingWidget();
+              }
               return _buildListView(ctxt, snapshot.data!.item1!, snapshot.data!.item2);
             }
             else {
