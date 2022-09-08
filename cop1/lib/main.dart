@@ -5,6 +5,7 @@ import 'package:cop1/routes/router.gr.dart';
 import 'package:cop1/utils/cop1_event.dart';
 import 'package:cop1/utils/set_notifier.dart';
 import 'package:cop1/utils/user_profile.dart';
+import 'package:cop1/utils/value_notifier_adapter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
@@ -19,6 +20,7 @@ Future<void> initAll() async {
   Hive.registerAdapter(UserProfileAdapter());
   Hive.registerAdapter(Cop1EventAdapter());
   Hive.registerAdapter(SetNotifierAdapter<int>(typeId: 11));
+  Hive.registerAdapter(ValueNotifierAdapter<String>(typeId: 12));
   await NotificationAPI.initialize();
   await SentryFlutter.init(
     (options) {

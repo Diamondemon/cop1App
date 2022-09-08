@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:cop1/common.dart';
@@ -46,7 +47,7 @@ class SessionData with ChangeNotifier {
   bool get isConnected => _token.isNotEmpty;
 
   Future<UserProfile?> get user async {
-    await connectUser();
+    if (_localUser == null) await connectUser();
     return _localUser;
   }
 
@@ -58,10 +59,21 @@ class SessionData with ChangeNotifier {
   }
 
   Future<void> refreshEvents() async {
-    Map<String, dynamic> json = (await API.events())??{"events":[]};
+    Map<String, dynamic>? json;
+    try {
+      json = (await API.events())??{"events":[]};
+    }
+    on SocketException {
+      rethrow;
+    }
+    catch (e, sT){
+      Sentry.captureException(e, stackTrace: sT);
+    }
+    if (json == null) return;
     _events = (json["events"] as List<dynamic>).map((item){
       return Cop1Event.fromJSON(item);
     }).toList();
+    storeEvents();
   }
 
   Future<Cop1Event> getEvent(int eventId) async {
@@ -90,13 +102,18 @@ class SessionData with ChangeNotifier {
       disconnectUser();
       return;
     }
+    on SocketException {
+      rethrow;
+    }
     catch (e, sT){
       Sentry.captureException(e, stackTrace: sT);
       return;
     }
     if (json == null) return;
+    log("$_localUser");
     _localUser = UserProfile.fromJSON(json);
-      _localUser?.scheduleUserNotifications(_events, localizations!);
+    _localUser?.scheduleUserNotifications(_events, localizations!);
+    storeUser();
   }
 
 
@@ -107,6 +124,7 @@ class SessionData with ChangeNotifier {
     _localUser = null;
     _connectionListenable.value = false;
     _storeCreds();
+    storeUser();
   }
 
   Future<bool> modifyUser(String firstName, String lastName, String email) async {
@@ -115,6 +133,7 @@ class SessionData with ChangeNotifier {
     _localUser?.email.value = email;
     try{
       final retVal = await API.modifyUser(token, _localUser!);
+      storeUser();
       return retVal["valid"];
     }
     on SocketException {
@@ -251,7 +270,7 @@ class SessionData with ChangeNotifier {
   }*/
 
   Future<bool> hasMissedEvents() async {
-    await connectUser();
+    if (_localUser == null) await connectUser();
 
     if (_localUser!=null){
       for (int eventId in _localUser!.pastEvents){
@@ -276,12 +295,68 @@ class SessionData with ChangeNotifier {
   /// Load all the text assets from the data/ folder
   Future<void> loadAssets(BuildContext context) async {
     await _loadCreds();
-    //await loadUser();
-    await refreshEvents();
+    await loadUser();
+    await loadEvents();
+    log("$_events");
+    log("$_localUser");
+    try {
+      await refreshEvents();
+    }
+    on SocketException {
+      log("oui");
+      return;
+    }
     //loadAsset(context, 'data/database_category.txt').then(readCategories);
   }
 
   Future<void> loadUser() async{
-
+    final userBox = await Hive.openBox("Credentials");
+    _localUser = userBox.get("user");
+    log("Ended");
   }
+
+  Future<void> loadEvents() async{
+    log("Started2");
+    Box<dynamic>? eventsBox;
+    try{
+      eventsBox = await Hive.openBox("Events");
+      log("That's a nope");
+    }
+    catch (e, sT){
+      Sentry.captureException(e, stackTrace: sT);
+    }
+    if (eventsBox==null) return;
+    log("That's f-d up");
+    try {
+      _events = eventsBox.get("events", defaultValue: <Cop1Event>[]);
+    }
+    catch (e, sT){
+      Sentry.captureException(e, stackTrace: sT);
+    }
+    log("Ended2");
+  }
+
+  Future<void> storeUser() async{
+    final userBox = await Hive.openBox("Credentials");
+
+    try{
+      userBox.put("user", _localUser);
+    }
+    catch (e, sT) {
+      Sentry.captureException(e, stackTrace: sT);
+    }
+  }
+
+
+  Future<void> storeEvents() async{
+    final eventsBox = await Hive.openBox("Events");
+
+    try{
+      eventsBox.put("events", _events);
+    }
+    catch (e, sT) {
+      Sentry.captureException(e, stackTrace: sT);
+    }
+  }
+
 }
