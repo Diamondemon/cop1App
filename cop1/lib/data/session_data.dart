@@ -6,8 +6,6 @@ import 'package:cop1/common.dart';
 import 'package:cop1/utils/user_profile.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
-//import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-//import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
 import 'package:sentry/sentry.dart';
 import '../utils/cop1_event.dart';
@@ -53,6 +51,7 @@ class SessionData with ChangeNotifier {
 
   Future<List<Cop1Event>> get events async {
     if (_events.isEmpty){
+      log("events are empty whyyyyy");
       await refreshEvents();
     }
     return _events;
@@ -81,10 +80,6 @@ class SessionData with ChangeNotifier {
     return _events.firstWhere((Cop1Event element) => element.id == eventId);
   }
 
-
-  /// App preferences
-  //static const storage = FlutterSecureStorage();
-
   /*
   /// A scaffold key, for a drawer menu
   GlobalKey<ScaffoldState> get scaffoldKey{
@@ -103,6 +98,7 @@ class SessionData with ChangeNotifier {
       return;
     }
     on SocketException {
+      if (_localUser != null) return;
       rethrow;
     }
     catch (e, sT){
@@ -133,7 +129,7 @@ class SessionData with ChangeNotifier {
     _localUser?.email.value = email;
     try{
       final retVal = await API.modifyUser(token, _localUser!);
-      storeUser();
+      if (retVal["valid"]) _localUser?.save();
       return retVal["valid"];
     }
     on SocketException {
@@ -243,31 +239,6 @@ class SessionData with ChangeNotifier {
   Future<String> loadAsset(BuildContext context, String path) async {
     return await DefaultAssetBundle.of(context).loadString(path);
   }
-  /*
-  /// Stores the ID in the application's preferences.
-  void storeID() async{
-    await storage.write(key: "id", value: _id.toString());
-  }*/
-
-  /*
-  /// Defines how to interpret the text in the category database
-  void readCategories(String s) async {
-    final categBox = await Hive.openBox('Categories');
-    if (categBox.isEmpty){
-      List<String> lineList = s.split("\n");
-      for (String line in lineList) {
-        if (line.startsWith("//") || line.isEmpty) continue;
-        List<String> catItem = line.replaceAll("\r", "").split(",");
-        categBox.add(
-          Category(
-            name: catItem[0], energy: energyFrom(catItem[1]),
-            description: catItem.length==3 ? catItem[2] : "",
-          ),
-        );
-      }
-    }
-
-  }*/
 
   Future<bool> hasMissedEvents() async {
     if (_localUser == null) await connectUser();
@@ -303,7 +274,6 @@ class SessionData with ChangeNotifier {
       await refreshEvents();
     }
     on SocketException {
-      log("oui");
       return;
     }
     //loadAsset(context, 'data/database_category.txt').then(readCategories);
@@ -349,6 +319,7 @@ class SessionData with ChangeNotifier {
 
 
   Future<void> storeEvents() async{
+    log("storing");
     final eventsBox = await Hive.openBox("Events");
 
     try{
