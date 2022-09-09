@@ -82,6 +82,10 @@ class _ProfileWidgetState extends State<ProfileWidget> {
     return ValueListenableBuilder(
         valueListenable: subEvents,
         builder: (BuildContext cntxt, Set<int> evts, _) {
+          final List<int> sortedSubbed = evts.toList()
+              ..sort((int a, int b){
+            return - events.firstWhere((event) => event.id == a).date.compareTo(events.firstWhere((event) => event.id == b).date);
+          });
           return ListView.builder(
             shrinkWrap: true,
             physics: const ClampingScrollPhysics(),
@@ -91,7 +95,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
               return Padding(
                   padding: const EdgeInsets.all(5.0),
                   child: EventTile(
-                    event: events.firstWhere((element) => (element.id == evts.elementAt(index))),
+                    event: events.firstWhere((element) => (element.id == sortedSubbed.elementAt(index))),
                   )
               );
             },
