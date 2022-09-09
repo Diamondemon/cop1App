@@ -316,15 +316,22 @@ def new_event():
                 date=datetime.now().date(),
                 error="ID is required"
             )
-        Event.create(
-            id=evt_id,
-            date=request.form['date'],
-            duration=request.form['duration'],
-            desc=request.form['desc'],
-            title=request.form['title'],
-            img=request.form['img'],
-            loc=request.form['loc'],
-        )
+        try:
+            Event.create(
+                id=evt_id,
+                date=request.form['date'],
+                duration=request.form['duration'],
+                desc=request.form['desc'],
+                title=request.form['title'],
+                img=request.form['img'],
+                loc=request.form['loc'],
+            )
+        except:
+            return render_template(
+                'events/create.html',
+                date=datetime.now().date(),
+                error="ID already in database."
+            )
         return redirect(apps['Events'])
     return render_template(
         'events/create.html',
