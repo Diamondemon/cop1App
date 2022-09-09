@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:cop1/common.dart';
@@ -51,7 +50,6 @@ class SessionData with ChangeNotifier {
 
   Future<List<Cop1Event>> get events async {
     if (_events.isEmpty){
-      log("events are empty whyyyyy");
       await refreshEvents();
     }
     return _events;
@@ -106,7 +104,6 @@ class SessionData with ChangeNotifier {
       return;
     }
     if (json == null) return;
-    log("$_localUser");
     _localUser = UserProfile.fromJSON(json);
     _localUser?.scheduleUserNotifications(_events, localizations!);
     storeUser();
@@ -268,42 +265,34 @@ class SessionData with ChangeNotifier {
     await _loadCreds();
     await loadUser();
     await loadEvents();
-    log("$_events");
-    log("$_localUser");
     try {
       await refreshEvents();
     }
     on SocketException {
       return;
     }
-    //loadAsset(context, 'data/database_category.txt').then(readCategories);
   }
 
   Future<void> loadUser() async{
     final userBox = await Hive.openBox("Credentials");
     _localUser = userBox.get("user");
-    log("Ended");
   }
 
   Future<void> loadEvents() async{
-    log("Started2");
     Box<dynamic>? eventsBox;
     try{
       eventsBox = await Hive.openBox("Events");
-      log("That's a nope");
     }
     catch (e, sT){
       Sentry.captureException(e, stackTrace: sT);
     }
     if (eventsBox==null) return;
-    log("That's f-d up");
     try {
-      _events = eventsBox.get("events", defaultValue: <Cop1Event>[]);
+      _events = (eventsBox.get("events", defaultValue: []) as List).cast<Cop1Event>();
     }
     catch (e, sT){
       Sentry.captureException(e, stackTrace: sT);
     }
-    log("Ended2");
   }
 
   Future<void> storeUser() async{
@@ -319,7 +308,6 @@ class SessionData with ChangeNotifier {
 
 
   Future<void> storeEvents() async{
-    log("storing");
     final eventsBox = await Hive.openBox("Events");
 
     try{
