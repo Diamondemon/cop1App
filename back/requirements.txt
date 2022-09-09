@@ -9,3 +9,4 @@ flask_limiter
 requests
 types-requests
 psycopg2-binary
+sentry_sdk
