@@ -163,12 +163,9 @@ class SessionData with ChangeNotifier {
     if (conflictingId != -1){
       throw EventConflictError(_events.firstWhere((evt) => evt.id == conflictingId), _localUser!.minDelayDays);
     }
+    final Map<String, dynamic> subscription;
     try{
-      final subscription = await API.subscribeToEvent(token, event.id);
-      if (subscription["success"]){
-        _localUser?.subscribeToEvent(event, subscription["barcode"]??"123456");
-        event.scheduleNotifications(localizations!);
-      }
+      subscription = await API.subscribeToEvent(token, event.id);
     }
     on SocketException {
       rethrow;
@@ -177,10 +174,24 @@ class SessionData with ChangeNotifier {
       Sentry.captureException(e, stackTrace: sT);
       return;
     }
+
+    if (subscription["success"]){
+      _localUser?.subscribeToEvent(event, subscription["barcode"]??"123456");
+      event.scheduleNotifications(localizations!);
+    }
   }
 
-  void unsubscribe(Cop1Event event){
-    API.unsubscribeFromEvent(token, event.id);
+  Future<void> unsubscribe(Cop1Event event) async {
+    try{
+      await API.unsubscribeFromEvent(token, event.id);
+    }
+    on SocketException {
+      rethrow;
+    }
+    catch (e, sT){
+      Sentry.captureException(e, stackTrace: sT);
+      return;
+    }
     _localUser?.unsubscribeFromEvent(event);
     event.cancelNotifications();
   }

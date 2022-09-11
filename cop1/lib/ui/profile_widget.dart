@@ -82,6 +82,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
     return ValueListenableBuilder(
         valueListenable: subEvents,
         builder: (BuildContext cntxt, Set<int> evts, _) {
+          if (events.isEmpty) return Container();
           final List<int> sortedSubbed = evts.toList()
               ..sort((int a, int b){
             return - events.firstWhere((event) => event.id == a).date.compareTo(events.firstWhere((event) => event.id == b).date);
