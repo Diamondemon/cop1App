@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:cop1/common.dart';
@@ -50,6 +51,7 @@ class SessionData with ChangeNotifier {
 
   Future<List<Cop1Event>> get events async {
     if (_events.isEmpty){
+      log("Here I am");
       await refreshEvents();
     }
     return _events;
@@ -67,6 +69,7 @@ class SessionData with ChangeNotifier {
       Sentry.captureException(e, stackTrace: sT);
     }
     if (json == null) return;
+
     _events = (json["events"] as List<dynamic>).map((item){
       return Cop1Event.fromJSON(item);
     }).toList();
@@ -167,6 +170,9 @@ class SessionData with ChangeNotifier {
         event.scheduleNotifications(localizations!);
       }
     }
+    on SocketException {
+      rethrow;
+    }
     catch (e, sT){
       Sentry.captureException(e, stackTrace: sT);
       return;
@@ -265,10 +271,14 @@ class SessionData with ChangeNotifier {
     await _loadCreds();
     await loadUser();
     await loadEvents();
+    log("$_events");
+    log("${_events.isEmpty}");
     try {
       await refreshEvents();
     }
     on SocketException {
+      log("Boom");
+      log("${_events.isEmpty}");
       return;
     }
   }
@@ -312,6 +322,7 @@ class SessionData with ChangeNotifier {
 
     try{
       eventsBox.put("events", _events);
+      log("successfully stored");
     }
     catch (e, sT) {
       Sentry.captureException(e, stackTrace: sT);

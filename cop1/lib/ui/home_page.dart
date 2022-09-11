@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:cop1/data/notification_api.dart';
 import 'package:cop1/routes/router.gr.dart';
@@ -23,9 +25,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
   @override
   void initState() {
     super.initState();
-    session(context).loadAssets(context).then(
-            (_) => FlutterNativeSplash.remove()
-    );
+    FlutterNativeSplash.remove();
     listenNotifications();
     session(context).hasMissedEvents().then((bool hasMissed) {if (hasMissed) {
       WidgetsBinding.instance.addPostFrameCallback(
@@ -33,7 +33,11 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
           _displayMissedEventAlert(context);
         }
       );
-    }});
+    }}).onError((error, stackTrace){
+      if (error is! SocketException){
+        Sentry.captureException(error, stackTrace: stackTrace);
+      }
+    });
   }
 
   Future<void> listenNotifications() async {

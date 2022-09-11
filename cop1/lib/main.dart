@@ -49,14 +49,30 @@ class MyApp extends StatelessWidget {
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     return ChangeNotifierProvider(
       create: (context) => SessionData(),
-      child: MaterialApp.router(
-          title: 'COP1',
-          theme: AppTheme.themeData,
-          routerDelegate: _appRouter.delegate(),
-          routeInformationParser: _appRouter.defaultRouteParser(),
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
-          supportedLocales: AppLocalizations.supportedLocales
-      ),
+      builder: (ctxt, _){
+        return FutureBuilder(
+          future: session(ctxt).loadAssets(ctxt),
+          builder: (futureCtxt, snapshot) {
+            if (snapshot.connectionState == ConnectionState.done){
+              return buildApp(futureCtxt);
+            }
+            else {
+              return Container();
+            }
+          }
+        );
+      },
+    );
+  }
+
+  Widget buildApp(BuildContext context){
+    return MaterialApp.router(
+        title: 'COP1',
+        theme: AppTheme.themeData,
+        routerDelegate: _appRouter.delegate(),
+        routeInformationParser: _appRouter.defaultRouteParser(),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales
     );
   }
 }
