@@ -1,15 +1,26 @@
 import 'package:add_2_calendar/add_2_calendar.dart';
 import 'package:cop1/common.dart';
 import 'package:cop1/data/notification_api.dart';
+import 'package:hive/hive.dart';
 import 'maps_launcher.dart';
 
-class Cop1Event {
+part 'cop1_event.g.dart';
+
+@HiveType(typeId: 0)
+class Cop1Event extends HiveObject {
+  @HiveField(0)
   final int id;
+  @HiveField(1)
   final String title;
+  @HiveField(2)
   final String description;
+  @HiveField(3)
   final DateTime date;
+  @HiveField(4)
   final String duration;
+  @HiveField(5)
   final String location;
+  @HiveField(6)
   final String imageLink;
 
   bool get isPast => date.isBefore(DateTime.now());

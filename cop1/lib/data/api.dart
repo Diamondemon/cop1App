@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
@@ -5,8 +6,6 @@ import 'package:cop1/constants.dart' show apiURL;
 import 'package:cop1/utils/user_profile.dart';
 import 'package:http/http.dart' as http;
 import 'package:sentry/sentry.dart';
-// TODO Remove all calls to dart:developer for prod
-//import 'dart:developer' as dev;
 
 class HTTP409Exception implements Exception {
   final String? detail;
@@ -26,6 +25,8 @@ class HTTP401Exception implements Exception {
 
 class API {
 
+  static final client = http.Client();
+
   static Future<bool> createAccount(String phoneNumber) async{
     String request = "$apiURL/account/create";
     Map<String, String> data = {"phone": phoneNumber};
@@ -35,6 +36,9 @@ class API {
     }
     on HTTP409Exception {
       rethrow;
+    }
+    on TimeoutException {
+      throw const SocketException("Server is unreachable.");
     }
     on SocketException {
       rethrow;
@@ -52,6 +56,9 @@ class API {
       Map<String, dynamic> retVal = await _post(request, data);
       return retVal['valid'];
     }
+    on TimeoutException {
+      throw const SocketException("Server is unreachable.");
+    }
     on SocketException {
       rethrow;
     }
@@ -68,6 +75,9 @@ class API {
       Map<String, dynamic> retVal = await _post(request, data);
       return retVal["token"]["access_token"];
     }
+    on TimeoutException {
+      throw const SocketException("Server is unreachable.");
+    }
     on SocketException {
       rethrow;
     }
@@ -76,13 +86,19 @@ class API {
     }
   }
 
-  static Future<Map<String, dynamic>> getUser(String token){
+  static Future<Map<String, dynamic>> getUser(String token) async {
     String request = "$apiURL/account/me";
     Map<String,String> headers = {"bearer":token};
     try {
-      return _get(request, headers);
+      return await _get(request, headers);
+    }
+    on TimeoutException {
+      throw const SocketException("Server is unreachable.");
     }
     on SocketException {
+      rethrow;
+    }
+    on HTTP401Exception {
       rethrow;
     }
     on Exception {
@@ -90,14 +106,20 @@ class API {
     }
   }
 
-  static Future<Map<String, dynamic>> modifyUser(String token, UserProfile user){
+  static Future<Map<String, dynamic>> modifyUser(String token, UserProfile user) async {
     String request = "$apiURL/account/me";
     Map<String,String> headers = {"bearer":token};
     Map<String,String> data = {"first_name":user.firstName.value, "last_name": user.lastName.value, "email": user.email.value};
     try {
-      return _post(request, data, headers);
+      return await _post(request, data, headers);
+    }
+    on TimeoutException {
+      throw const SocketException("Server is unreachable.");
     }
     on SocketException {
+      rethrow;
+    }
+    on HTTP401Exception {
       rethrow;
     }
     on Exception {
@@ -105,13 +127,19 @@ class API {
     }
   }
 
-  static Future<Map<String, dynamic>> deleteUser(String token){
+  static Future<Map<String, dynamic>> deleteUser(String token) async {
     String request = "$apiURL/account/me";
     Map<String,String> headers = {"bearer":token};
     try {
-      return _delete(request, headers);
+      return await _delete(request, headers);
+    }
+    on TimeoutException {
+      throw const SocketException("Server is unreachable.");
     }
     on SocketException {
+      rethrow;
+    }
+    on HTTP401Exception {
       rethrow;
     }
     on Exception {
@@ -119,11 +147,14 @@ class API {
     }
   }
 
-  static Future<Map<String, dynamic>> subscribeToEvent(String token, int id){
+  static Future<Map<String, dynamic>> subscribeToEvent(String token, int id) async {
     String request = "$apiURL/events/subscribe/$id";
     Map<String,String> headers = {"bearer":token};
     try {
-      return _post(request,{}, headers);
+      return await _post(request,{}, headers);
+    }
+    on TimeoutException {
+      throw const SocketException("Server is unreachable.");
     }
     on SocketException {
       rethrow;
@@ -135,11 +166,14 @@ class API {
   }
 
   /// Unsubscribe the user from an event
-  static Future<Map<String, dynamic>> unsubscribeFromEvent(String token, int id){
+  static Future<Map<String, dynamic>> unsubscribeFromEvent(String token, int id) async {
     String request = "$apiURL/events/subscribe/$id";
     Map<String,String> headers = {"bearer":token};
     try {
-      return _delete(request, headers);
+      return await _delete(request, headers);
+    }
+    on TimeoutException {
+      throw const SocketException("Server is unreachable.");
     }
     on SocketException {
       rethrow;
@@ -150,12 +184,33 @@ class API {
   }
 
   /// Get the list of COP1 events
-  static Future<Map<String, dynamic>?> events() async {
+  static Future<Map<String, dynamic>?> events([Duration timeLimit = const Duration(seconds: 5)]) async {
     String request = "$apiURL/events";
     try {
-      Map<String, dynamic> retVal = await _get(request);
-      //dev.log("Event List: $retVal");
+      Map<String, dynamic> retVal = await _get(request, null, timeLimit);
       return retVal;
+    }
+    on TimeoutException {
+      throw const SocketException("Server is unreachable.");
+    }
+    on SocketException {
+      rethrow;
+    }
+    catch (e, sT){
+      Sentry.captureException(e, stackTrace: sT);
+      return null;
+    }
+  }
+
+  /// Get the list of COP1 events
+  static Future<Map<String, dynamic>?> unscanned(int id) async {
+    String request = "$apiURL/unscanned/$id";
+    try {
+      Map<String, dynamic> retVal = await _get(request);
+      return retVal;
+    }
+    on TimeoutException {
+      throw const SocketException("Server is unreachable.");
     }
     on SocketException {
       rethrow;
@@ -167,10 +222,9 @@ class API {
   }
 
   /// Send data to the distant server
-  static Future<Map<String, dynamic>> _post(String url, Map<String, dynamic> data, [Map<String, String>? headers]) async {
-    final response = await http
-        .post(Uri.parse(url), headers: {"accept": "application/json", "Content-Type": "application/json", ...?headers}, body: jsonEncode(data), encoding: Encoding.getByName("UTF-8"));
-
+  static Future<Map<String, dynamic>> _post(String url, Map<String, dynamic> data, [Map<String, String>? headers, Duration timeLimit = const Duration(seconds: 15)]) async {
+    final response = await client
+        .post(Uri.parse(url), headers: {"accept": "application/json", "Content-Type": "application/json", ...?headers}, body: jsonEncode(data), encoding: Encoding.getByName("UTF-8")).timeout(timeLimit);
     if (response.statusCode == 200) {
       // If the server did return a 200 OK response,
       // then parse the JSON.
@@ -178,8 +232,8 @@ class API {
     } else if (response.statusCode == 409){
       throw HTTP409Exception(jsonDecode(response.body)["detail"]);
     }
-    else if (response.statusCode == 401 && jsonDecode(response.body)["detail"] == "Invalid authentication credentials"){
-      throw HTTP401Exception("Invalid authentication credentials");
+    else if (response.statusCode == 401){
+      throw HTTP401Exception(jsonDecode(response.body)["detail"]);
     }
     else {
       throw Exception('Error ${response.statusCode} on $url. Detail: ${jsonDecode(response.body)["detail"]}');
@@ -187,9 +241,9 @@ class API {
   }
 
   /// Fetch a json object from the distant server without providing data
-  static Future<Map<String, dynamic>> _get(String url, [Map<String, String>? headers]) async {
+  static Future<Map<String, dynamic>> _get(String url, [Map<String, String>? headers, Duration timeLimit = const Duration(seconds: 15)]) async {
     final response = await http
-        .get(Uri.parse(url), headers: {"accept": "application/json", ...?headers});
+        .get(Uri.parse(url), headers: {"accept": "application/json", ...?headers}).timeout(timeLimit);
 
     if (response.statusCode == 200) {
       // If the server did return a 200 OK response,
@@ -199,8 +253,8 @@ class API {
     } else if (response.statusCode == 409){
       throw HTTP409Exception(jsonDecode(response.body)["detail"]);
     }
-    else if (response.statusCode == 401 && jsonDecode(response.body)["detail"] == "Invalid authentication credentials"){
-      throw HTTP401Exception("Invalid authentication credentials");
+    else if (response.statusCode == 401){
+      throw HTTP401Exception(jsonDecode(response.body)["detail"]);
     }
     else {
       throw Exception('Error ${response.statusCode} on $url. Detail: ${jsonDecode(response.body)["detail"]}');
@@ -208,9 +262,9 @@ class API {
   }
 
   /// Delete an object of the distant server
-  static Future<Map<String, dynamic>> _delete(String url, [Map<String, String>? headers]) async {
+  static Future<Map<String, dynamic>> _delete(String url, [Map<String, String>? headers, Duration timeLimit = const Duration(seconds: 15)]) async {
     final response = await http
-        .delete(Uri.parse(url), headers: {"accept": "application/json", ...?headers}, encoding: Encoding.getByName("UTF-8"));
+        .delete(Uri.parse(url), headers: {"accept": "application/json", ...?headers}, encoding: Encoding.getByName("UTF-8")).timeout(timeLimit);
 
     if (response.statusCode == 200) {
       // If the server did return a 200 OK response,
@@ -220,8 +274,8 @@ class API {
     } else if (response.statusCode == 409){
       throw HTTP409Exception(jsonDecode(response.body)["detail"]);
     }
-    else if (response.statusCode == 401 && jsonDecode(response.body)["detail"] == "Invalid authentication credentials"){
-      throw HTTP401Exception("Invalid authentication credentials");
+    else if (response.statusCode == 401){
+      throw HTTP401Exception(jsonDecode(response.body)["detail"]);
     }
     else {
       throw Exception('Error ${response.statusCode} on $url. Detail: ${jsonDecode(response.body)["detail"]}');

@@ -2,6 +2,10 @@ import 'package:cop1/app_theme.dart';
 import 'package:cop1/constants.dart' show sentryDsn, sentryCaptureRate;
 import 'package:cop1/data/notification_api.dart';
 import 'package:cop1/routes/router.gr.dart';
+import 'package:cop1/utils/cop1_event.dart';
+import 'package:cop1/utils/set_notifier.dart';
+import 'package:cop1/utils/user_profile.dart';
+import 'package:cop1/utils/value_notifier_adapter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
@@ -13,6 +17,10 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 Future<void> initAll() async {
   await Hive.initFlutter();
+  Hive.registerAdapter(UserProfileAdapter());
+  Hive.registerAdapter(Cop1EventAdapter());
+  Hive.registerAdapter(SetNotifierAdapter<int>(typeId: 11));
+  Hive.registerAdapter(ValueNotifierAdapter<String>(typeId: 12));
   await NotificationAPI.initialize();
   await SentryFlutter.init(
     (options) {
@@ -41,14 +49,30 @@ class MyApp extends StatelessWidget {
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     return ChangeNotifierProvider(
       create: (context) => SessionData(),
-      child: MaterialApp.router(
-          title: 'COP1',
-          theme: AppTheme.themeData,
-          routerDelegate: _appRouter.delegate(),
-          routeInformationParser: _appRouter.defaultRouteParser(),
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
-          supportedLocales: AppLocalizations.supportedLocales
-      ),
+      builder: (ctxt, _){
+        return FutureBuilder(
+          future: session(ctxt).loadAssets(ctxt),
+          builder: (futureCtxt, snapshot) {
+            if (snapshot.connectionState == ConnectionState.done){
+              return buildApp(futureCtxt);
+            }
+            else {
+              return Container();
+            }
+          }
+        );
+      },
+    );
+  }
+
+  Widget buildApp(BuildContext context){
+    return MaterialApp.router(
+        title: 'COP1',
+        theme: AppTheme.themeData,
+        routerDelegate: _appRouter.delegate(),
+        routeInformationParser: _appRouter.defaultRouteParser(),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales
     );
   }
 }

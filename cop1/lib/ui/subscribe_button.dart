@@ -60,13 +60,24 @@ class _SubscribeButtonState extends State<SubscribeButton> {
       try {
         await s.subscribe(widget.event);
       }
+      on SocketException {
+        ConnectedWidgetState.displayConnectionAlert(context);
+        return;
+      }
       on EventConflictError catch (e) {
         _showEventConflict(context, e);
+        return;
       }
       setState((){});
     }
     else {
-      s.unsubscribe(widget.event);
+      try {
+        await s.unsubscribe(widget.event);
+      }
+      on SocketException {
+        ConnectedWidgetState.displayConnectionAlert(context);
+        return;
+      }
       setState((){});
     }
   }

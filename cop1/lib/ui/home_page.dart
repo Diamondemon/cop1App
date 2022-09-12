@@ -1,7 +1,10 @@
+import 'dart:io';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:cop1/data/notification_api.dart';
 import 'package:cop1/routes/router.gr.dart';
 import 'package:cop1/ui/tabs.dart';
+import 'package:cop1/utils/connected_widget_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:hive/hive.dart';
@@ -22,10 +25,19 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
   @override
   void initState() {
     super.initState();
-    session(context).loadAssets(context).then(
-            (_) => FlutterNativeSplash.remove()
-    );
+    FlutterNativeSplash.remove();
     listenNotifications();
+    session(context).hasMissedEvents().then((bool hasMissed) {if (hasMissed) {
+      WidgetsBinding.instance.addPostFrameCallback(
+        (_) {
+          _displayMissedEventAlert(context);
+        }
+      );
+    }}).onError((error, stackTrace){
+      if (error is! SocketException){
+        Sentry.captureException(error, stackTrace: stackTrace);
+      }
+    });
   }
 
   Future<void> listenNotifications() async {
@@ -86,4 +98,9 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
 
     );
   }
+
+  void _displayMissedEventAlert(BuildContext context) {
+    ConnectedWidgetState.displayUnscannedAlert(context);
+  }
+
 }

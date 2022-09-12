@@ -1,6 +1,6 @@
 {
     "@@locale": "fr",
-    "@@last_modified": "2022-09-05T08:42:21+00:00",
+    "@@last_modified": "2022-09-05T12:18:37+00:00",
     "newsFeed": "Événements",
     "@newsFeed": {
         "description": "Title for the events list page"
@@ -139,5 +139,9 @@
     "@socketExceptionWidgetMessage": {
         "description": "Message for the widget saying there is a problem connecting to the server"
     },
-    "retry": "Réessayer"
+    "retry": "Réessayer",
+    "missedEventMessage": "Vous avez raté un de vos événements! Attention, récidiver peut vous empêcher d'accéder à de futurs événements!",
+    "@missedEventMessage": {
+        "description": "Message displayed when a disrespectful user does not come at an event"
+    }
 }

@@ -1,12 +1,11 @@
 import 'dart:async';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:cop1/common.dart';
 import 'package:cop1/utils/user_profile.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
-//import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-//import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
 import 'package:sentry/sentry.dart';
 import '../utils/cop1_event.dart';
@@ -46,33 +45,35 @@ class SessionData with ChangeNotifier {
   bool get isConnected => _token.isNotEmpty;
 
   Future<UserProfile?> get user async {
-    try {
-      if (_localUser==null && isConnected && _phoneNumber.isNotEmpty){
-        _localUser = UserProfile.fromJSON(await API.getUser(_token));
-        _localUser?.scheduleUserNotifications(_events, localizations!);
-      }
-    }
-    on HTTP401Exception {
-      disconnectUser();
-    }
-    catch (e, sT){
-      Sentry.captureException(e, stackTrace: sT);
-    }
+    if (_localUser == null) await connectUser();
     return _localUser;
   }
 
   Future<List<Cop1Event>> get events async {
     if (_events.isEmpty){
+      log("Here I am");
       await refreshEvents();
     }
     return _events;
   }
 
   Future<void> refreshEvents() async {
-    Map<String, dynamic> json = (await API.events())??{"events":[]};
+    Map<String, dynamic>? json;
+    try {
+      json = (await API.events())??{"events":[]};
+    }
+    on SocketException {
+      rethrow;
+    }
+    catch (e, sT){
+      Sentry.captureException(e, stackTrace: sT);
+    }
+    if (json == null) return;
+
     _events = (json["events"] as List<dynamic>).map((item){
       return Cop1Event.fromJSON(item);
     }).toList();
+    storeEvents();
   }
 
   Future<Cop1Event> getEvent(int eventId) async {
@@ -80,15 +81,37 @@ class SessionData with ChangeNotifier {
     return _events.firstWhere((Cop1Event element) => element.id == eventId);
   }
 
-
-  /// App preferences
-  //static const storage = FlutterSecureStorage();
-
   /*
   /// A scaffold key, for a drawer menu
   GlobalKey<ScaffoldState> get scaffoldKey{
     return _scaffoldKey;
   }*/
+
+  Future<void> connectUser() async {
+    Map<String,dynamic>? json;
+    try {
+      if (_localUser==null && isConnected && _phoneNumber.isNotEmpty) {
+        json = await API.getUser(_token);
+      }
+    }
+    on HTTP401Exception {
+      disconnectUser();
+      return;
+    }
+    on SocketException {
+      if (_localUser != null) return;
+      rethrow;
+    }
+    catch (e, sT){
+      Sentry.captureException(e, stackTrace: sT);
+      return;
+    }
+    if (json == null) return;
+    _localUser = UserProfile.fromJSON(json);
+    _localUser?.scheduleUserNotifications(_events, localizations!);
+    storeUser();
+  }
+
 
   void disconnectUser(){
     _localUser?.cancelUserNotifications(_events);
@@ -97,6 +120,7 @@ class SessionData with ChangeNotifier {
     _localUser = null;
     _connectionListenable.value = false;
     _storeCreds();
+    storeUser();
   }
 
   Future<bool> modifyUser(String firstName, String lastName, String email) async {
@@ -105,6 +129,7 @@ class SessionData with ChangeNotifier {
     _localUser?.email.value = email;
     try{
       final retVal = await API.modifyUser(token, _localUser!);
+      if (retVal["valid"]) _localUser?.save();
       return retVal["valid"];
     }
     on SocketException {
@@ -138,21 +163,35 @@ class SessionData with ChangeNotifier {
     if (conflictingId != -1){
       throw EventConflictError(_events.firstWhere((evt) => evt.id == conflictingId), _localUser!.minDelayDays);
     }
+    final Map<String, dynamic> subscription;
     try{
-      final subscription = await API.subscribeToEvent(token, event.id);
-      if (subscription["success"]){
-        _localUser?.subscribeToEvent(event, subscription["barcode"]??"123456");
-        event.scheduleNotifications(localizations!);
-      }
+      subscription = await API.subscribeToEvent(token, event.id);
+    }
+    on SocketException {
+      rethrow;
     }
     catch (e, sT){
       Sentry.captureException(e, stackTrace: sT);
       return;
     }
+
+    if (subscription["success"]){
+      _localUser?.subscribeToEvent(event, subscription["barcode"]??"123456");
+      event.scheduleNotifications(localizations!);
+    }
   }
 
-  void unsubscribe(Cop1Event event){
-    API.unsubscribeFromEvent(token, event.id);
+  Future<void> unsubscribe(Cop1Event event) async {
+    try{
+      await API.unsubscribeFromEvent(token, event.id);
+    }
+    on SocketException {
+      rethrow;
+    }
+    catch (e, sT){
+      Sentry.captureException(e, stackTrace: sT);
+      return;
+    }
     _localUser?.unsubscribeFromEvent(event);
     event.cancelNotifications();
   }
@@ -191,7 +230,7 @@ class SessionData with ChangeNotifier {
     return _token;
   }
 
-  void _loadCreds() async {
+  Future<void> _loadCreds() async {
     final credBox = await Hive.openBox("Credentials");
     _phoneNumber = credBox.get("phone",defaultValue:  "");
     _token = credBox.get("token",defaultValue:  "");
@@ -214,35 +253,91 @@ class SessionData with ChangeNotifier {
   Future<String> loadAsset(BuildContext context, String path) async {
     return await DefaultAssetBundle.of(context).loadString(path);
   }
-  /*
-  /// Stores the ID in the application's preferences.
-  void storeID() async{
-    await storage.write(key: "id", value: _id.toString());
-  }*/
 
-  /*
-  /// Defines how to interpret the text in the category database
-  void readCategories(String s) async {
-    final categBox = await Hive.openBox('Categories');
-    if (categBox.isEmpty){
-      List<String> lineList = s.split("\n");
-      for (String line in lineList) {
-        if (line.startsWith("//") || line.isEmpty) continue;
-        List<String> catItem = line.replaceAll("\r", "").split(",");
-        categBox.add(
-          Category(
-            name: catItem[0], energy: energyFrom(catItem[1]),
-            description: catItem.length==3 ? catItem[2] : "",
-          ),
-        );
+  Future<bool> hasMissedEvents() async {
+    if (_localUser == null) await connectUser();
+
+    if (_localUser!=null){
+      for (int eventId in _localUser!.pastEvents){
+        try{
+          final json = await API.unscanned(eventId);
+          if (!json!["scanned"]){
+            return true;
+          }
+        }
+        on SocketException {
+          rethrow;
+        }
+        catch (e, sT){
+          Sentry.captureException(e, stackTrace: sT);
+          return false;
+        }
       }
     }
-
-  }*/
+    return false;
+  }
 
   /// Load all the text assets from the data/ folder
   Future<void> loadAssets(BuildContext context) async {
-    _loadCreds();
-    //loadAsset(context, 'data/database_category.txt').then(readCategories);
+    await _loadCreds();
+    await loadUser();
+    await loadEvents();
+    log("$_events");
+    log("${_events.isEmpty}");
+    try {
+      await refreshEvents();
+    }
+    on SocketException {
+      log("Boom");
+      log("${_events.isEmpty}");
+      return;
+    }
   }
+
+  Future<void> loadUser() async{
+    final userBox = await Hive.openBox("Credentials");
+    _localUser = userBox.get("user");
+  }
+
+  Future<void> loadEvents() async{
+    Box<dynamic>? eventsBox;
+    try{
+      eventsBox = await Hive.openBox("Events");
+    }
+    catch (e, sT){
+      Sentry.captureException(e, stackTrace: sT);
+    }
+    if (eventsBox==null) return;
+    try {
+      _events = (eventsBox.get("events", defaultValue: []) as List).cast<Cop1Event>();
+    }
+    catch (e, sT){
+      Sentry.captureException(e, stackTrace: sT);
+    }
+  }
+
+  Future<void> storeUser() async{
+    final userBox = await Hive.openBox("Credentials");
+
+    try{
+      userBox.put("user", _localUser);
+    }
+    catch (e, sT) {
+      Sentry.captureException(e, stackTrace: sT);
+    }
+  }
+
+
+  Future<void> storeEvents() async{
+    final eventsBox = await Hive.openBox("Events");
+
+    try{
+      eventsBox.put("events", _events);
+      log("successfully stored");
+    }
+    catch (e, sT) {
+      Sentry.captureException(e, stackTrace: sT);
+    }
+  }
+
 }
