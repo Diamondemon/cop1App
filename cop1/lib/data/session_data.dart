@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:cop1/common.dart';
@@ -51,7 +50,6 @@ class SessionData with ChangeNotifier {
 
   Future<List<Cop1Event>> get events async {
     if (_events.isEmpty){
-      log("Here I am");
       await refreshEvents();
     }
     return _events;
@@ -80,12 +78,6 @@ class SessionData with ChangeNotifier {
     if (_events.isEmpty) await refreshEvents();
     return _events.firstWhere((Cop1Event element) => element.id == eventId);
   }
-
-  /*
-  /// A scaffold key, for a drawer menu
-  GlobalKey<ScaffoldState> get scaffoldKey{
-    return _scaffoldKey;
-  }*/
 
   Future<void> connectUser() async {
     Map<String,dynamic>? json;
@@ -282,14 +274,10 @@ class SessionData with ChangeNotifier {
     await _loadCreds();
     await loadUser();
     await loadEvents();
-    log("$_events");
-    log("${_events.isEmpty}");
     try {
       await refreshEvents();
     }
     on SocketException {
-      log("Boom");
-      log("${_events.isEmpty}");
       return;
     }
   }
@@ -333,7 +321,6 @@ class SessionData with ChangeNotifier {
 
     try{
       eventsBox.put("events", _events);
-      log("successfully stored");
     }
     catch (e, sT) {
       Sentry.captureException(e, stackTrace: sT);
