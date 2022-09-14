@@ -26,7 +26,6 @@ class _EventTileState extends State<EventTile> {
     return InkWell(
       onTap: ()=> _openEventPage(context),
       child: Container(
-        height: (MediaQuery.of(context).size.height/4)*MediaQuery.of(context).textScaleFactor,
         decoration: BoxDecoration(
           border: Border.symmetric(
               horizontal: BorderSide(color: Theme.of(context).primaryColor, width:3.0)
@@ -35,61 +34,54 @@ class _EventTileState extends State<EventTile> {
         padding: const EdgeInsets.only(top: 10.0, bottom: 5.0, right:10.0, left:10.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
           children: [
-            Expanded (
-              flex: 0,
-              child: Text(
-                widget.event.title,
-                style: Theme.of(context).textTheme.titleMedium,
-                textAlign: TextAlign.start,
-              )
+            Text(
+              widget.event.title,
+              style: Theme.of(context).textTheme.titleMedium,
+              textAlign: TextAlign.start,
             ),
-            const Expanded (
-                flex: 0,
-                child: SizedBox(
-                  height: 10,
-                )
+            const SizedBox(
+              height: 10,
             ),
-            Expanded(
-                child:Row(
-                children: [
-                  Expanded(
-                      flex: 3,
-                      child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Spacer(),
-                            _buildImage(context),
-                            const Spacer(),
-                          ]
-                      )
+            Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    children: [
+                      _buildImage(context)
+                    ],
                   ),
-                  Expanded(
-                      flex: 2,
-                      child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            _buildIconText(context, Icons.calendar_month, " ${AppLocalizations.of(context)!.calendar}"),
-                            TextButton(
-                                onPressed: widget.event.addToCalendar,
-                                child: Text(
-                                    DateFormat.yMEd(AppLocalizations.of(context)!.localeName).add_jm().format(widget.event.date),
-                                    style: const TextStyle(fontSize: 12)
-                                )
-                            ),
-                            _buildIconText(context, CupertinoIcons.location, " ${AppLocalizations.of(context)!.place}"),
-                            TextButton(onPressed: widget.event.lookoutLocationOnMaps, child:Text(widget.event.location, style: const TextStyle(fontSize: 12))),
-                            const Spacer(),
-                            Expanded(flex: 2, child: Center(
-                              child: SubscribeButton(event: widget.event),
-                            )
-                            ),
-                          ]
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _buildIconText(context, Icons.calendar_month, " ${AppLocalizations.of(context)!.calendar}"),
+                      TextButton(
+                          onPressed: widget.event.addToCalendar,
+                          child: Text(
+                              DateFormat.yMEd(AppLocalizations.of(context)!.localeName).add_jm().format(widget.event.date),
+                              style: const TextStyle(fontSize: 12)
+                          )
+                      ),
+                      _buildIconText(context, CupertinoIcons.location, " ${AppLocalizations.of(context)!.place}"),
+                      TextButton(
+                          onPressed: widget.event.lookoutLocationOnMaps,
+                          child:Text(
+                              widget.event.location,
+                              style: const TextStyle(fontSize: 12)
+                          )
+                      ),
+                      Center(
+                        child: SubscribeButton(event: widget.event),
                       )
+                    ],
                   )
-                ]
-            ))
+                ),
+              ]
+            )
           ]
         )
       ),
