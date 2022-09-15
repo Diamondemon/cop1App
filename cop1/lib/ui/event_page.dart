@@ -84,7 +84,9 @@ class _EventPageState extends State<EventPage> {
         Padding(padding: const EdgeInsets.all(5),
           child: Text(event.duration)
         ),
+        const SizedBox(height: 10,),
         _buildIconText(context, CupertinoIcons.info, " ${AppLocalizations.of(context)!.complemInfo}"),
+        const SizedBox(height: 5,),
         Padding(
           padding: const EdgeInsets.only(top:5, left: 10, right: 10),
           child: Text(
@@ -135,7 +137,6 @@ class _EventPageState extends State<EventPage> {
               );
             }
             else {
-              Sentry.captureMessage("User not subscribed has access to QR code.");
               return Container();
             }
           }
