@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:auto_route/auto_route.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:intl/intl.dart';
@@ -89,10 +87,10 @@ class _EventTileState extends State<EventTile> {
   }
 
   Widget _buildImage(BuildContext context){
-    final double imageSize = MediaQuery.of(context).size.height/7*min(1, MediaQuery.of(context).textScaleFactor);
+    final double imageSize = MediaQuery.of(context).size.width/(2*MediaQuery.of(context).textScaleFactor);
     return CachedNetworkImage(
         imageUrl: widget.event.imageLink,
-        height: imageSize,
+        width: imageSize,
         fit: BoxFit.fill,
         progressIndicatorBuilder: (BuildContext context, String url, DownloadProgress? progress){
           return Center(
