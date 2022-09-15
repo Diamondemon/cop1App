@@ -203,10 +203,10 @@ class API {
   }
 
   /// Get the list of COP1 events
-  static Future<Map<String, dynamic>?> unscanned(int id) async {
+  static Future<Map<String, dynamic>?> unscanned(String token,int id) async {
     String request = "$apiURL/unscanned/$id";
     try {
-      Map<String, dynamic> retVal = await _get(request);
+      Map<String, dynamic> retVal = await _get(request, {"bearer": token});
       return retVal;
     }
     on TimeoutException {

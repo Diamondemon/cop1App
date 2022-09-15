@@ -252,7 +252,7 @@ class SessionData with ChangeNotifier {
     if (_localUser!=null){
       for (int eventId in _localUser!.pastEvents){
         try{
-          final json = await API.unscanned(eventId);
+          final json = await API.unscanned(_token, eventId);
           if (!json!["scanned"]){
             return true;
           }
