@@ -214,12 +214,13 @@ class Weezevent:
     def _clean_obj(obj: dict) -> dict:
         evt = obj['events']
         loc = evt['venue']
+        print(obj)
         return {
             'id': evt.get('id'),
             'date': evt.get('period', {}).get('start'),
             'duration': '01:00:00',
             'title': evt.get('title'),
-            'desc': evt.get('desc'),
+            'desc': evt.get('desc') or evt.get('description'),
             'img': evt.get('image'),
             'loc': f"{loc.get('address')}, {loc.get('zip_code')} {loc.get('city')}"
         }
