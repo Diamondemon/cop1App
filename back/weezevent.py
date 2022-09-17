@@ -214,7 +214,6 @@ class Weezevent:
     def _clean_obj(obj: dict) -> dict:
         evt = obj['events']
         loc = evt['venue']
-        print(obj)
         return {
             'id': evt.get('id'),
             'date': evt.get('period', {}).get('start'),
