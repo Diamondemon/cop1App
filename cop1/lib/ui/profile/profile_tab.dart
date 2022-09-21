@@ -1,10 +1,10 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:cop1/ui/profile_widget.dart';
+import 'package:cop1/ui/profile/profile_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:sentry/sentry.dart';
 
-import '../common.dart';
-import '../data/session_data.dart';
+import '../../common.dart';
+import '../../data/session_data.dart';
 
 class ProfileTab extends StatefulWidget {
   const ProfileTab({Key? key}) : super(key: key);

@@ -1,6 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:cop1/data/session_data.dart';
-import 'package:cop1/ui/profile_edit.dart';
+import 'package:cop1/ui/profile/profile_edit.dart';
 import 'package:flutter/material.dart';
 import 'package:sentry/sentry.dart';
 

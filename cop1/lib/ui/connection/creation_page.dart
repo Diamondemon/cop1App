@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:auto_route/auto_route.dart';
 import 'package:cop1/constants.dart' show privacyPolicyUrl;
 import 'package:cop1/data/session_data.dart';
-import 'package:cop1/ui/text_field_widget.dart';
+import 'package:cop1/ui/common/text_field_widget.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';

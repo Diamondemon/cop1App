@@ -1,19 +1,19 @@
 import 'dart:io';
 
-import 'package:cop1/ui/loading_widget.dart';
-import 'package:cop1/ui/socket_exception_widget.dart';
-import 'package:cop1/ui/unknown_error_widget.dart';
+import 'package:cop1/ui/common/loading_widget.dart';
+import 'package:cop1/ui/common/socket_exception_widget.dart';
+import 'package:cop1/ui/common/unknown_error_widget.dart';
 import 'package:cop1/utils/connected_widget_state.dart';
 import 'package:cop1/utils/set_notifier.dart';
 import 'package:cop1/utils/user_profile.dart';
-import 'package:cop1/ui/event_tile.dart';
+import 'package:cop1/ui/events/event_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:sentry/sentry.dart';
 import 'package:tuple/tuple.dart';
 
-import '../common.dart';
-import '../utils/cop1_event.dart';
-import '../data/session_data.dart';
+import '../../common.dart';
+import '../../utils/cop1_event.dart';
+import '../../data/session_data.dart';
 
 class ProfileWidget extends StatefulWidget {
   const ProfileWidget({Key? key}) : super(key: key);

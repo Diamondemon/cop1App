@@ -3,8 +3,8 @@ import 'dart:io';
 import 'package:auto_route/auto_route.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cop1/data/session_data.dart';
-import 'package:cop1/ui/loading_widget.dart';
-import 'package:cop1/ui/unknown_error_widget.dart';
+import 'package:cop1/ui/common/loading_widget.dart';
+import 'package:cop1/ui/common/unknown_error_widget.dart';
 import 'package:cop1/utils/user_profile.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -12,8 +12,8 @@ import 'package:intl/intl.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:sentry/sentry.dart';
 
-import '../common.dart';
-import '../utils/cop1_event.dart';
+import '../../common.dart';
+import '../../utils/cop1_event.dart';
 
 class EventPage extends StatefulWidget {
   const EventPage({Key? key, @PathParam() required this.eventId}) : super(key: key);

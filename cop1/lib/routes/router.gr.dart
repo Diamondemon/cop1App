@@ -16,12 +16,12 @@ import 'package:auto_route/empty_router_widgets.dart' as _i1;
 import 'package:flutter/material.dart' as _i11;
 
 import '../ui/connection/creation_page.dart' as _i7;
-import '../ui/event_page.dart' as _i4;
+import '../ui/events/event_page.dart' as _i4;
 import '../ui/home_page.dart' as _i2;
 import '../ui/connection/profile_creation_page.dart' as _i9;
-import '../ui/profile_edit_page.dart' as _i6;
-import '../ui/profile_tab.dart' as _i5;
-import '../ui/thread_tab.dart' as _i3;
+import '../ui/profile/profile_edit_page.dart' as _i6;
+import '../ui/profile/profile_tab.dart' as _i5;
+import '../ui/events/thread_tab.dart' as _i3;
 import '../ui/connection/validation_page.dart' as _i8;
 
 class AppRouter extends _i10.RootStackRouter {

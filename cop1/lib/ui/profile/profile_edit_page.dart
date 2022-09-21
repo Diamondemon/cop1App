@@ -1,13 +1,13 @@
 import 'dart:io';
 
 import 'package:auto_route/auto_route.dart';
-import 'package:cop1/ui/profile_edit.dart';
+import 'package:cop1/ui/profile/profile_edit.dart';
 import 'package:flutter/material.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 
-import '../common.dart';
-import '../data/session_data.dart';
-import '../utils/connected_widget_state.dart';
+import '../../common.dart';
+import '../../data/session_data.dart';
+import '../../utils/connected_widget_state.dart';
 
 class ProfileEditPage extends StatefulWidget {
   const ProfileEditPage({Key? key}) : super(key: key);

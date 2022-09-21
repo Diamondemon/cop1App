@@ -1,17 +1,17 @@
 import 'dart:io';
 
 import 'package:cop1/data/session_data.dart';
-import 'package:cop1/ui/loading_widget.dart';
-import 'package:cop1/ui/socket_exception_widget.dart';
-import 'package:cop1/ui/text_field_widget.dart';
-import 'package:cop1/ui/unknown_error_widget.dart';
+import 'package:cop1/ui/common/loading_widget.dart';
+import 'package:cop1/ui/common/socket_exception_widget.dart';
+import 'package:cop1/ui/common/text_field_widget.dart';
+import 'package:cop1/ui/common/unknown_error_widget.dart';
 import 'package:cop1/utils/user_profile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 
-import '../common.dart';
-import '../utils/connected_widget_state.dart';
+import '../../common.dart';
+import '../../utils/connected_widget_state.dart';
 
 class ProfileEdit extends StatefulWidget {
   const ProfileEdit({Key? key, this.onFinished}) : super(key: key);

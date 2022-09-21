@@ -2,12 +2,12 @@ import 'package:auto_route/auto_route.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:intl/intl.dart';
 import 'package:cop1/utils/cop1_event.dart';
-import 'package:cop1/ui/subscribe_button.dart';
+import 'package:cop1/ui/events/subscribe_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:sentry/sentry.dart';
 
-import '../common.dart';
+import '../../common.dart';
 
 
 class EventTile extends StatefulWidget {

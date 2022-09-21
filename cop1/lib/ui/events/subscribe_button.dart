@@ -2,14 +2,13 @@ import 'dart:io';
 
 import 'package:cop1/common.dart';
 import 'package:cop1/ui/connection/creation_page.dart';
-import 'package:cop1/ui/disabled_button.dart';
+import 'package:cop1/ui/common/disabled_button.dart';
 import 'package:cop1/utils/connected_widget_state.dart';
 import 'package:cop1/utils/cop1_event.dart';
 import 'package:cop1/utils/user_profile.dart';
+import 'package:cop1/data/session_data.dart';
 import 'package:flutter/material.dart';
 import 'package:sentry/sentry.dart';
-
-import '../data/session_data.dart';
 
 class SubscribeButton extends StatefulWidget {
   const SubscribeButton({Key? key, required this.event}) : super(key: key);

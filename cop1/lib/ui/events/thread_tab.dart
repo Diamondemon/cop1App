@@ -1,7 +1,7 @@
-import 'package:cop1/ui/event_list.dart';
+import 'package:cop1/ui/events/event_list.dart';
 import 'package:flutter/material.dart';
 
-import '../common.dart';
+import '../../common.dart';
 
 class ThreadTab extends StatelessWidget {
   const ThreadTab({Key? key}) : super(key: key);
