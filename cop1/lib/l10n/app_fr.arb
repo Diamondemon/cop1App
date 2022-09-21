@@ -1,6 +1,6 @@
 {
     "@@locale": "fr",
-    "@@last_modified": "2022-09-05T12:18:37+00:00",
+    "@@last_modified": "2022-09-19T09:25:24+00:00",
     "newsFeed": "Événements",
     "@newsFeed": {
         "description": "Title for the events list page"
@@ -143,5 +143,10 @@
     "missedEventMessage": "Vous avez raté un de vos événements! Attention, récidiver peut vous empêcher d'accéder à de futurs événements!",
     "@missedEventMessage": {
         "description": "Message displayed when a disrespectful user does not come at an event"
-    }
+    },
+    "privacyPolicyLink": "Pour voir les politiques sur les données privées, cliquez ",
+    "@privacyPolicyLink": {
+        "description": "Introduces the link to the privacy policy page"
+    },
+    "link": "ici"
 }

@@ -1,15 +1,15 @@
 
 import 'package:auto_route/annotations.dart';
 import 'package:auto_route/empty_router_widgets.dart';
-import 'package:cop1/ui/creation_page.dart';
+import 'package:cop1/ui/connection/creation_page.dart';
 import 'package:cop1/ui/event_page.dart';
 import 'package:cop1/ui/home_page.dart';
-import 'package:cop1/ui/profile_creation_page.dart';
+import 'package:cop1/ui/connection/profile_creation_page.dart';
 import 'package:cop1/ui/profile_edit_page.dart';
 import 'package:cop1/ui/profile_tab.dart';
 import 'package:cop1/ui/thread_tab.dart';
 
-import '../ui/validation_page.dart';
+import '../ui/connection/validation_page.dart';
 
 @MaterialAutoRouter(
   replaceInRouteName: 'Tab,Page,Route',

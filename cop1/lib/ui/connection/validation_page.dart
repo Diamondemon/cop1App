@@ -6,8 +6,8 @@ import 'package:cop1/ui/text_field_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 
-import '../common.dart';
-import '../utils/connected_widget_state.dart';
+import '../../common.dart';
+import '../../utils/connected_widget_state.dart';
 
 class ValidationPage extends StatefulWidget {
   const ValidationPage({Key? key}) : super(key: key);

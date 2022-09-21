@@ -4,7 +4,7 @@ import 'package:cop1/ui/profile_edit.dart';
 import 'package:flutter/material.dart';
 import 'package:sentry/sentry.dart';
 
-import '../common.dart';
+import '../../common.dart';
 
 class ProfileCreationPage extends StatefulWidget {
   const ProfileCreationPage({Key? key}) : super(key: key);

@@ -1,14 +1,17 @@
 import 'dart:io';
 
 import 'package:auto_route/auto_route.dart';
+import 'package:cop1/constants.dart' show privacyPolicyUrl;
 import 'package:cop1/data/session_data.dart';
 import 'package:cop1/ui/text_field_widget.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 
-import '../common.dart';
-import '../utils/connected_widget_state.dart';
+import '../../common.dart';
+import '../../utils/connected_widget_state.dart';
 
 class CreationPage extends StatefulWidget {
   const CreationPage({Key? key}) : super(key: key);
@@ -61,6 +64,20 @@ class _CreationPageState extends State<CreationPage> {
                 ElevatedButton(
                   onPressed: ()=>goToValidation(context),
                   child: Text(AppLocalizations.of(context)!.validate),
+                ),
+                Text.rich(
+                    TextSpan(
+                      children: [
+                        TextSpan(text: AppLocalizations.of(context)!.privacyPolicyLink),
+                        TextSpan(
+                          text: AppLocalizations.of(context)!.link,
+                          style: TextStyle(color: Theme.of(context).primaryColor, fontFamily: "HKGrotesk-Bold"),
+                          recognizer: TapGestureRecognizer()
+                            ..onTap = goToPrivacy
+                        ),
+                        const TextSpan(text: "."),
+                      ]
+                    )
                 )
               ],
             ),
@@ -92,6 +109,10 @@ class _CreationPageState extends State<CreationPage> {
         Sentry.captureException(e, stackTrace: sT);
       }
     }
+  }
+
+  void goToPrivacy(){
+    launchUrl(Uri.parse(privacyPolicyUrl), mode: LaunchMode.externalApplication);
   }
 }
 

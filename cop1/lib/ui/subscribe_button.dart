@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:cop1/common.dart';
-import 'package:cop1/ui/creation_page.dart';
+import 'package:cop1/ui/connection/creation_page.dart';
 import 'package:cop1/ui/disabled_button.dart';
 import 'package:cop1/utils/connected_widget_state.dart';
 import 'package:cop1/utils/cop1_event.dart';
