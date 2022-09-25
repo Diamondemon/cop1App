@@ -8,3 +8,6 @@ def check_email(email: str) -> bool:
 
 def check_username(name: str) -> bool:
     return bool(re.search('^[a-zA-Z]+$', name))
+
+def check_phone(phone: str) -> bool:
+    return bool(re.match('\\+[0-9]{10,12}$', phone))
