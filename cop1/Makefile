@@ -1,6 +1,9 @@
 
 PHONY: bundle apks build intl
 
+install:
+	flutter install
+
 bundle:
 	flutter build appbundle --no-shrink
 
