@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cop1/constants.dart';
 import 'package:cop1/data/session_data.dart';
 import 'package:cop1/ui/common/loading_widget.dart';
 import 'package:cop1/ui/common/unknown_error_widget.dart';
@@ -81,7 +82,7 @@ class _EventPageState extends State<EventPage> {
         _buildIconText(context, CupertinoIcons.location, " ${AppLocalizations.of(context)!.place}"),
         TextButton(onPressed: event.lookoutLocationOnMaps, child:Text(event.location, style: const TextStyle(fontSize: 12))),
         _buildIconText(context, CupertinoIcons.timer, " ${AppLocalizations.of(context)!.duration}"),
-        Padding(padding: const EdgeInsets.all(5),
+        Padding(padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
           child: Text(event.duration)
         ),
         const SizedBox(height: 10,),
@@ -181,7 +182,7 @@ class _EventPageState extends State<EventPage> {
         child: QrImage(
           data: code,
           version: QrVersions.auto,
-          embeddedImage: const AssetImage("assets/Logo CO_P1 512.png"),
+          embeddedImage: const AssetImage(logoUrl),
           embeddedImageStyle: QrEmbeddedImageStyle(
             size: Size(MediaQuery.of(context).size.width*0.1, MediaQuery.of(context).size.width*0.1)
           ),
