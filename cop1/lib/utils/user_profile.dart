@@ -39,7 +39,7 @@ class UserProfile extends HiveObject{
 
   int checkEventConflicts(Cop1Event newEvent, List<Cop1Event> allEvents){
     final DateTime newDayStart = DateTime(newEvent.date.year, newEvent.date.month, newEvent.date.day);
-    final int conflictingId = events.firstWhere(
+    final int conflictingId = [...events, ...pastEvents].firstWhere(
       (eventId) {
         final Cop1Event event = allEvents.firstWhere((evt) => evt.id == eventId);
         final DateTime dayStart = DateTime(event.date.year, event.date.month, event.date.day);

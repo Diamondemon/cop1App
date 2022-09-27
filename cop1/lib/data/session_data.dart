@@ -36,11 +36,13 @@ class SessionData with ChangeNotifier {
   UserProfile? _localUser;
   List<Cop1Event> _events = [];
   final ValueNotifier<bool> _connectionListenable = ValueNotifier(false);
+  final ValueNotifier<bool> _eventsChangedListenable = ValueNotifier(false);
   AppLocalizations? localizations;
 
   String get token => _token;
   String get phoneNumber => _phoneNumber;
   ValueNotifier<bool> get connectionListenable => _connectionListenable;
+  ValueNotifier<bool> get eventsChangedListenable => _eventsChangedListenable;
   bool get isConnected => _token.isNotEmpty;
 
   Future<UserProfile?> get user async {
@@ -72,6 +74,7 @@ class SessionData with ChangeNotifier {
       return Cop1Event.fromJSON(item);
     }).toList();
     storeEvents();
+    eventsChangedListenable.value = !eventsChangedListenable.value;
   }
 
   Future<Cop1Event> getEvent(int eventId) async {
