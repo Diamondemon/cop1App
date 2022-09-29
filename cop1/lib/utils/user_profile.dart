@@ -58,6 +58,28 @@ class UserProfile extends HiveObject{
     events.remove(toRemove);
   }
 
+  void checkEventsExist(List<Cop1Event> evts){
+    List<int> nextSubbed = [...events];
+    for (int id in nextSubbed) {
+      try{
+        evts.firstWhere((Cop1Event event) => event.id == id);
+      }
+      on StateError {
+        events.remove(id);
+      }
+    }
+
+    List<int> pastSubbed = [...pastEvents];
+    for (int id in pastSubbed) {
+      try{
+        evts.firstWhere((Cop1Event event) => event.id == id);
+      }
+      on StateError {
+        pastEvents.remove(id);
+      }
+    }
+  }
+
   bool isSubscribedToId(int id){
     return events.contains(id);
   }

@@ -96,11 +96,17 @@ class _ProfileWidgetState extends State<ProfileWidget> {
     return ValueListenableBuilder(
         valueListenable: subEvents,
         builder: (BuildContext cntxt, Set<int> evts, _) {
-          if (events.isEmpty) return Container();
-          final List<int> sortedSubbed = evts.toList()
+          final List<int> sortedSubbed;
+          try {
+            sortedSubbed = evts.toList()
               ..sort((int a, int b){
-            return - events.firstWhere((event) => event.id == a).date.compareTo(events.firstWhere((event) => event.id == b).date);
-          });
+                return - events.firstWhere((event) => event.id == a).date.compareTo(events.firstWhere((event) => event.id == b).date);
+              });
+          }
+          catch (e, sT){
+            Sentry.captureException(e, stackTrace: sT);
+            return Container();
+          }
           return ListView.builder(
             shrinkWrap: true,
             physics: const ClampingScrollPhysics(),

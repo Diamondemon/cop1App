@@ -33,6 +33,7 @@ class SessionData with ChangeNotifier {
   //final GlobalKey<ScaffoldState> _scaffoldKey= GlobalKey<ScaffoldState>();
   String _phoneNumber = "";
   String _token = "";
+  int lastTimeSynchronized = 0;
   UserProfile? _localUser;
   List<Cop1Event> _events = [];
   final ValueNotifier<bool> _connectionListenable = ValueNotifier(false);
@@ -74,6 +75,7 @@ class SessionData with ChangeNotifier {
       return Cop1Event.fromJSON(item);
     }).toList();
     storeEvents();
+    _localUser?.checkEventsExist(_events);
     eventsChangedListenable.value = !eventsChangedListenable.value;
   }
 
@@ -288,6 +290,8 @@ class SessionData with ChangeNotifier {
   Future<void> loadUser() async{
     final userBox = await Hive.openBox("Credentials");
     _localUser = userBox.get("user");
+
+    await verifySynchro();
   }
 
   Future<void> loadEvents() async{
@@ -327,6 +331,28 @@ class SessionData with ChangeNotifier {
     }
     catch (e, sT) {
       Sentry.captureException(e, stackTrace: sT);
+    }
+  }
+
+  Future<void> verifySynchro() async {
+    final userBox = await Hive.openBox("Credentials");
+    if (_localUser != null){
+      lastTimeSynchronized = userBox.get("lastTimeSynchronized", defaultValue: 0);
+      final int currentTime = DateTime.now().millisecondsSinceEpoch;
+      if (currentTime-lastTimeSynchronized >= Duration.millisecondsPerDay){
+        lastTimeSynchronized = currentTime;
+        try {
+          final json = await API.getUser(_token);
+          if (json["min_event_delay_days"]!=null){
+            _localUser?.minDelayDays = json["min_event_delay_days"];
+            userBox.put("lastTimeSynchronized", lastTimeSynchronized);
+            storeUser();
+          }
+        }
+        on Exception {
+          return;
+        }
+      }
     }
   }
 
