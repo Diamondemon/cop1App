@@ -61,7 +61,7 @@
         <th>Titre</th>
         <th>Date</th>
       </thead>
-      {% for evt in events %}
+      {% for evt in events[::-1] %}
       <tr>
         <td>
           <img
