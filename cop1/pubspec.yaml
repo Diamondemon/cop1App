@@ -55,6 +55,7 @@ dependencies:
   sentry: ^6.9.1
   auto_route: ^5.0.0
   rxdart: ^0.27.5
+  notification_permissions: ^0.6.1
 
 dev_dependencies:
   flutter_test:
