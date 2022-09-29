@@ -28,8 +28,8 @@ limiter = Limiter(
 
 app.secret_key = ENV.FLASK_SECRET_KEY
 apps = {
-    'Events': '/events',
-    'Users': '/users'
+    'Événements': '/events',
+    'Utilisateurs': '/users'
 }
 
 def get_int(name: str, default: int) -> int:
@@ -79,7 +79,7 @@ def index():
         ]
     )
 
-@app.route(apps['Events'])
+@app.route(apps['Événements'])
 @limiter.exempt
 @protect
 def events():
@@ -102,7 +102,7 @@ def events():
     )
 
 
-@app.route(apps['Users'])
+@app.route(apps['Utilisateurs'])
 @limiter.exempt
 @protect
 def users():
@@ -225,7 +225,7 @@ def delete_event(evt_id):
     Inscription.delete().where(Inscription.event == evt_id).execute()
     evt.delete_instance()
     app.logger.info(f'Event {evt_id} deleted.')
-    return redirect(apps['Events'])
+    return redirect(apps['Événements'])
 
 
 @app.route('/event/edit/<evt_id>', methods=['GET', 'POST'])
@@ -332,7 +332,7 @@ def new_event():
                 date=datetime.now().date(),
                 error="ID already in database."
             )
-        return redirect(apps['Events'])
+        return redirect(apps['Événements'])
     return render_template(
         'events/create.html',
         date=datetime.now().date(),
