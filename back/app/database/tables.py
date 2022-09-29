@@ -21,7 +21,7 @@ class User(Table):
     email = CharField()
     first_name = CharField()
     last_name = CharField()
-    min_event_delay_days = IntegerField(default=14)
+    min_event_delay_days = IntegerField(default=10)
     skiped = IntegerField(default=0)
 
 
