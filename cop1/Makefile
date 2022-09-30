@@ -1,5 +1,5 @@
 
-PHONY: bundle apks build intl
+PHONY: bundle apks build intl install release bump
 
 install:
 	flutter install
@@ -15,3 +15,8 @@ build:
 
 intl:
 	flutter pub gen-l10n
+
+bump:
+	cider bump build
+
+release: bump bundle
