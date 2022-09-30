@@ -9,6 +9,7 @@ from app.api.login import token
 from app.login import user_from_token
 from app.logger import logger
 from auto_subscribe import subscribe, unsubscribe
+from weezevent import WEEZEVENT
 
 app = APIRouter(tags=["events"])
 
@@ -26,6 +27,7 @@ async def list_all_events() -> Events:
                 title=str(e.title),
                 img=str(e.img),
                 loc=str(e.loc),
+                avalaible=not WEEZEVENT.is_event_full(e.id),
             )
             for e in EventInDB.select().order_by(EventInDB.date)
         ]

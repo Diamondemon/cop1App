@@ -303,5 +303,11 @@ class Weezevent:
         else:
             return False
 
+    def is_event_full(self, evt_id: str) -> bool:
+        ticket = self.api.get_tickets({'id_event[]': evt_id}).json()['events'][0]['tickets'][0]
+        if ticket['quotas'] == 0:
+            return False
+        return ticket['participants'] >= ticket['quotas']
+
 
 WEEZEVENT = Weezevent()

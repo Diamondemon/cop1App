@@ -18,6 +18,7 @@ class Event(BaseModel):
     title: str
     img: str
     loc: str
+    avalaible: bool
 
 class EventInscrit(Event):
     barcode: str
