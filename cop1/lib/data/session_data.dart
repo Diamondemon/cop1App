@@ -155,7 +155,7 @@ class SessionData with ChangeNotifier {
     disconnectUser();
   }
 
-  Future<void> subscribe(Cop1Event event) async {
+  Future<bool> subscribe(Cop1Event event) async {
     final int conflictingId = _localUser!.checkEventConflicts(event, _events);
     if (conflictingId != -1){
       throw EventConflictError(_events.firstWhere((evt) => evt.id == conflictingId), _localUser!.minDelayDays);
@@ -169,28 +169,34 @@ class SessionData with ChangeNotifier {
     }
     catch (e, sT){
       Sentry.captureException(e, stackTrace: sT);
-      return;
+      return false;
     }
 
     if (subscription["success"]){
       _localUser?.subscribeToEvent(event, subscription["barcode"]??"123456");
       event.scheduleNotifications(localizations!);
     }
+
+    return subscription["success"];
   }
 
-  Future<void> unsubscribe(Cop1Event event) async {
+  Future<bool> unsubscribe(Cop1Event event) async {
+    bool successful = false;
     try{
-      await API.unsubscribeFromEvent(token, event.id);
+      successful = (await API.unsubscribeFromEvent(token, event.id))["success"]??true;
     }
     on SocketException {
       rethrow;
     }
     catch (e, sT){
       Sentry.captureException(e, stackTrace: sT);
-      return;
+      return false;
     }
+    if (!successful) return successful;
+
     _localUser?.unsubscribeFromEvent(event);
     event.cancelNotifications();
+    return successful;
   }
 
   Future<bool> setPhoneNumber(phoneNumber) async{

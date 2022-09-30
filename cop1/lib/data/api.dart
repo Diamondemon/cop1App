@@ -7,6 +7,14 @@ import 'package:cop1/utils/user_profile.dart';
 import 'package:http/http.dart' as http;
 import 'package:sentry/sentry.dart';
 
+class HTTP410Exception implements Exception {
+  final String? detail;
+  HTTP410Exception([this.detail]);
+
+  @override
+  String toString() => "HTTP Status Code 410: $detail";
+}
+
 class HTTP409Exception implements Exception {
   final String? detail;
   HTTP409Exception([this.detail]);
@@ -159,6 +167,9 @@ class API {
     on SocketException {
       rethrow;
     }
+    on HTTP410Exception {
+      rethrow;
+    }
     on Exception {
       rethrow;
     }
@@ -271,7 +282,11 @@ class API {
       // then parse the JSON.
       return jsonDecode(response.body);
 
-    } else if (response.statusCode == 409){
+    }
+    else if (response.statusCode == 410){
+      throw HTTP410Exception(jsonDecode(response.body)["detail"]);
+    }
+    else if (response.statusCode == 409){
       throw HTTP409Exception(jsonDecode(response.body)["detail"]);
     }
     else if (response.statusCode == 401){

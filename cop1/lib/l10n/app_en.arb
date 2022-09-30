@@ -1,6 +1,6 @@
 {
     "@@locale": "en",
-    "@@last_modified": "2022-09-19T09:25:22+00:00",
+    "@@last_modified": "2022-09-30T22:22:13+00:00",
     "newsFeed": "Events",
     "@newsFeed": {
         "description": "Title for the events list page"
@@ -122,5 +122,18 @@
     "@privacyPolicyLink": {
         "description": "Introduces the link to the privacy policy page"
     },
-    "link": "here"
+    "link": "here",
+    "fullEventMessage": "The event \"{title}\" is full. You cannot register for it anymore.",
+    "@fullEventMessage": {
+        "description": "Message when trying to register in an already full event"
+    },
+    "full": "Full",
+    "serverErrorMessage": "The server encountered an issue, please try again later.",
+    "@serverErrorMessage": {
+        "description": "Message when the server has an unknown problem when (un)subscribing"
+    },
+    "unsubscribeFailureMessage": "Could not unregister you from the event \"{title}\". Try again later.",
+    "@unsubscribeFailureMessage": {
+        "description": "Message when the server could not unsubscribe the user."
+    }
 }

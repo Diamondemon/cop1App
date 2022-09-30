@@ -24,13 +24,14 @@ class Cop1EventAdapter extends TypeAdapter<Cop1Event> {
       fields[4] as String,
       fields[5] as String,
       fields[6] as String,
+      fields[7] == null ? true : fields[7] as bool,
     );
   }
 
   @override
   void write(BinaryWriter writer, Cop1Event obj) {
     writer
-      ..writeByte(7)
+      ..writeByte(8)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -44,7 +45,9 @@ class Cop1EventAdapter extends TypeAdapter<Cop1Event> {
       ..writeByte(5)
       ..write(obj.location)
       ..writeByte(6)
-      ..write(obj.imageLink);
+      ..write(obj.imageLink)
+      ..writeByte(7)
+      ..write(obj.isAvailable);
   }
 
   @override
