@@ -7,6 +7,7 @@ import 'package:url_launcher/url_launcher_string.dart';
 /// A class that can open maps applications to look into addresses.
 ///
 /// Taken from package maps_launcher as the package is outdated.
+/// Inspired by the "maps_launcher" pub package, modified to overcome deprecation
 class MapsLauncher {
   /// Returns a URL that can be launched on the current platform
   /// to open a maps application showing the result of a search query.

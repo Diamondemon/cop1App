@@ -5,7 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:hive/hive.dart';
 
-
+/// Class for the profile of users
 @HiveType(typeId: 2)
 class UserProfile extends HiveObject{
 
@@ -30,6 +30,7 @@ class UserProfile extends HiveObject{
 
   UserProfile(this._phoneNumber);
 
+  /// Subscribe to [event] and keep the [barcode]
   void subscribeToEvent(Cop1Event event, String barcode){
     if (!event.isPast){
       events.add(event.id);
@@ -37,6 +38,9 @@ class UserProfile extends HiveObject{
     }
   }
 
+  /// Checks if a potential [newEvent] would conflict with other already taken [events] or [pastEvents]
+  ///
+  /// [allEvents] is the global list of events
   int checkEventConflicts(Cop1Event newEvent, List<Cop1Event> allEvents){
     final DateTime newDayStart = DateTime(newEvent.date.year, newEvent.date.month, newEvent.date.day);
     final int conflictingId = [...events, ...pastEvents].firstWhere(
@@ -53,12 +57,14 @@ class UserProfile extends HiveObject{
     return conflictingId;
   }
 
+  /// Delete [event]'s id from the [events] set
   void unsubscribeFromEvent(Cop1Event event){
     int toRemove = events.firstWhere((eventId) => eventId == event.id);
     events.remove(toRemove);
     barcodes.remove(toRemove);
   }
 
+  /// Verifies that the user was not registered in events that have been removed from the global list [evts]
   void checkEventsExist(List<Cop1Event> evts){
     List<int> nextSubbed = [...events];
     for (int id in nextSubbed) {
@@ -89,6 +95,7 @@ class UserProfile extends HiveObject{
     return events.contains(event.id);
   }
 
+  /// Creates a [UserProfile] object from the provided [json]
   static UserProfile fromJSON(Map<String, dynamic> json){
     final user = UserProfile(json["phone"]);
     user.firstName.value = json["first_name"];
@@ -112,6 +119,9 @@ class UserProfile extends HiveObject{
     return "User ${firstName.value} ${lastName.value}, identified by phone number $phoneNumber.\nMail: ${email.value}\nSubscribed to events $events";
   }
 
+  /// Schedules all notifications related to the user's registered events
+  ///
+  /// [evts] is the global list of events, [localizations] is for translation
   void scheduleUserNotifications(List<Cop1Event> evts, AppLocalizations localizations){
     cancelUserNotifications(evts);
     for (Cop1Event element in evts) {
@@ -119,6 +129,9 @@ class UserProfile extends HiveObject{
     }
   }
 
+  /// Cancels all notifications related to the user's registered events
+  ///
+  /// [evts] is the global list of events
   void cancelUserNotifications(List<Cop1Event> evts){
     for (Cop1Event element in evts){
       if (events.contains(element.id)) element.cancelNotifications();
@@ -127,7 +140,7 @@ class UserProfile extends HiveObject{
 
 }
 
-
+/// Adapter of [UserProfile] for [Hive] database storage
 class UserProfileAdapter extends TypeAdapter<UserProfile> {
   @override
   final int typeId = 2;

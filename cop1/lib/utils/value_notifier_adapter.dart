@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 
+/// Adapter of [ValueNotifier] for the [Hive] database storage
 class ValueNotifierAdapter<T> extends TypeAdapter<ValueNotifier<T>> {
   @override
   final int typeId;

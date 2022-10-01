@@ -5,7 +5,10 @@ import '../common.dart';
 
 const Duration _snackBarDisplayDuration = Duration(milliseconds: 4000);
 
+/// Static class for alerts
 class ConnectedWidgetState {
+
+  /// Displays a [SnackBar] to warn the user that the server is unreachable.
   static void displayConnectionAlert(BuildContext context){
     ScaffoldMessenger.of(context)
       ..removeCurrentSnackBar()
@@ -17,6 +20,7 @@ class ConnectedWidgetState {
     );
   }
 
+  /// Displays a [SnackBar] to report a server error to the user.
   static void displayServerErrorAlert(BuildContext context){
     ScaffoldMessenger.of(context)
       ..removeCurrentSnackBar()
@@ -28,6 +32,7 @@ class ConnectedWidgetState {
       );
   }
 
+  /// Displays a [SnackBar] to tell the user the event named [title] is full.
   static void displayFullEventAlert(BuildContext context, String title){
     ScaffoldMessenger.of(context)
       ..removeCurrentSnackBar()
@@ -39,6 +44,7 @@ class ConnectedWidgetState {
       );
   }
 
+  /// Displays a [SnackBar] to warn the user that they missed an event.
   static void displayUnscannedAlert(BuildContext context){
     ScaffoldMessenger.of(context)
       ..removeCurrentSnackBar()
@@ -50,6 +56,7 @@ class ConnectedWidgetState {
       );
   }
 
+  ///  Displays an [AlertDialog] with [title] and [text] inside
   static Future<bool?> displayYesNoDialog(BuildContext context, String title, String text) async {
     return await showDialog(
         context: context,
@@ -59,6 +66,7 @@ class ConnectedWidgetState {
     );
   }
 
+  /// Builds an [AlertDialog] with [title] and [text] inside
   static AlertDialog _buildYesNoDialog(BuildContext context, String title, String text){
     return AlertDialog(
       title: Text(title),
@@ -76,6 +84,7 @@ class ConnectedWidgetState {
     );
   }
 
+  /// Creates a SnackBar which disappears after the [duration]
   static SnackBar timedSnackBar({
     Key? key,
     required Widget child,

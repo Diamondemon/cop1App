@@ -2,7 +2,7 @@ import 'dart:collection';
 import 'package:flutter/foundation.dart';
 import 'package:hive/hive.dart';
 
-
+/// [ChangeNotifier] containing a [Set] and notifying the Listeners for every element added or removed
 @HiveType(typeId: 1)
 class SetNotifier<T> extends ValueListenable<Set<T>> with ChangeNotifier, SetMixin<T>, HiveObjectMixin {
 
@@ -63,6 +63,7 @@ class SetNotifier<T> extends ValueListenable<Set<T>> with ChangeNotifier, SetMix
   }
 }
 
+/// Adapter of [SetNotifier] for [Hive] database storage
 class SetNotifierAdapter<T> extends TypeAdapter<SetNotifier<T>> {
   @override
   final int typeId;
