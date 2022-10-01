@@ -11,10 +11,6 @@ import '../utils/cop1_event.dart';
 
 import 'api.dart';
 
-class NoPhoneNumberException implements Exception {
-  NoPhoneNumberException();
-}
-
 class EventConflictError implements Exception {
   final Cop1Event conflictingEvent;
   final int allowedDelayDays;
@@ -234,7 +230,6 @@ class SessionData with ChangeNotifier {
   }
 
   Future<String> getToken(String code) async {
-    if (_phoneNumber.isEmpty) throw NoPhoneNumberException();
     try {
       _token = await API.getToken(_phoneNumber, code);
     }
@@ -264,7 +259,6 @@ class SessionData with ChangeNotifier {
   }
 
   Future<bool> askValidation() async {
-    if (_phoneNumber.isEmpty) throw NoPhoneNumberException();
     return await API.askValidation(_phoneNumber);
   }
 
