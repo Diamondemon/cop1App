@@ -27,7 +27,7 @@ async def list_all_events() -> Events:
                 title=str(e.title),
                 img=str(e.img),
                 loc=str(e.loc),
-                avalaible=not WEEZEVENT.is_event_full(e.id),
+                available=not WEEZEVENT.is_event_full(e.id),
             )
             for e in EventInDB.select().order_by(EventInDB.date)
         ]
