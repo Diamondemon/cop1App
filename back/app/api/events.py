@@ -42,11 +42,11 @@ async def subscribe_to_an_event(item_id: int, _token: str = Depends(token)) -> S
         evt = EventInDB.get(EventInDB.id == item_id)
     except:
         logger.info('Invalid event')
-        return SubscribeResponse(success=False, barcode='')
+        return SubscribeResponse(success=False, barcode='', reason='INVALID')
     if not user_can_subscribe_to_event(user, evt):
-        return SubscribeResponse(success=False, barcode='')
+        return SubscribeResponse(success=False, barcode='', reason='LIMITED')
     if WEEZEVENT.is_event_full(str(item_id)):
-        return SubscribeResponse(success=False, barcode='')
+        return SubscribeResponse(success=False, barcode='', reason='FULL')
     try:
         barcode = subscribe(
             str(item_id),
@@ -57,8 +57,7 @@ async def subscribe_to_an_event(item_id: int, _token: str = Depends(token)) -> S
         )
     except Exception as e:
         logger.error('Unable to subscribe to event %d', item_id)
-        logger.error(e)
-        barcode=''
+        return SubscribeResponse(success=False, barcode='', reason='UNKNOWN')
     with DB:
         InscriptionInDB.create(
             user=user,

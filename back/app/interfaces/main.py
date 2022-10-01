@@ -84,3 +84,4 @@ class UserLoginResponse(BoolResponse):
 class SubscribeResponse(BaseModel):
     success: bool = True
     barcode: str = ""
+    reason: str = ""
