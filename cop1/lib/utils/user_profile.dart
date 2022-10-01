@@ -56,6 +56,7 @@ class UserProfile extends HiveObject{
   void unsubscribeFromEvent(Cop1Event event){
     int toRemove = events.firstWhere((eventId) => eventId == event.id);
     events.remove(toRemove);
+    barcodes.remove(toRemove);
   }
 
   void checkEventsExist(List<Cop1Event> evts){
