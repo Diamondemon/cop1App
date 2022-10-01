@@ -45,6 +45,8 @@ async def subscribe_to_an_event(item_id: int, _token: str = Depends(token)) -> S
         return SubscribeResponse(success=False, barcode='')
     if not user_can_subscribe_to_event(user, evt):
         return SubscribeResponse(success=False, barcode='')
+    if WEEZEVENT.is_event_full(str(item_id)):
+        return SubscribeResponse(success=False, barcode='')
     try:
         barcode = subscribe(
             str(item_id),
