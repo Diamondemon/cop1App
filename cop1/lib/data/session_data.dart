@@ -26,7 +26,6 @@ SessionData session(context) => Provider.of<SessionData>(context, listen: false)
 /// Data that is exposed to all the widgets
 class SessionData with ChangeNotifier {
 
-  //final GlobalKey<ScaffoldState> _scaffoldKey= GlobalKey<ScaffoldState>();
   String _phoneNumber = "";
   String _token = "";
   int lastTimeSynchronized = 0;
@@ -34,12 +33,17 @@ class SessionData with ChangeNotifier {
   List<Cop1Event> _events = [];
   final ValueNotifier<bool> _connectionListenable = ValueNotifier(false);
   final ValueNotifier<bool> _eventsChangedListenable = ValueNotifier(false);
+  /// Reference to the Localization API, for proper translation of the messages
   AppLocalizations? localizations;
 
   String get token => _token;
   String get phoneNumber => _phoneNumber;
+  /// Notifies if the [_localUser] has been successfully retrieved
   ValueNotifier<bool> get connectionListenable => _connectionListenable;
+  /// Notifies if the [_events] list has been modified
   ValueNotifier<bool> get eventsChangedListenable => _eventsChangedListenable;
+
+  /// Returns whether complete authentication credentials have been provided
   bool get isConnected => _token.isNotEmpty;
 
   Future<UserProfile?> get user async {
@@ -54,6 +58,9 @@ class SessionData with ChangeNotifier {
     return _events;
   }
 
+  /// Refreshes the list of events [events]
+  ///
+  /// Rethrows any [SocketException]
   Future<void> refreshEvents() async {
     Map<String, dynamic>? json;
     try {
@@ -75,11 +82,16 @@ class SessionData with ChangeNotifier {
     eventsChangedListenable.value = !eventsChangedListenable.value;
   }
 
+  /// Returns the event according to its Weezevent [id]
   Future<Cop1Event> getEvent(int eventId) async {
     if (_events.isEmpty) await refreshEvents();
     return _events.firstWhere((Cop1Event element) => element.id == eventId);
   }
 
+  /// Connects the user profile using the [token]
+  ///
+  /// Rethrows a [SocketException] if the [_localUser] is not initiated.
+  /// Disconnects the user if the server returns an 401 "unauthorized" status code.
   Future<void> connectUser() async {
     Map<String,dynamic>? json;
     try {
@@ -92,7 +104,7 @@ class SessionData with ChangeNotifier {
       return;
     }
     on SocketException {
-      if (_localUser != null) return;
+      if (_localUser != null) return; // if there is already a user, do not bother
       rethrow;
     }
     catch (e, sT){
@@ -105,7 +117,7 @@ class SessionData with ChangeNotifier {
     storeUser();
   }
 
-
+  /// Disconnects the [_localUser]
   void disconnectUser(){
     _localUser?.cancelUserNotifications(_events);
     _phoneNumber = "";
@@ -116,6 +128,11 @@ class SessionData with ChangeNotifier {
     storeUser();
   }
 
+  /// Registers the modified user info [firstName], [lastName] and [email]
+  ///
+  /// Rethrows any [SocketException]
+  /// Returns false on any other [Exception]
+  /// Disconnects the user if the server returns an 401 "unauthorized" status code.
   Future<bool> modifyUser(String firstName, String lastName, String email) async {
     _localUser?.firstName.value = firstName;
     _localUser?.lastName.value = lastName;
@@ -138,6 +155,9 @@ class SessionData with ChangeNotifier {
     }
   }
 
+  /// Permanently deletes the user profile on the server and on the phone.
+  ///
+  /// Rethrows any [SocketException] or [Exception]
   Future<void> deleteUser() async {
     try {
       await API.deleteUser(token);
@@ -151,6 +171,12 @@ class SessionData with ChangeNotifier {
     disconnectUser();
   }
 
+  /// Subscribes the [_localUser] to the specified [event] and schedules its notifications
+  ///
+  /// Throws an [EventConflictError] if the delay between events is not respected
+  /// Throws a [FullEventError] if the event is already full.
+  /// Rethrows any [SocketException]
+  /// Should any other error occur, it is silenced an the app returns false.
   Future<bool> subscribe(Cop1Event event) async {
     final int conflictingId = _localUser!.checkEventConflicts(event, _events);
     if (conflictingId != -1){
@@ -191,6 +217,10 @@ class SessionData with ChangeNotifier {
     return subscription["success"];
   }
 
+  /// Unsubscribes the user from the [event]
+  ///
+  /// Rethrows all [SocketException]
+  /// Returns false on any [Exception]
   Future<bool> unsubscribe(Cop1Event event) async {
     bool successful = false;
     try{
@@ -211,6 +241,9 @@ class SessionData with ChangeNotifier {
     return successful;
   }
 
+  /// Sets the [_phoneNumber] to [phoneNumber] if the server accepts if
+  ///
+  /// Rethrows any [SocketException]
   Future<bool> setPhoneNumber(phoneNumber) async{
     try {
       _phoneNumber = phoneNumber;
@@ -232,6 +265,9 @@ class SessionData with ChangeNotifier {
     }
   }
 
+  /// Retrieves the [_token] from the distant server, using [_phoneNumber] and the provided [code]
+  ///
+  /// Rethrows any [SocketException]
   Future<String> getToken(String code) async {
     try {
       _token = await API.getToken(_phoneNumber, code);
@@ -247,6 +283,7 @@ class SessionData with ChangeNotifier {
     return _token;
   }
 
+  /// Loads the connection credentials stored in the [Hive] database
   Future<void> _loadCreds() async {
     final credBox = await Hive.openBox("Credentials");
     _phoneNumber = credBox.get("phone",defaultValue:  "");
@@ -254,22 +291,19 @@ class SessionData with ChangeNotifier {
     if (token.isNotEmpty) _connectionListenable.value = true;
   }
 
-
+  /// Stores the connection credentials in the [Hive] database
   void _storeCreds() async {
     final credBox = await Hive.openBox("Credentials");
     credBox.put("phone", _phoneNumber);
     credBox.put("token", _token);
   }
 
+  /// Asks for a validation code SMS to [_phoneNumber]
   Future<bool> askValidation() async {
     return await API.askValidation(_phoneNumber);
   }
 
-  /// Async function loading an asset located in [path]
-  Future<String> loadAsset(BuildContext context, String path) async {
-    return await DefaultAssetBundle.of(context).loadString(path);
-  }
-
+  /// Asks for a validation code SMS
   Future<bool> hasMissedEvents() async {
     if (_localUser == null) await connectUser();
 
@@ -293,7 +327,7 @@ class SessionData with ChangeNotifier {
     return false;
   }
 
-  /// Load all the text assets from the data/ folder
+  /// Loads all the needed assets and information store in the [Hive] database
   Future<void> loadAssets(BuildContext context) async {
     await _loadCreds();
     await loadUser();
@@ -306,6 +340,7 @@ class SessionData with ChangeNotifier {
     }
   }
 
+  /// Loads the user stored in the [Hive] database
   Future<void> loadUser() async{
     final userBox = await Hive.openBox("Credentials");
     _localUser = userBox.get("user");
@@ -313,6 +348,7 @@ class SessionData with ChangeNotifier {
     await verifySynchro();
   }
 
+  /// Loads the events list stored in the [Hive] database
   Future<void> loadEvents() async{
     Box<dynamic>? eventsBox;
     try{
@@ -330,6 +366,7 @@ class SessionData with ChangeNotifier {
     }
   }
 
+  /// Stores the [_localUser] in the [Hive] database
   Future<void> storeUser() async{
     final userBox = await Hive.openBox("Credentials");
 
@@ -341,7 +378,7 @@ class SessionData with ChangeNotifier {
     }
   }
 
-
+  /// Stores the [_events] list in the [Hive] database
   Future<void> storeEvents() async{
     final eventsBox = await Hive.openBox("Events");
 
@@ -353,6 +390,7 @@ class SessionData with ChangeNotifier {
     }
   }
 
+  /// Verifies every 24 hours if the delay between two events allowed to the user has changed.
   Future<void> verifySynchro() async {
     final userBox = await Hive.openBox("Credentials");
     if (_localUser != null){
