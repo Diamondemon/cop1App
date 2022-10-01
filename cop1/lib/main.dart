@@ -15,6 +15,7 @@ import 'data/session_data.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+/// Initializes all the services that need to run before the app even starts
 Future<void> initAll() async {
   await Hive.initFlutter();
   Hive.registerAdapter(UserProfileAdapter());
@@ -40,6 +41,7 @@ void main() {
   initAll();
 }
 
+/// Application Class
 class MyApp extends StatelessWidget {
   MyApp({Key? key}) : super(key: key);
   final _appRouter = AppRouter();

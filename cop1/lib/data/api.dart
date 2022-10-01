@@ -24,10 +24,15 @@ class HTTP401Exception implements Exception {
   String toString() => "HTTP Status Code 401: $detail";
 }
 
+/// Class to handle the API of cop1
 class API {
 
   static final client = http.Client();
 
+  /// Request an account creation associated to [phoneNumber]
+  ///
+  /// Throw a [SocketException] if the server is somehow unreachable.
+  /// Relays any [HTTP409Exception] happening.
   static Future<bool> createAccount(String phoneNumber) async{
     String request = "$apiURL/account/create";
     Map<String, String> data = {"phone": phoneNumber};
@@ -50,6 +55,9 @@ class API {
     }
   }
 
+  /// Request a validation SMS for the account associated to [phoneNumber]
+  ///
+  /// Throw a [SocketException] if the server is somehow unreachable.
   static Future<bool> askValidation(String phoneNumber) async{
     String request = "$apiURL/account/ask_validation";
     Map<String, String> data = {"phone": phoneNumber};
@@ -69,6 +77,10 @@ class API {
     }
   }
 
+  /// Sends both [phoneNumber] and [code] to the server, to request the associated token.
+  ///
+  /// Throw a [SocketException] if the server is somehow unreachable.
+  /// Relays any other [Exception] happening.
   static Future<String> getToken(String phoneNumber, String code) async{
     String request = "$apiURL/account/login";
     Map<String, String> data = {"phone": phoneNumber, "code": code};
@@ -87,6 +99,10 @@ class API {
     }
   }
 
+  /// Retrieves the user associated to the connection [token]
+  ///
+  /// Throw a [SocketException] if the server is somehow unreachable.
+  /// Relays any other [Exception] happening.
   static Future<Map<String, dynamic>> getUser(String token) async {
     String request = "$apiURL/account/me";
     Map<String,String> headers = {"bearer":token};
@@ -107,6 +123,10 @@ class API {
     }
   }
 
+  /// Modify the user associated with the [token], according to the new profile [user]
+  ///
+  /// Throw a [SocketException] if the server is somehow unreachable.
+  /// Relays any other [Exception] happening.
   static Future<Map<String, dynamic>> modifyUser(String token, UserProfile user) async {
     String request = "$apiURL/account/me";
     Map<String,String> headers = {"bearer":token};
@@ -128,6 +148,10 @@ class API {
     }
   }
 
+  /// Deletes the account associated to the [token]
+  ///
+  /// Throw a [SocketException] if the server is somehow unreachable.
+  /// Relays any other [Exception] happening.
   static Future<Map<String, dynamic>> deleteUser(String token) async {
     String request = "$apiURL/account/me";
     Map<String,String> headers = {"bearer":token};
@@ -148,6 +172,10 @@ class API {
     }
   }
 
+  /// Subscribes the account associated to the [token] to the event n°[id]
+  ///
+  /// Throw a [SocketException] if the server is somehow unreachable.
+  /// Relays any other [Exception] happening.
   static Future<Map<String, dynamic>> subscribeToEvent(String token, int id) async {
     String request = "$apiURL/events/subscribe/$id";
     Map<String,String> headers = {"bearer":token};
@@ -166,7 +194,10 @@ class API {
 
   }
 
-  /// Unsubscribe the user from an event
+  /// Unsubscribes the account associated to the [token] from the event n°[id]
+  ///
+  /// Throw a [SocketException] if the server is somehow unreachable.
+  /// Relays any other [Exception] happening.
   static Future<Map<String, dynamic>> unsubscribeFromEvent(String token, int id) async {
     String request = "$apiURL/events/subscribe/$id";
     Map<String,String> headers = {"bearer":token};
@@ -184,7 +215,9 @@ class API {
     }
   }
 
-  /// Get the list of COP1 events
+  /// Gets the list of COP1 events
+  ///
+  /// Throw a [SocketException] if the server is somehow unreachable.
   static Future<Map<String, dynamic>?> events([Duration timeLimit = const Duration(seconds: 5)]) async {
     String request = "$apiURL/events";
     try {
@@ -203,7 +236,9 @@ class API {
     }
   }
 
-  /// Get the list of COP1 events
+  /// Checks if the account associated to the [token] has missed event n°[id]
+  ///
+  /// Throw a [SocketException] if the server is somehow unreachable.
   static Future<Map<String, dynamic>?> unscanned(String token,int id) async {
     String request = "$apiURL/unscanned/$id";
     try {
@@ -222,7 +257,11 @@ class API {
     }
   }
 
-  /// Send data to the distant server
+  /// Sends [data] to the distant server at [url], providing [headers] if necessary.
+  ///
+  /// Throws a [HTTP401Exception] in case of 401 errors, a [HTTP409Exception] for 409 code errors,
+  /// and a simple [Exception] in case any other status code than 200, 401 and 409 is returned.
+  /// Will throw a [TimeoutError] if the request takes longer than [timeLimit].
   static Future<Map<String, dynamic>> _post(String url, Map<String, dynamic> data, [Map<String, String>? headers, Duration timeLimit = const Duration(seconds: 15)]) async {
     final response = await client
         .post(Uri.parse(url), headers: {"accept": "application/json", "Content-Type": "application/json", ...?headers}, body: jsonEncode(data), encoding: Encoding.getByName("UTF-8")).timeout(timeLimit);
@@ -241,7 +280,11 @@ class API {
     }
   }
 
-  /// Fetch a json object from the distant server without providing data
+  /// Fetches a json object from the distant server at [url] without providing data but the [headers].
+  ///
+  /// Throws a [HTTP401Exception] in case of 401 errors, a [HTTP409Exception] for 409 code errors,
+  /// and a simple [Exception] in case any other status code than 200, 401 and 409 is returned.
+  /// Will throw a [TimeoutError] if the request takes longer than [timeLimit].
   static Future<Map<String, dynamic>> _get(String url, [Map<String, String>? headers, Duration timeLimit = const Duration(seconds: 15)]) async {
     final response = await http
         .get(Uri.parse(url), headers: {"accept": "application/json", ...?headers}).timeout(timeLimit);
@@ -262,7 +305,11 @@ class API {
     }
   }
 
-  /// Delete an object of the distant server
+  /// Deletes an object of the distant server
+  ///
+  /// Throws a [HTTP401Exception] in case of 401 errors, a [HTTP409Exception] for 409 code errors,
+  /// and a simple [Exception] in case any other status code than 200, 401 and 409 is returned.
+  /// Will throw a [TimeoutError] if the request takes longer than [timeLimit].
   static Future<Map<String, dynamic>> _delete(String url, [Map<String, String>? headers, Duration timeLimit = const Duration(seconds: 15)]) async {
     final response = await http
         .delete(Uri.parse(url), headers: {"accept": "application/json", ...?headers}, encoding: Encoding.getByName("UTF-8")).timeout(timeLimit);

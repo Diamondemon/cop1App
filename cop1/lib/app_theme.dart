@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 
 import 'constants.dart';
 
+/// Application theme for the whole app
 class AppTheme {
   static const Color _bg1 = main2;
   static const Color _accent1 = main1;
+  /// Dark theme not implemented
   static bool isDark = false;
 
-  /// Default constructor
-  //AppTheme({required this.isDark});
-
+  /// Creates the theme for the app
   static ThemeData get themeData {
     /// Create a TextTheme and ColorScheme, that we can use to generate ThemeData
     TextTheme txtTheme = (isDark ? ThemeData.dark() : ThemeData.light()).textTheme.copyWith();
@@ -31,7 +31,6 @@ class AppTheme {
             fontSize: txtTheme.bodyMedium?.fontSize,
         ),
     );
-
 
     ColorScheme colorScheme = ColorScheme(
       // Decide how you want to apply your own custom them, to the MaterialApp

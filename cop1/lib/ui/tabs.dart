@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import '../common.dart';
-import '../constants.dart';
 
 TextStyle tabStyle([double? fontSize]) => TextStyle(
-  color: lightTextColor,
   fontSize: fontSize,
 );
 
-/// The 5 tabs of the main tab view
+/// The 2 tabs of the main tab view
 List<Tab> tabs(BuildContext context) {
   return <Tab>[
     Tab(
