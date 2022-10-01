@@ -23,7 +23,7 @@ class Cop1Event extends HiveObject {
   @HiveField(6)
   final String imageLink;
   @HiveField(7, defaultValue: true)
-  final bool isAvailable;
+  bool isAvailable;
 
   bool get isPast => date.isBefore(DateTime.now());
 

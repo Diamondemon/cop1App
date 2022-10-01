@@ -57,8 +57,9 @@ class _SubscribeButtonState extends State<SubscribeButton> {
       }
       if (!mounted) return;
       try {
-        if (await s.subscribe(widget.event)){
-          ConnectedWidgetState.displayFullEventAlert(context, widget.event.title);
+        if (!await s.subscribe(widget.event)){
+          ConnectedWidgetState.displayServerErrorAlert(context);
+          return;
         }
       }
       on SocketException {
@@ -69,20 +70,23 @@ class _SubscribeButtonState extends State<SubscribeButton> {
         _showEventConflict(context, e);
         return;
       }
-      setState((){});
+      on FullEventError {
+        ConnectedWidgetState.displayFullEventAlert(context, widget.event.title);
+      }
     }
     else {
       try {
         if (!await s.unsubscribe(widget.event)){
           ConnectedWidgetState.displayServerErrorAlert(context);
+          return;
         }
       }
       on SocketException {
         ConnectedWidgetState.displayConnectionAlert(context);
         return;
       }
-      setState((){});
     }
+    setState((){});
   }
 
   Widget _buildButton(BuildContext context, bool participated) {

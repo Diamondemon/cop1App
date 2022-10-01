@@ -15,14 +15,14 @@ class NoPhoneNumberException implements Exception {
   NoPhoneNumberException();
 }
 
-class NotConnectedException implements Exception {
-  NotConnectedException();
-}
-
 class EventConflictError implements Exception {
   final Cop1Event conflictingEvent;
   final int allowedDelayDays;
   EventConflictError(this.conflictingEvent, this.allowedDelayDays);
+}
+
+class FullEventError implements Exception {
+  FullEventError();
 }
 
 SessionData session(context) => Provider.of<SessionData>(context, listen: false);
@@ -176,6 +176,21 @@ class SessionData with ChangeNotifier {
       _localUser?.subscribeToEvent(event, subscription["barcode"]??"123456");
       event.scheduleNotifications(localizations!);
     }
+    else {
+      switch (subscription["reason"]??""){
+        case "LIMITED": {
+          verifySynchro();
+          throw EventConflictError(event, _localUser!.minDelayDays);
+        }
+        case "FULL": {
+          event.isAvailable = false;
+          throw FullEventError();
+        }
+        default : {
+          break;
+        }
+      }
+    }
 
     return subscription["success"];
   }
@@ -194,6 +209,7 @@ class SessionData with ChangeNotifier {
     }
     if (!successful) return successful;
 
+    event.isAvailable = false;
     _localUser?.unsubscribeFromEvent(event);
     event.cancelNotifications();
     return successful;
