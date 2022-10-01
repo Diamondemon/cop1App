@@ -223,6 +223,9 @@ class SessionData with ChangeNotifier {
       _phoneNumber = "";
       return false;
     }
+    on SocketException {
+      rethrow;
+    }
     catch (e, sT){
       Sentry.captureException(e, stackTrace: sT);
       return false;
