@@ -9,8 +9,7 @@ class BearerToken(BaseModel):
     token_type: str = "bearer"
 
 
-class Event(BaseModel):
-    """An event."""
+class BaseEvent(BaseModel):
     id: str
     date: str
     duration: str
@@ -18,9 +17,11 @@ class Event(BaseModel):
     title: str
     img: str
     loc: str
+
+class Event(BaseEvent):
     available: bool
 
-class EventInscrit(Event):
+class EventInscrit(BaseEvent):
     barcode: str
 
 
