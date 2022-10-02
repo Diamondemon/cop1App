@@ -66,34 +66,41 @@ class _ProfileEditState extends State<ProfileEdit> implements ConnectedWidgetSta
     _lastName=user.lastName.value;
     _email=user.email.value;
     return Padding(
-        padding: const EdgeInsets.all(10),
-        child: ListView(
-          children: [
-            TextFieldWidget(label: AppLocalizations.of(context)!.firstName,
-                text: user.firstName.value,
-                onChanged: (name)=>_firstName=name,
-                inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r"[a-zàâçéèêëîïôûùüÿñæœ .-]*$", caseSensitive: false))],
-                regEx: nameRE,
-                errorText: AppLocalizations.of(context)!.invalidFirstName,
-            ),
-            TextFieldWidget(label: AppLocalizations.of(context)!.lastName,
-                text: user.lastName.value,
-                onChanged: (surname)=>_lastName=surname,
-                inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r"[a-zàâçéèêëîïôûùüÿñæœ .-]*$", caseSensitive: false))],
-                regEx: nameRE,
-                errorText: AppLocalizations.of(context)!.invalidLastName,
-            ),
-            TextFieldWidget(label: AppLocalizations.of(context)!.email,
-                text: user.email.value,
-                hintText: "user@example.com",
-                errorText: AppLocalizations.of(context)!.invalidEmail,
-                onChanged: (email)=>_email=email,
-                regEx: mailRE,
-                keyboardType: TextInputType.emailAddress,
-            ),
-            Center( child: ElevatedButton(onPressed: ()=>_saveNewInfo(context), child: Text(AppLocalizations.of(context)!.saveButton)))
-          ],
-        )
+      padding: const EdgeInsets.all(10),
+      child: ListView(
+        children: [
+          TextFieldWidget(label: AppLocalizations.of(context)!.firstName,
+            text: user.firstName.value,
+            onChanged: (name)=>_firstName=name,
+            inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r"[a-zàâçéèêëîïôûùüÿñæœ .-]*$", caseSensitive: false))],
+            regEx: nameRE,
+            errorText: AppLocalizations.of(context)!.invalidFirstName,
+            isMandatory: true,
+          ),
+          TextFieldWidget(label: AppLocalizations.of(context)!.lastName,
+            text: user.lastName.value,
+            onChanged: (surname)=>_lastName=surname,
+            inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r"[a-zàâçéèêëîïôûùüÿñæœ .-]*$", caseSensitive: false))],
+            regEx: nameRE,
+            errorText: AppLocalizations.of(context)!.invalidLastName,
+            isMandatory: true,
+          ),
+          TextFieldWidget(label: AppLocalizations.of(context)!.email,
+            text: user.email.value,
+            hintText: "user@example.com",
+            errorText: AppLocalizations.of(context)!.invalidEmail,
+            onChanged: (email)=>_email=email,
+            regEx: mailRE,
+            keyboardType: TextInputType.emailAddress,
+            isMandatory: true,
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 10),
+            child: Text(AppLocalizations.of(context)!.mandatoryField("*")),
+          ),
+          Center( child: ElevatedButton(onPressed: ()=>_saveNewInfo(context), child: Text(AppLocalizations.of(context)!.saveButton)))
+        ],
+      )
     );
   }
 

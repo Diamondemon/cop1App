@@ -1,6 +1,6 @@
 {
     "@@locale": "fr",
-    "@@last_modified": "2022-09-30T22:22:56+00:00",
+    "@@last_modified": "2022-10-02T21:36:51+00:00",
     "newsFeed": "Événements",
     "@newsFeed": {
         "description": "Title for the events list page"
@@ -76,12 +76,12 @@
     "@connection": {
         "description": "Title for connection page"
     },
-    "phoneNumber": "Numéro de téléphone*",
+    "phoneNumber": "Numéro de téléphone",
     "invalidPhoneNumber": "Numéro de téléphone non valide.",
     "invalidFirstName": "Veuillez renseigner un prénom",
     "invalidLastName": "Veuillez renseigner un nom",
     "invalidEmail": "Le format de mail ne correspond pas.",
-    "rgdpDisclaimer": "Je consens à ce que mes données soient utilisées sur la plateforme Weezevent dans le cadre de la réservation des événements organisés par l'association COP1. *",
+    "rgdpDisclaimer": "Je consens à ce que mes données soient utilisées sur la plateforme Weezevent dans le cadre de la réservation des événements organisés par l'association COP1.",
     "@rgdpDisclaimer": {
         "description": "Message for rgdp consent"
     },
@@ -168,6 +168,15 @@
         "description": "Message when the server could not unsubscribe the user.",
         "placeholders": {
             "title": {
+                "type": "String"
+            }
+        }
+    },
+    "mandatoryField": "{symbol} Champ obligatoire",
+    "@mandatoryField": {
+        "description": "Explains that the fields marked with {symbol} are mandatory",
+        "placeholders": {
+            "symbol": {
                 "type": "String"
             }
         }

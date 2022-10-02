@@ -22,7 +22,7 @@ class _ProfileCreationPageState extends State<ProfileCreationPage> {
         title: Text(AppLocalizations.of(context)!.profileCreation),
         leading: BackButton(
           onPressed: (){
-            session(context).disconnectUser();
+            session(context).deleteUser();
             Navigator.of(context).pop();
           },
         ),

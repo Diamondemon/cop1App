@@ -14,6 +14,7 @@ class TextFieldWidget extends StatefulWidget {
   final RegExp? regEx;
   final List<TextInputFormatter>? inputFormatters;
   final TextInputType? keyboardType;
+  final bool isMandatory;
 
   const TextFieldWidget({
     Key? key,
@@ -26,6 +27,7 @@ class TextFieldWidget extends StatefulWidget {
     this.regEx,
     this.inputFormatters,
     this.keyboardType,
+    this.isMandatory = false,
   }) : super(key: key);
 
   @override
@@ -61,7 +63,7 @@ class _TextFieldWidgetState extends State<TextFieldWidget> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              widget.label,
+              widget.label+(widget.isMandatory? " *" : ""),
               style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
             ),
             const SizedBox(height: 8),

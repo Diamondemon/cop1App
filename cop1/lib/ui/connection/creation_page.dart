@@ -37,6 +37,7 @@ class _CreationPageState extends State<CreationPage> {
             padding: const EdgeInsets.symmetric(horizontal: 10.0),
             child: Column(
               mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
                 Text(
                   AppLocalizations.of(context)!.connectionMessage,
@@ -51,15 +52,21 @@ class _CreationPageState extends State<CreationPage> {
                   keyboardType: TextInputType.phone,
                   regEx: phoneNumRE,
                   errorText: AppLocalizations.of(context)!.invalidPhoneNumber,
+                  isMandatory: true,
                 ),
                 CheckboxListTile(
-                  title: Text(AppLocalizations.of(context)!.rgdpDisclaimer),
+                  title: Text("${AppLocalizations.of(context)!.rgdpDisclaimer} *"),
                   value: _rgpdChecked,
                   onChanged: (bool? value){
                     setState(() {
                       _rgpdChecked = value??false;
                     });
-                  }),
+                  }
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 0),
+                  child: Text(AppLocalizations.of(context)!.mandatoryField("*")),
+                ),
                 Text.rich(
                     TextSpan(
                       children: [
