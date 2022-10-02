@@ -15,6 +15,7 @@ import '../../common.dart';
 import '../../utils/cop1_event.dart';
 import '../../data/session_data.dart';
 
+/// Page showing all information about the connected user
 class ProfileWidget extends StatefulWidget {
   const ProfileWidget({Key? key}) : super(key: key);
 
@@ -72,6 +73,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
       );
   }
 
+  /// Builds a list view displaying all [events]  that the [user] is subscribed to.
   Widget _buildListView(BuildContext context, UserProfile user, List<Cop1Event> events){
     return ListView(
       children: [
@@ -92,6 +94,9 @@ class _ProfileWidgetState extends State<ProfileWidget> {
     );
   }
 
+  /// Builds a list view displaying the provided [subEvents]
+  ///
+  /// [events] is a resource to know what to display
   Widget _buildEventsList(BuildContext context, SetNotifier<int> subEvents, List<Cop1Event> events){
     return ValueListenableBuilder(
         valueListenable: subEvents,
@@ -125,6 +130,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
     );
   }
 
+  /// Builds the most important information about the [user]
   Widget _buildMainInfo(BuildContext context, UserProfile user) {
     return Center(
         child: Column(
@@ -170,6 +176,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
     );
   }
 
+  /// Gets both the user and the list of events
   Future<Tuple2<UserProfile?, List<Cop1Event>>> getUserAndEvents (BuildContext context) async {
     SessionData s = session(context);
     return Tuple2(await s.user, await s.events);

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import '../../common.dart';
 
+/// Root tab for the events
 class ThreadTab extends StatelessWidget {
   const ThreadTab({Key? key}) : super(key: key);
 

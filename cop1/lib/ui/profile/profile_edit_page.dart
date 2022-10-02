@@ -9,6 +9,7 @@ import '../../common.dart';
 import '../../data/session_data.dart';
 import '../../utils/connected_widget_state.dart';
 
+/// Page to modify an already existing user
 class ProfileEditPage extends StatefulWidget {
   const ProfileEditPage({Key? key}) : super(key: key);
 

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+/// Complete input widget, with title label and error handling
+///
 /// See Johannes Milke Course on making Profile page
 class TextFieldWidget extends StatefulWidget {
   final int maxLines;
@@ -75,6 +77,9 @@ class _TextFieldWidgetState extends State<TextFieldWidget> {
         )
       );
 
+  /// Verifies that the [text] matches the [RegExp], and notifies the listeners
+  ///
+  /// Is called every time the text in the input field changes
   void _onChanged(String text){
     if (widget.regEx != null){
       final bool match = widget.regEx!.hasMatch(text);
@@ -87,6 +92,7 @@ class _TextFieldWidgetState extends State<TextFieldWidget> {
     widget.onChanged(text);
   }
 
+  /// Creates the decoration rules for the input field
   InputDecoration _buildDecoration(BuildContext context) {
     return InputDecoration(
       enabledBorder: OutlineInputBorder(

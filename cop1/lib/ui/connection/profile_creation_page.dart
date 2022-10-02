@@ -6,6 +6,7 @@ import 'package:sentry/sentry.dart';
 
 import '../../common.dart';
 
+/// Page to create a user profile
 class ProfileCreationPage extends StatefulWidget {
   const ProfileCreationPage({Key? key}) : super(key: key);
 
@@ -30,6 +31,7 @@ class _ProfileCreationPageState extends State<ProfileCreationPage> {
     );
   }
 
+  /// Finalizes the creation of the user
   void finalizeCreation(BuildContext context) async{
     AutoRouter.of(context).navigateNamed(
       "/home/profile",

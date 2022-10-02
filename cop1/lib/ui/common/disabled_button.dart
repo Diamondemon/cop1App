@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+/// Button that does nothing
 class DisabledButton extends StatelessWidget {
   const DisabledButton({Key? key, required this.text}) : super(key: key);
   final String text;

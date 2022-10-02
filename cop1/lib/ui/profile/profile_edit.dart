@@ -13,6 +13,9 @@ import 'package:sentry_flutter/sentry_flutter.dart';
 import '../../common.dart';
 import '../../utils/connected_widget_state.dart';
 
+/// Widget to edit the [UserProfile]
+///
+/// [onFinished] is used if some specific action is to be taken after editing
 class ProfileEdit extends StatefulWidget {
   const ProfileEdit({Key? key, this.onFinished}) : super(key: key);
   final void Function()? onFinished;
@@ -27,6 +30,7 @@ class _ProfileEditState extends State<ProfileEdit> implements ConnectedWidgetSta
   String _email="";
   final RegExp mailRE = RegExp(r"^([a-z0-9_.-]+@[a-z0-9_.-]+[.][a-z]+)(\s)*$");
   final RegExp nameRE = RegExp(r"^.+$");
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
@@ -56,6 +60,7 @@ class _ProfileEditState extends State<ProfileEdit> implements ConnectedWidgetSta
     );
   }
 
+  /// Builds the whole view according to the provided [user]
   Widget _buildView(BuildContext context, UserProfile user){
     _firstName=user.firstName.value;
     _lastName=user.lastName.value;
@@ -92,6 +97,7 @@ class _ProfileEditState extends State<ProfileEdit> implements ConnectedWidgetSta
     );
   }
 
+  /// Saves the new information about the user
   void _saveNewInfo(BuildContext context) async {
     _email = _email.replaceAll(" ", "");
     if (mailRE.hasMatch(_email)){

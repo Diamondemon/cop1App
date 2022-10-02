@@ -13,6 +13,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../common.dart';
 import '../../utils/connected_widget_state.dart';
 
+/// Page to register to an account with the phone number
 class CreationPage extends StatefulWidget {
   const CreationPage({Key? key}) : super(key: key);
 
@@ -85,6 +86,7 @@ class _CreationPageState extends State<CreationPage> {
     );
   }
 
+  /// Navigates to the validation page if the phone number is valid and acknowledged by the server
   void goToValidation(BuildContext context) async {
     if (phoneNumRE.hasMatch(phoneNumber) && _rgpdChecked){
       try{
@@ -110,6 +112,7 @@ class _CreationPageState extends State<CreationPage> {
     }
   }
 
+  /// Redirects the user to the privacy policy webpage
   void goToPrivacy(){
     launchUrl(Uri.parse(privacyPolicyUrl), mode: LaunchMode.externalApplication);
   }

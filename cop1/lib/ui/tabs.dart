@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../common.dart';
 
+/// Default style for the tab labels
 TextStyle tabStyle([double? fontSize]) => TextStyle(
   fontSize: fontSize,
 );

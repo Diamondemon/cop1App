@@ -9,7 +9,7 @@ import 'package:sentry/sentry.dart';
 
 import '../../common.dart';
 
-
+/// List Tile to display the most important about an [event]
 class EventTile extends StatefulWidget {
   const EventTile({Key? key, required this.event }) : super(key: key);
   final Cop1Event event;
@@ -86,6 +86,7 @@ class _EventTileState extends State<EventTile> {
     );
   }
 
+  /// Builds the image of the event
   Widget _buildImage(BuildContext context){
     final double imageSize = MediaQuery.of(context).size.width/(2*MediaQuery.of(context).textScaleFactor);
     return CachedNetworkImage(
@@ -105,6 +106,7 @@ class _EventTileState extends State<EventTile> {
     );
   }
 
+  /// Navigates to a more complete info about the event
   void _openEventPage(BuildContext context){
     AutoRouter.of(context).navigateNamed(
       "${widget.event.id}",
@@ -112,7 +114,7 @@ class _EventTileState extends State<EventTile> {
     );
   }
 
-
+  /// Builds a label containing the [text] with a leading [icon]
   Widget _buildIconText(BuildContext context, final IconData icon, final String text) {
     return Text.rich(
       TextSpan(
