@@ -3,8 +3,7 @@ from os import getenv
 import requests
 import json
 from urllib import parse
-from typing import Tuple
-
+import sentry_sdk
 
 def d(x):
     print(json.dumps(x, indent=2))
@@ -304,10 +303,14 @@ class Weezevent:
             return False
 
     def is_event_full(self, evt_id: str) -> bool:
-        ticket = self.api.get_tickets({'id_event[]': evt_id}).json()['events'][0]['tickets'][0]
-        if ticket['quotas'] == 0:
-            return False
-        return ticket['participants'] >= ticket['quotas']
+        try:
+            ticket = self.api.get_tickets({'id_event[]': evt_id}).json()['events'][0]['tickets'][0]
+            if ticket['quotas'] == 0:
+                return False
+            return ticket['participants'] >= ticket['quotas']
+        except Exception as e:
+            sentry_sdk.capture_exception(e)
+            return True
 
 
 WEEZEVENT = Weezevent()
