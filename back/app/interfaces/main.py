@@ -35,7 +35,7 @@ class UserModel(BaseModel):
     email: str
     first_name: str
     last_name: str
-    events: List[Event]
+    events: List[EventInscrit]
     min_event_delay_days: int
 
     # email: str
