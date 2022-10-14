@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:auto_route/auto_route.dart';
-import 'package:cop1/constants.dart' show privacyPolicyUrl;
+import 'package:cop1/constants.dart' show numStartRE, phoneNumRE, privacyPolicyUrl;
 import 'package:cop1/data/session_data.dart';
 import 'package:cop1/ui/common/text_field_widget.dart';
 import 'package:flutter/gestures.dart';
@@ -23,8 +23,6 @@ class CreationPage extends StatefulWidget {
 class _CreationPageState extends State<CreationPage> {
   String phoneNumber="";
   bool _rgpdChecked=false;
-  final RegExp phoneNumRE = RegExp(r"^(\+33\s?)|0[67]([0-9]{2}\s?){4}\s*$");
-  final RegExp numStartRE = RegExp(r"^\+33");
 
   @override
   Widget build(BuildContext context) {
@@ -61,10 +59,6 @@ class _CreationPageState extends State<CreationPage> {
                       _rgpdChecked = value??false;
                     });
                   }),
-                ElevatedButton(
-                  onPressed: ()=>goToValidation(context),
-                  child: Text(AppLocalizations.of(context)!.validate),
-                ),
                 Text.rich(
                     TextSpan(
                       children: [
@@ -78,7 +72,12 @@ class _CreationPageState extends State<CreationPage> {
                         const TextSpan(text: "."),
                       ]
                     )
-                )
+                ),
+                const SizedBox(height: 20,),
+                ElevatedButton(
+                  onPressed: ()=>goToValidation(context),
+                  child: Text(AppLocalizations.of(context)!.validate),
+                ),
               ],
             ),
           )
@@ -92,7 +91,7 @@ class _CreationPageState extends State<CreationPage> {
         if (!numStartRE.hasMatch(phoneNumber)){
           phoneNumber = phoneNumber.replaceFirst("0", "+33");
         }
-        phoneNumber = phoneNumber.replaceAll(" ", "");
+        phoneNumber = phoneNumber.replaceAll(r"[\(\)\s\-]", "");
         if (await session(context).setPhoneNumber(phoneNumber)){
           if (await session(context).askValidation()) {
             AutoRouter.of(context).navigateNamed(

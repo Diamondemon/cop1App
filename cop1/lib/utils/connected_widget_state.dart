@@ -17,6 +17,28 @@ class ConnectedWidgetState {
     );
   }
 
+  static void displayServerErrorAlert(BuildContext context){
+    ScaffoldMessenger.of(context)
+      ..removeCurrentSnackBar()
+      ..showSnackBar(
+        ConnectedWidgetState.timedSnackBar(
+          child: Text(AppLocalizations.of(context)!.serverErrorMessage),
+          action: SnackBarAction(label: AppLocalizations.of(context)!.dismiss, onPressed: (){}),
+        ),
+      );
+  }
+
+  static void displayFullEventAlert(BuildContext context, String title){
+    ScaffoldMessenger.of(context)
+      ..removeCurrentSnackBar()
+      ..showSnackBar(
+        ConnectedWidgetState.timedSnackBar(
+          child: Text(AppLocalizations.of(context)!.fullEventMessage(title)),
+          action: SnackBarAction(label: AppLocalizations.of(context)!.dismiss, onPressed: (){}),
+        ),
+      );
+  }
+
   static void displayUnscannedAlert(BuildContext context){
     ScaffoldMessenger.of(context)
       ..removeCurrentSnackBar()

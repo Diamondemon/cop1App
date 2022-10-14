@@ -57,7 +57,10 @@ class _SubscribeButtonState extends State<SubscribeButton> {
       }
       if (!mounted) return;
       try {
-        await s.subscribe(widget.event);
+        if (!await s.subscribe(widget.event)){
+          ConnectedWidgetState.displayServerErrorAlert(context);
+          return;
+        }
       }
       on SocketException {
         ConnectedWidgetState.displayConnectionAlert(context);
@@ -67,26 +70,32 @@ class _SubscribeButtonState extends State<SubscribeButton> {
         _showEventConflict(context, e);
         return;
       }
-      setState((){});
+      on FullEventError {
+        ConnectedWidgetState.displayFullEventAlert(context, widget.event.title);
+      }
     }
     else {
       try {
-        await s.unsubscribe(widget.event);
+        if (!await s.unsubscribe(widget.event)){
+          ConnectedWidgetState.displayServerErrorAlert(context);
+          return;
+        }
       }
       on SocketException {
         ConnectedWidgetState.displayConnectionAlert(context);
         return;
       }
-      setState((){});
     }
+    setState((){});
   }
 
   Widget _buildButton(BuildContext context, bool participated) {
-    final String text = widget.event.isPast? AppLocalizations.of(context)!.subButton_past:
-      (participated? AppLocalizations.of(context)!.subButton_unSub: AppLocalizations.of(context)!.subButton_sub);
+    final String text = widget.event.isAvailable? (widget.event.isPast? AppLocalizations.of(context)!.subButton_past:
+        (participated? AppLocalizations.of(context)!.subButton_unSub: AppLocalizations.of(context)!.subButton_sub)):
+      AppLocalizations.of(context)!.full;
     return RawMaterialButton(
-      onPressed: widget.event.isPast? null : ()=>_toggleParticipation(context, !participated),
-      fillColor: widget.event.isPast? Theme.of(context).primaryColor.withOpacity(0.5): Theme.of(context).primaryColor,
+      onPressed: (widget.event.isPast | !widget.event.isAvailable)? null : ()=>_toggleParticipation(context, !participated),
+      fillColor: (widget.event.isPast | !widget.event.isAvailable)? Theme.of(context).primaryColor.withOpacity(0.5): Theme.of(context).primaryColor,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(9),
       ),
@@ -98,7 +107,9 @@ class _SubscribeButtonState extends State<SubscribeButton> {
   }
 
   Widget _buildDisabledButton(BuildContext context){
-    final String text = widget.event.isPast? AppLocalizations.of(context)!.subButton_past: AppLocalizations.of(context)!.subButton_sub;
+    final String text = widget.event.isAvailable?
+      widget.event.isPast? AppLocalizations.of(context)!.subButton_past: AppLocalizations.of(context)!.subButton_sub :
+      AppLocalizations.of(context)!.full;
     return RawMaterialButton(
         onPressed: null,
         fillColor: Theme.of(context).primaryColor.withOpacity(0.5),

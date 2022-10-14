@@ -27,35 +27,49 @@ class _ProfileWidgetState extends State<ProfileWidget> {
   @override
   Widget build(BuildContext context) {
 
-    return FutureBuilder(
-        future: getUserAndEvents(context),
-        builder: (BuildContext ctxt, AsyncSnapshot<Tuple2<UserProfile?, List<Cop1Event>>> snapshot) {
-          if (snapshot.connectionState == ConnectionState.done){
-            if (snapshot.hasError){
-              if (snapshot.error is SocketException){
-                WidgetsBinding.instance.addPostFrameCallback((_) {
-                  ConnectedWidgetState.displayConnectionAlert(ctxt);
-                });
-                return SocketExceptionWidget(callBack: (ctx){setState(() {});});
+    return
+      ValueListenableBuilder(valueListenable: session(context).eventsChangedListenable, builder:
+        (BuildContext ctxt, bool value, _) {
+          return FutureBuilder(
+            future: getUserAndEvents(context),
+            builder: (BuildContext ctxt,
+                AsyncSnapshot<Tuple2<UserProfile?, List<Cop1Event>>> snapshot) {
+              if (snapshot.connectionState == ConnectionState.done) {
+                if (snapshot.hasError) {
+                  if (snapshot.error is SocketException) {
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      ConnectedWidgetState.displayConnectionAlert(ctxt);
+                    });
+                    return SocketExceptionWidget(callBack: (ctx) {
+                      setState(() {});
+                    });
+                  }
+                  Sentry.captureException(
+                      snapshot.error, stackTrace: snapshot.stackTrace);
+                  return UnknownErrorWidget(callBack: (ctx) {
+                    setState(() {});
+                  });
+                }
+                else if (snapshot.hasData) {
+                  if (snapshot.data!.item1 == null) {
+                    return const LoadingWidget();
+                  }
+                  return _buildListView(
+                      ctxt, snapshot.data!.item1!, snapshot.data!.item2);
+                }
+                else {
+                  return UnknownErrorWidget(callBack: (ctx) {
+                    setState(() {});
+                  });
+                }
               }
-              Sentry.captureException(snapshot.error, stackTrace: snapshot.stackTrace);
-              return UnknownErrorWidget(callBack: (ctx){setState(() {});});
-            }
-            else if (snapshot.hasData){
-              if (snapshot.data!.item1 == null) {
+              else {
                 return const LoadingWidget();
               }
-              return _buildListView(ctxt, snapshot.data!.item1!, snapshot.data!.item2);
             }
-            else {
-              return UnknownErrorWidget(callBack: (ctx){setState(() {});});
-            }
-          }
-          else {
-            return const LoadingWidget();
-          }
+          );
         }
-    );
+      );
   }
 
   Widget _buildListView(BuildContext context, UserProfile user, List<Cop1Event> events){
@@ -82,24 +96,30 @@ class _ProfileWidgetState extends State<ProfileWidget> {
     return ValueListenableBuilder(
         valueListenable: subEvents,
         builder: (BuildContext cntxt, Set<int> evts, _) {
-          if (events.isEmpty) return Container();
-          final List<int> sortedSubbed = evts.toList()
+          final List<int> sortedSubbed;
+          try {
+            sortedSubbed = evts.toList()
               ..sort((int a, int b){
-            return - events.firstWhere((event) => event.id == a).date.compareTo(events.firstWhere((event) => event.id == b).date);
-          });
+                return - events.firstWhere((event) => event.id == a).date.compareTo(events.firstWhere((event) => event.id == b).date);
+              });
+          }
+          catch (e, sT){
+            Sentry.captureException(e, stackTrace: sT);
+            return Container();
+          }
           return ListView.builder(
             shrinkWrap: true,
             physics: const ClampingScrollPhysics(),
             itemCount: evts.length,
             itemBuilder:
-                (BuildContext ctxt, int index) {
-              return Padding(
-                  padding: const EdgeInsets.all(5.0),
-                  child: EventTile(
-                    event: events.firstWhere((element) => (element.id == sortedSubbed.elementAt(index))),
-                  )
-              );
-            },
+              (BuildContext ctxt, int index) {
+                return Padding(
+                    padding: const EdgeInsets.all(5.0),
+                    child: EventTile(
+                      event: events.firstWhere((element) => (element.id == sortedSubbed.elementAt(index))),
+                    )
+                );
+              },
           );
         }
     );

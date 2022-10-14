@@ -11,18 +11,14 @@ import '../utils/cop1_event.dart';
 
 import 'api.dart';
 
-class NoPhoneNumberException implements Exception {
-  NoPhoneNumberException();
-}
-
-class NotConnectedException implements Exception {
-  NotConnectedException();
-}
-
 class EventConflictError implements Exception {
   final Cop1Event conflictingEvent;
   final int allowedDelayDays;
   EventConflictError(this.conflictingEvent, this.allowedDelayDays);
+}
+
+class FullEventError implements Exception {
+  FullEventError();
 }
 
 SessionData session(context) => Provider.of<SessionData>(context, listen: false);
@@ -33,14 +29,17 @@ class SessionData with ChangeNotifier {
   //final GlobalKey<ScaffoldState> _scaffoldKey= GlobalKey<ScaffoldState>();
   String _phoneNumber = "";
   String _token = "";
+  int lastTimeSynchronized = 0;
   UserProfile? _localUser;
   List<Cop1Event> _events = [];
   final ValueNotifier<bool> _connectionListenable = ValueNotifier(false);
+  final ValueNotifier<bool> _eventsChangedListenable = ValueNotifier(false);
   AppLocalizations? localizations;
 
   String get token => _token;
   String get phoneNumber => _phoneNumber;
   ValueNotifier<bool> get connectionListenable => _connectionListenable;
+  ValueNotifier<bool> get eventsChangedListenable => _eventsChangedListenable;
   bool get isConnected => _token.isNotEmpty;
 
   Future<UserProfile?> get user async {
@@ -72,6 +71,8 @@ class SessionData with ChangeNotifier {
       return Cop1Event.fromJSON(item);
     }).toList();
     storeEvents();
+    _localUser?.checkEventsExist(_events);
+    eventsChangedListenable.value = !eventsChangedListenable.value;
   }
 
   Future<Cop1Event> getEvent(int eventId) async {
@@ -150,7 +151,7 @@ class SessionData with ChangeNotifier {
     disconnectUser();
   }
 
-  Future<void> subscribe(Cop1Event event) async {
+  Future<bool> subscribe(Cop1Event event) async {
     final int conflictingId = _localUser!.checkEventConflicts(event, _events);
     if (conflictingId != -1){
       throw EventConflictError(_events.firstWhere((evt) => evt.id == conflictingId), _localUser!.minDelayDays);
@@ -164,28 +165,50 @@ class SessionData with ChangeNotifier {
     }
     catch (e, sT){
       Sentry.captureException(e, stackTrace: sT);
-      return;
+      return false;
     }
 
     if (subscription["success"]){
       _localUser?.subscribeToEvent(event, subscription["barcode"]??"123456");
       event.scheduleNotifications(localizations!);
     }
+    else {
+      switch (subscription["reason"]??""){
+        case "LIMITED": {
+          verifySynchro();
+          throw EventConflictError(event, _localUser!.minDelayDays);
+        }
+        case "FULL": {
+          event.isAvailable = false;
+          throw FullEventError();
+        }
+        default : {
+          break;
+        }
+      }
+    }
+
+    return subscription["success"];
   }
 
-  Future<void> unsubscribe(Cop1Event event) async {
+  Future<bool> unsubscribe(Cop1Event event) async {
+    bool successful = false;
     try{
-      await API.unsubscribeFromEvent(token, event.id);
+      successful = (await API.unsubscribeFromEvent(token, event.id))["success"]??true;
     }
     on SocketException {
       rethrow;
     }
     catch (e, sT){
       Sentry.captureException(e, stackTrace: sT);
-      return;
+      return false;
     }
+    if (!successful) return successful;
+
+    event.isAvailable = false;
     _localUser?.unsubscribeFromEvent(event);
     event.cancelNotifications();
+    return successful;
   }
 
   Future<bool> setPhoneNumber(phoneNumber) async{
@@ -207,7 +230,6 @@ class SessionData with ChangeNotifier {
   }
 
   Future<String> getToken(String code) async {
-    if (_phoneNumber.isEmpty) throw NoPhoneNumberException();
     try {
       _token = await API.getToken(_phoneNumber, code);
     }
@@ -237,7 +259,6 @@ class SessionData with ChangeNotifier {
   }
 
   Future<bool> askValidation() async {
-    if (_phoneNumber.isEmpty) throw NoPhoneNumberException();
     return await API.askValidation(_phoneNumber);
   }
 
@@ -285,6 +306,8 @@ class SessionData with ChangeNotifier {
   Future<void> loadUser() async{
     final userBox = await Hive.openBox("Credentials");
     _localUser = userBox.get("user");
+
+    await verifySynchro();
   }
 
   Future<void> loadEvents() async{
@@ -324,6 +347,28 @@ class SessionData with ChangeNotifier {
     }
     catch (e, sT) {
       Sentry.captureException(e, stackTrace: sT);
+    }
+  }
+
+  Future<void> verifySynchro() async {
+    final userBox = await Hive.openBox("Credentials");
+    if (_localUser != null){
+      lastTimeSynchronized = userBox.get("lastTimeSynchronized", defaultValue: 0);
+      final int currentTime = DateTime.now().millisecondsSinceEpoch;
+      if (currentTime-lastTimeSynchronized >= Duration.millisecondsPerDay){
+        lastTimeSynchronized = currentTime;
+        try {
+          final json = await API.getUser(_token);
+          if (json["min_event_delay_days"]!=null){
+            _localUser?.minDelayDays = json["min_event_delay_days"];
+            userBox.put("lastTimeSynchronized", lastTimeSynchronized);
+            storeUser();
+          }
+        }
+        on Exception {
+          return;
+        }
+      }
     }
   }
 

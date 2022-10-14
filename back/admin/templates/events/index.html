@@ -28,7 +28,7 @@
   <div class="headerDiv">
     <input
       type="submit"
-      value="Home"
+      value="Accueil"
       class="button"
       onclick="window.location.href = '/'"
     />
@@ -61,7 +61,7 @@
         <th>Titre</th>
         <th>Date</th>
       </thead>
-      {% for evt in events %}
+      {% for evt in events[::-1] %}
       <tr>
         <td>
           <img

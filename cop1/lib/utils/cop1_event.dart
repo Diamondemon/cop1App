@@ -22,10 +22,12 @@ class Cop1Event extends HiveObject {
   final String location;
   @HiveField(6)
   final String imageLink;
+  @HiveField(7, defaultValue: true)
+  bool isAvailable;
 
   bool get isPast => date.isBefore(DateTime.now());
 
-  Cop1Event(this.id, this.title, this.description, this.date, this.duration, this.location, this.imageLink);
+  Cop1Event(this.id, this.title, this.description, this.date, this.duration, this.location, this.imageLink, this.isAvailable);
 
   @override
   bool operator ==(Object other){
@@ -54,6 +56,7 @@ class Cop1Event extends HiveObject {
         json["duration"]??"01:00",
         json["loc"],
         json["img"]??"",
+        json["is_available"]??true
     );
   }
 
