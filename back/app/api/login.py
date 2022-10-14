@@ -1,14 +1,13 @@
 import re
 
-from fastapi import Depends, APIRouter, HTTPException
+from fastapi import Depends, APIRouter
 from fastapi.security import APIKeyHeader
 
 from app.login import user_login, create_user, user_from_token, update_user_password
 from app.interfaces.main import *
 from app.logger import logger
-from app.database.tables import User as UserInDB, Event as EventInDB, Inscription as InscriptionInDB
-from app.database.main import get_user
-from app.tools import check_email, check_username
+from app.database.tables import Event as EventInDB, Inscription as InscriptionInDB
+from app.tools import check_email, check_username, check_phone
 from weezevent import WEEZEVENT
 
 app = APIRouter(tags=["login"])
@@ -19,12 +18,12 @@ token = APIKeyHeader(name="bearer", description="Connection token")
 @app.post("/account/create")
 async def create_new_user(user: UserCreationModel) -> UserCreationResponse:
     logger.info("Creating user : %s", user)
-    if not re.match('\\+33[1-9][0-9]{8}', user.phone):
-        return UserCreationResponse(
-            valid=False,
-            message="Invalid phone number"
-        )
-    return create_user(user)
+    if check_phone(user.phone):
+        return create_user(user)
+    return UserCreationResponse(
+        valid=False,
+        message="Invalid phone number"
+    )
 
 
 @app.post("/account/ask_validation")

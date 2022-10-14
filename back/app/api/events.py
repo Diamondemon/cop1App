@@ -9,6 +9,7 @@ from app.api.login import token
 from app.login import user_from_token
 from app.logger import logger
 from auto_subscribe import subscribe, unsubscribe
+from weezevent import WEEZEVENT
 
 app = APIRouter(tags=["events"])
 
@@ -26,6 +27,7 @@ async def list_all_events() -> Events:
                 title=str(e.title),
                 img=str(e.img),
                 loc=str(e.loc),
+                available=not WEEZEVENT.is_event_full(e.id),
             )
             for e in EventInDB.select().order_by(EventInDB.date)
         ]
@@ -40,9 +42,11 @@ async def subscribe_to_an_event(item_id: int, _token: str = Depends(token)) -> S
         evt = EventInDB.get(EventInDB.id == item_id)
     except:
         logger.info('Invalid event')
-        return SubscribeResponse(success=False, barcode='')
+        return SubscribeResponse(success=False, barcode='', reason='INVALID')
     if not user_can_subscribe_to_event(user, evt):
-        return SubscribeResponse(success=False, barcode='')
+        return SubscribeResponse(success=False, barcode='', reason='LIMITED')
+    if WEEZEVENT.is_event_full(str(item_id)):
+        return SubscribeResponse(success=False, barcode='', reason='FULL')
     try:
         barcode = subscribe(
             str(item_id),
@@ -53,8 +57,7 @@ async def subscribe_to_an_event(item_id: int, _token: str = Depends(token)) -> S
         )
     except Exception as e:
         logger.error('Unable to subscribe to event %d', item_id)
-        logger.error(e)
-        barcode=''
+        return SubscribeResponse(success=False, barcode='', reason='UNKNOWN')
     with DB:
         InscriptionInDB.create(
             user=user,

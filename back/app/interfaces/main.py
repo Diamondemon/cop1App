@@ -9,8 +9,7 @@ class BearerToken(BaseModel):
     token_type: str = "bearer"
 
 
-class Event(BaseModel):
-    """An event."""
+class BaseEvent(BaseModel):
     id: str
     date: str
     duration: str
@@ -19,7 +18,10 @@ class Event(BaseModel):
     img: str
     loc: str
 
-class EventInscrit(Event):
+class Event(BaseEvent):
+    available: bool
+
+class EventInscrit(BaseEvent):
     barcode: str
 
 
@@ -33,7 +35,7 @@ class UserModel(BaseModel):
     email: str
     first_name: str
     last_name: str
-    events: List[Event]
+    events: List[EventInscrit]
     min_event_delay_days: int
 
     # email: str
@@ -83,3 +85,4 @@ class UserLoginResponse(BoolResponse):
 class SubscribeResponse(BaseModel):
     success: bool = True
     barcode: str = ""
+    reason: str = ""
