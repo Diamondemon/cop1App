@@ -1,7 +1,7 @@
 from fastapi import Depends, APIRouter
 import datetime
 
-from app.interfaces.main import Events, Event, BoolResponse, SubscribeResponse
+from app.interfaces.main import Events, Event, BoolResponse, SubscribeResponse, Billet
 from app.database.tables import User as UserInDB, Event as EventInDB, Inscription as InscriptionInDB, DB
 from app.database.main import user_can_subscribe_to_event
 from app.api.login import token
@@ -34,8 +34,14 @@ async def list_all_events() -> Events:
     )
 
 
-@app.post("/events/subscribe/{item_id}")
-async def subscribe_to_an_event(item_id: int, _token: str = Depends(token)) -> SubscribeResponse:
+@app.get("/events/billets/{item_id}")
+async def list_all_billets(item_id: int) -> list[Billet]:
+    """List the events of a user."""
+    return WEEZEVENT.list_billets(item_id)
+
+
+@app.post("/events/subscribe/{item_id}/{billet_id}")
+async def subscribe_to_an_event(item_id: int, billet_id: int, _token: str = Depends(token)) -> SubscribeResponse:
     """Subscribe to an event."""
     user = user_from_token(_token)
     try:
@@ -49,7 +55,8 @@ async def subscribe_to_an_event(item_id: int, _token: str = Depends(token)) -> S
         return SubscribeResponse(success=False, barcode='', reason='FULL')
     try:
         barcode = subscribe(
-            str(item_id),
+            item_id,
+            billet_id,
             user.phone,
             user.first_name,
             user.last_name,

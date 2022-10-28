@@ -86,3 +86,9 @@ class SubscribeResponse(BaseModel):
     success: bool = True
     barcode: str = ""
     reason: str = ""
+
+
+class Billet(BaseModel):
+    id: int
+    name: str
+    available: bool

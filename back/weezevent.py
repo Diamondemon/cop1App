@@ -1,9 +1,12 @@
+from datetime import datetime
 import json
 from os import getenv
 import requests
 import json
 from urllib import parse
 import sentry_sdk
+
+from app.interfaces.main import Billet
 
 def d(x):
     print(json.dumps(x, indent=2))
@@ -232,43 +235,47 @@ class Weezevent:
         return full['events'][0]['tickets'][0]['id']
 
 
-    def form_question(self, evt_id: int) -> str:
+    def form_question(self, evt_id: int, billet_id: int) -> dict:
         full = self.api._request_get(self.FORMS ,{'id_event': evt_id}).json()
         for x in full:
-            if x['id_evenement'] == str(evt_id):
-                q = x['questions_participant'][0]
-                if q['type'] == 'custom':
-                    return q['id']
-                return q['type']
-        return 'telephone'
+            if x['id_evenement'] == str(evt_id) and str(billet_id) in x['tickets']:
+                return {
+                    "buyer": [
+                        e
+                        for e in x['questions_buyer']
+                        if e["required"]
+                    ],
+                    "participant": [
+                        e
+                        for e in x['questions_participant']
+                        if e["required"]
+                    ]
+                }
+        raise Exception('No form found')
+
+    def _add_participant(self, data: dict) -> dict:
+        res = self.api._request_post(self.PARTICIPANTS, data={"participants": [data]})
+        return res.json()['participants'][0]
 
     def add_participant(
             self,
             evt_id: int,
+            billet_id: int,
             email: str,
             first_name: str,
             last_name: str,
             phone: str,
         ) -> str:
-        billet_id = self.billet_id(evt_id)
-        form_question = self.form_question(evt_id)
-        data = {
-            "participants": [
-                {
-                    "id_evenement": evt_id,
-                    "id_billet": billet_id,
-                    "email": email,
-                    "nom": last_name,
-                    "prenom": first_name,
-                    "form": {
-                        form_question: phone
-                    },
-                    "notify": False
-                }
-            ]
-        }
-        res = self.api._request_post(self.PARTICIPANTS, data=data)
-        barcode = res.json()['participants'][0]['barcode_id']
+        barcode = self._add_participant({
+            "id_evenement": evt_id,
+            "id_billet": billet_id,
+            "email": email,
+            "nom": last_name,
+            "prenom": first_name,
+            "form": {
+                "portable": phone
+            }
+        })['barcode_id']
         return barcode
     
     
@@ -305,12 +312,21 @@ class Weezevent:
     def is_event_full(self, evt_id: str) -> bool:
         try:
             ticket = self.api.get_tickets({'id_event[]': evt_id}).json()['events'][0]['tickets'][0]
-            if ticket['quotas'] == 0:
-                return False
-            return ticket['participants'] >= ticket['quotas']
+            return ticket['participants'] >= (ticket['quotas'] or 26)
         except Exception as e:
             sentry_sdk.capture_exception(e)
             return True
 
+    def list_billets(self, evt_id: int) -> list[Billet]:
+        full = self.api.get_tickets({'id_event': evt_id}).json()
+        tickets = full['events'][0]['tickets']
+        return [
+            Billet(
+                id=int(t['id']),
+                name=t['name'],
+                available=t['participants'] < (t['quotas'] or 26),
+            )
+            for t in tickets
+        ]
 
 WEEZEVENT = Weezevent()

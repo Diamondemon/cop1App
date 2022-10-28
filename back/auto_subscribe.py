@@ -5,7 +5,8 @@ class SubscriptionException(Exception):
 
 
 def subscribe(
-    evt_id: str,
+    evt_id: int,
+    billet_id: int,
     phone: str,
     first_name: str,
     last_name: str,
@@ -13,7 +14,8 @@ def subscribe(
 ) -> str:
     try:
         barcode = WEEZEVENT.add_participant(
-            evt_id=int(evt_id),
+            evt_id=evt_id,
+            billet_id=billet_id,
             email=email,
             first_name=first_name,
             last_name=last_name,
