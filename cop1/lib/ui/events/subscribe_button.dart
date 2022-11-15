@@ -1,8 +1,9 @@
 import 'dart:io';
 
+import 'package:auto_route/auto_route.dart';
 import 'package:cop1/common.dart';
-import 'package:cop1/ui/connection/creation_page.dart';
 import 'package:cop1/ui/common/disabled_button.dart';
+import 'package:cop1/ui/events/ticket_picker.dart';
 import 'package:cop1/utils/connected_widget_state.dart';
 import 'package:cop1/utils/cop1_event.dart';
 import 'package:cop1/utils/user_profile.dart';
@@ -12,8 +13,9 @@ import 'package:sentry/sentry.dart';
 
 /// Button to subscribe and unsubscribe from an event
 class SubscribeButton extends StatefulWidget {
-  const SubscribeButton({Key? key, required this.event}) : super(key: key);
+  const SubscribeButton({Key? key, required this.event, this.ticketId = -1}) : super(key: key);
   final Cop1Event event;
+  final int ticketId;
 
   @override
   State<SubscribeButton> createState() => _SubscribeButtonState();
@@ -54,27 +56,40 @@ class _SubscribeButtonState extends State<SubscribeButton> {
     SessionData s = session(context);
     if (participate){
       if (!s.isConnected){
-        await Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext ctxt)=> const CreationPage()));
+        await AutoRouter.of(context).navigateNamed(
+          '/connection',
+          onFailure: (NavigationFailure failure)=> Sentry.captureException(failure)
+        );
         if (!s.isConnected) return;
       }
       if (!mounted) return;
-      try {
-        if (!await s.subscribe(widget.event)){
-          ConnectedWidgetState.displayServerErrorAlert(context);
+
+      if (widget.ticketId == -1){
+        showDialog(context: context,
+        builder: (BuildContext alertContext){
+          return TicketPicker.buildTicketDialog(context, widget.event);
+        });
+      }
+      else {
+        try {
+          if (!await s.subscribe(widget.event)){
+            ConnectedWidgetState.displayServerErrorAlert(context);
+            return;
+          }
+        }
+        on SocketException {
+          ConnectedWidgetState.displayConnectionAlert(context);
           return;
         }
+        on EventConflictError catch (e) {
+          _showEventConflict(context, e);
+          return;
+        }
+        on FullEventError {
+          ConnectedWidgetState.displayFullEventAlert(context, widget.event.title);
+        }
       }
-      on SocketException {
-        ConnectedWidgetState.displayConnectionAlert(context);
-        return;
-      }
-      on EventConflictError catch (e) {
-        _showEventConflict(context, e);
-        return;
-      }
-      on FullEventError {
-        ConnectedWidgetState.displayFullEventAlert(context, widget.event.title);
-      }
+
     }
     else {
       try {
