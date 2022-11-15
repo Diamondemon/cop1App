@@ -1,6 +1,6 @@
 {
     "@@locale": "fr",
-    "@@last_modified": "2022-10-02T21:36:51+00:00",
+    "@@last_modified": "2022-11-15T17:06:33+00:00",
     "newsFeed": "Événements",
     "@newsFeed": {
         "description": "Title for the events list page"
@@ -180,5 +180,7 @@
                 "type": "String"
             }
         }
-    }
+    },
+    "pullToRefresh": "Tirez vers le bas pour mettre la liste à jour",
+    "ticketSelectionTitle": "Choisissez votre créneau horaire"
 }

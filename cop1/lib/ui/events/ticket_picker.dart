@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:cop1/common.dart';
 import 'package:cop1/ui/common/loading_widget.dart';
 import 'package:cop1/ui/events/ticket_option.dart';
 import 'package:cop1/utils/cop1_event.dart';
@@ -81,6 +82,18 @@ class _TicketPickerState extends State<TicketPicker> {
                   return TicketOption(event: widget.event, ticket: tickets[index]);
                 },
               )
+          ),
+          Container(
+            decoration: BoxDecoration(
+              boxShadow : [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.8),
+                  spreadRadius: -1.5,
+                  blurRadius: 4,
+                  offset: const Offset(0, -2), // changes position of shadow
+                ),
+              ],
+            )
           )
         ],
       )
@@ -92,20 +105,13 @@ class _TicketPickerState extends State<TicketPicker> {
       decoration: BoxDecoration(
         color: Theme.of(context).backgroundColor,
         borderRadius: BorderRadius.circular(5),
-        boxShadow : [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.5),
-            spreadRadius: 5,
-            blurRadius: 7,
-            offset: const Offset(0, 3), // changes position of shadow
-          ),
-        ],
+        boxShadow : kElevationToShadow[4],
       ),
       padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
       child : Center(
         child: Text(
-          "Choose your time of selection",
-          style: Theme.of(context).textTheme.titleMedium,
+          AppLocalizations.of(context)!.ticketSelectionTitle,
+          style: Theme.of(context).textTheme.titleLarge,
         ),
       )
     );

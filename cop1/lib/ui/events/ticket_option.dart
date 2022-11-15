@@ -21,7 +21,7 @@ class TicketOption extends StatelessWidget {
       margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 5),
       child: Column(
         children: [
-          Text(ticket.name),
+          Text(ticket.name, style: Theme.of(context).textTheme.titleMedium),
           const SizedBox(height: 10),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 20),
