@@ -10,3 +10,4 @@ requests
 types-requests
 psycopg2-binary
 sentry_sdk
+beautifulsoup4
