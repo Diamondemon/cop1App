@@ -5,7 +5,7 @@ import requests
 import json
 from urllib import parse
 import sentry_sdk
-import re
+from bs4 import BeautifulSoup
 
 from app.interfaces.main import Billet
 
@@ -222,7 +222,7 @@ class Weezevent:
             'date': evt.get('period', {}).get('start'),
             'duration': '01:00:00',
             'title': evt.get('title'),
-            'desc': re.sub('<.*?>', '', evt.get('desc') or evt.get('description')),
+            'desc': BeautifulSoup(evt.get('desc') or evt.get('description'), 'html.parser').get_text(),
             'img': evt.get('image'),
             'loc': f"{loc.get('address')}, {loc.get('zip_code')} {loc.get('city')}"
         }
