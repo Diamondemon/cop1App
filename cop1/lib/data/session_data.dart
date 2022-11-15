@@ -199,14 +199,14 @@ class SessionData with ChangeNotifier {
   /// Throws a [FullEventError] if the event is already full.
   /// Rethrows any [SocketException]
   /// Should any other error occur, it is silenced an the app returns false.
-  Future<bool> subscribe(Cop1Event event) async {
+  Future<bool> subscribe(Cop1Event event, int ticketId) async {
     final int conflictingId = _localUser!.checkEventConflicts(event, _events);
     if (conflictingId != -1){
       throw EventConflictError(_events.firstWhere((evt) => evt.id == conflictingId), _localUser!.minDelayDays);
     }
     final Map<String, dynamic> subscription;
     try{
-      subscription = await API.subscribeToEvent(token, event.id);
+      subscription = await API.subscribeToEvent(token, event.id, ticketId);
     }
     on SocketException {
       rethrow;
@@ -256,8 +256,7 @@ class SessionData with ChangeNotifier {
       return false;
     }
     if (!successful) return successful;
-
-    event.isAvailable = false;
+    event.isAvailable = true;
     _localUser?.unsubscribeFromEvent(event);
     event.cancelNotifications();
     return successful;

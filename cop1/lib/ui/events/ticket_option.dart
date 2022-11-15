@@ -26,7 +26,11 @@ class TicketOption extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 20),
             alignment: Alignment.centerRight,
-            child: SubscribeButton(event: event, ticketId: ticket.id)
+            child: SubscribeButton(
+              event: event,
+              ticketId: ticket.id,
+              endCallback: (){Navigator.of(context).pop();}
+            )
           )
         ],
       ),

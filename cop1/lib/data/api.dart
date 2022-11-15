@@ -172,12 +172,12 @@ class API {
     }
   }
 
-  /// Subscribes the account associated to the [token] to the event n°[id]
+  /// Subscribes the account associated to the [token] to the event n°[eventId] using the ticket n°[ticketId]
   ///
   /// Throw a [SocketException] if the server is somehow unreachable.
   /// Relays any other [Exception] happening.
-  static Future<Map<String, dynamic>> subscribeToEvent(String token, int id) async {
-    String request = "$apiURL/events/subscribe/$id";
+  static Future<Map<String, dynamic>> subscribeToEvent(String token, int eventId, int ticketId) async {
+    String request = "$apiURL/events/subscribe/$eventId/$ticketId";
     Map<String,String> headers = {"bearer":token};
     try {
       return await _post(request,{}, headers);

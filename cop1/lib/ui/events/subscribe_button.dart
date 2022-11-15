@@ -13,9 +13,10 @@ import 'package:sentry/sentry.dart';
 
 /// Button to subscribe and unsubscribe from an event
 class SubscribeButton extends StatefulWidget {
-  const SubscribeButton({Key? key, required this.event, this.ticketId = -1}) : super(key: key);
+  const SubscribeButton({Key? key, required this.event, this.ticketId = -1, this.endCallback}) : super(key: key);
   final Cop1Event event;
   final int ticketId;
+  final void Function()? endCallback;
 
   @override
   State<SubscribeButton> createState() => _SubscribeButtonState();
@@ -65,16 +66,20 @@ class _SubscribeButtonState extends State<SubscribeButton> {
       if (!mounted) return;
 
       if (widget.ticketId == -1){
-        showDialog(context: context,
-        builder: (BuildContext alertContext){
-          return TicketPicker.buildTicketDialog(context, widget.event);
-        });
+        await showDialog(context: context,
+          builder: (BuildContext alertContext){
+            return TicketPicker.buildTicketDialog(context, widget.event);
+          }
+        );
       }
       else {
         try {
-          if (!await s.subscribe(widget.event)){
+          if (!await s.subscribe(widget.event, widget.ticketId)){
             ConnectedWidgetState.displayServerErrorAlert(context);
             return;
+          }
+          else {
+            return widget.endCallback?.call();
           }
         }
         on SocketException {
@@ -103,7 +108,7 @@ class _SubscribeButtonState extends State<SubscribeButton> {
         return;
       }
     }
-    setState((){});
+    if (mounted) setState((){});
   }
 
   /// Builds a button depending on the state of the event
