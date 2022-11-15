@@ -11,6 +11,7 @@ import 'package:sentry/sentry.dart';
 import '../../data/session_data.dart';
 import '../../utils/connected_widget_state.dart';
 
+/// Widget containing the list of events
 class EventList extends StatefulWidget {
   const EventList({Key? key}) : super(key: key);
 
@@ -50,6 +51,7 @@ class _EventListState extends State<EventList> {
     );
   }
 
+  /// Builds the list displaying all the [events]
   Widget _buildListView(BuildContext context, List<Cop1Event> events) {
     return ListView.builder(
         itemCount: events.length,
@@ -62,6 +64,9 @@ class _EventListState extends State<EventList> {
       );
   }
 
+  /// Refreshes the list of events then rebuilds the widget
+  ///
+  /// Could be replaced with a ValueListenable
   Future<void> _refreshList(BuildContext context) async {
     try {
       await session(context).refreshEvents();

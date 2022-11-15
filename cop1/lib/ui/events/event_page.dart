@@ -16,6 +16,7 @@ import 'package:sentry/sentry.dart';
 import '../../common.dart';
 import '../../utils/cop1_event.dart';
 
+/// Page containing complete information about the event identified by [eventId]
 class EventPage extends StatefulWidget {
   const EventPage({Key? key, @PathParam() required this.eventId}) : super(key: key);
   final int eventId;
@@ -50,6 +51,7 @@ class _EventPageState extends State<EventPage> {
     );
   }
 
+  /// Builds the page with a [Scaffold]
   Widget _buildScaffold(BuildContext context, Cop1Event event){
     return Scaffold(
         appBar: AppBar(
@@ -64,7 +66,7 @@ class _EventPageState extends State<EventPage> {
     );
   }
 
-
+  /// Builds all the information in a [ListView]
   Widget _buildListView(BuildContext context, Cop1Event event){
     return ListView(
       children: [
@@ -99,6 +101,7 @@ class _EventPageState extends State<EventPage> {
     );
   }
 
+  /// Builds the image of the event
   Widget _buildImage(BuildContext context, Cop1Event event){
     return CachedNetworkImage(
       imageUrl: event.imageLink,
@@ -116,7 +119,7 @@ class _EventPageState extends State<EventPage> {
     );
   }
 
-
+  /// Builds the button in the top [AppBar], to display the QR Code of the registration, if any
   Widget _buildQRCodeButton(BuildContext context){
     return FutureBuilder(
       future: session(context).user,
@@ -149,6 +152,7 @@ class _EventPageState extends State<EventPage> {
     );
   }
 
+  /// Displays the QR Code containing the [code]
   void _displayQRCodeAlert(BuildContext context, String code){
     showDialog(
         context: context,
@@ -158,6 +162,7 @@ class _EventPageState extends State<EventPage> {
           });
   }
 
+  /// Builds a label containing the [text] with a leading [icon]
   Widget _buildIconText(BuildContext context, final IconData icon, final String text) {
     return Text.rich(
       TextSpan(
@@ -174,6 +179,7 @@ class _EventPageState extends State<EventPage> {
     );
   }
 
+  /// Builds the QR Code identifying the user to Weezevent with [code]
   Dialog _buildQRCodeAlert(BuildContext context, String code){
     return Dialog(
       child: SizedBox(

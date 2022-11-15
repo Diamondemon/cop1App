@@ -13,6 +13,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../common.dart';
 import '../../utils/connected_widget_state.dart';
 
+/// Page to register to an account with the phone number
 class CreationPage extends StatefulWidget {
   const CreationPage({Key? key}) : super(key: key);
 
@@ -36,6 +37,7 @@ class _CreationPageState extends State<CreationPage> {
             padding: const EdgeInsets.symmetric(horizontal: 10.0),
             child: Column(
               mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
                 Text(
                   AppLocalizations.of(context)!.connectionMessage,
@@ -50,15 +52,21 @@ class _CreationPageState extends State<CreationPage> {
                   keyboardType: TextInputType.phone,
                   regEx: phoneNumRE,
                   errorText: AppLocalizations.of(context)!.invalidPhoneNumber,
+                  isMandatory: true,
                 ),
                 CheckboxListTile(
-                  title: Text(AppLocalizations.of(context)!.rgdpDisclaimer),
+                  title: Text("${AppLocalizations.of(context)!.rgdpDisclaimer} *"),
                   value: _rgpdChecked,
                   onChanged: (bool? value){
                     setState(() {
                       _rgpdChecked = value??false;
                     });
-                  }),
+                  }
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 0),
+                  child: Text(AppLocalizations.of(context)!.mandatoryField("*")),
+                ),
                 Text.rich(
                     TextSpan(
                       children: [
@@ -85,6 +93,7 @@ class _CreationPageState extends State<CreationPage> {
     );
   }
 
+  /// Navigates to the validation page if the phone number is valid and acknowledged by the server
   void goToValidation(BuildContext context) async {
     if (phoneNumRE.hasMatch(phoneNumber) && _rgpdChecked){
       try{
@@ -110,6 +119,7 @@ class _CreationPageState extends State<CreationPage> {
     }
   }
 
+  /// Redirects the user to the privacy policy webpage
   void goToPrivacy(){
     launchUrl(Uri.parse(privacyPolicyUrl), mode: LaunchMode.externalApplication);
   }

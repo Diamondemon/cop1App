@@ -11,6 +11,7 @@ import 'package:cop1/ui/events/thread_tab.dart';
 
 import '../ui/connection/validation_page.dart';
 
+/// Used to generate an [AutoRouter] for the app's routing
 @MaterialAutoRouter(
   replaceInRouteName: 'Tab,Page,Route',
   routes: <AutoRoute>[

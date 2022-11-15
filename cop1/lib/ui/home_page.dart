@@ -13,6 +13,7 @@ import 'package:sentry/sentry.dart';
 import '../common.dart';
 import '../data/session_data.dart';
 
+/// Base widget of the app
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
 
@@ -40,6 +41,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
     });
   }
 
+  /// Listens if any notification has been clicked to open the app
   Future<void> listenNotifications() async {
     NotificationAPI.onNotifications.stream.listen(
       (String? payload){
@@ -57,6 +59,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
     }
   }
 
+  /// Navigates in the app according to the notifications [payload]
   void onClickedNotification(String? payload) {
     if (payload != null){
       AutoRouter.of(context).navigateNamed(

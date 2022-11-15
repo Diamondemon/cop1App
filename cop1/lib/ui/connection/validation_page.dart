@@ -9,6 +9,7 @@ import 'package:sentry_flutter/sentry_flutter.dart';
 import '../../common.dart';
 import '../../utils/connected_widget_state.dart';
 
+/// Page to validate the account creation
 class ValidationPage extends StatefulWidget {
   const ValidationPage({Key? key}) : super(key: key);
   @override
@@ -26,6 +27,7 @@ class _ValidationPageState extends State<ValidationPage> {
     return _buildEntryPage(context);
   }
 
+  /// Builds the input fields
   Widget _buildEntryPage(BuildContext context){
     final SessionData s = session(context);
     return Scaffold(
@@ -69,6 +71,7 @@ class _ValidationPageState extends State<ValidationPage> {
     );
   }
 
+  /// Finalizes the connection.
   void finalizeConnection(BuildContext context) async{
     try {
       if ((await session(context).getToken(_code)).isNotEmpty){
@@ -94,7 +97,7 @@ class _ValidationPageState extends State<ValidationPage> {
     }
   }
 
-
+  /// Asks for a new validation code
   void resendCode(BuildContext context) async {
     try {
       await session(context).askValidation();

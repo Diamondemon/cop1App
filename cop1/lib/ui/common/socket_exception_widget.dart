@@ -1,6 +1,7 @@
 import 'package:cop1/common.dart';
 import 'package:flutter/material.dart';
 
+/// Widget to display if the server is completely unreachable
 class SocketExceptionWidget extends StatelessWidget {
   const SocketExceptionWidget({Key? key, required this.callBack}) : super(key: key);
   final void Function(BuildContext context) callBack; 

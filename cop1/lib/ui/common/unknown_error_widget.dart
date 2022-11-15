@@ -1,6 +1,7 @@
 import 'package:cop1/common.dart';
 import 'package:flutter/material.dart';
 
+/// Generic widget for unknown errors
 class UnknownErrorWidget extends StatelessWidget {
   const UnknownErrorWidget({Key? key, required this.callBack}) : super(key: key);
   final void Function(BuildContext context)? callBack;

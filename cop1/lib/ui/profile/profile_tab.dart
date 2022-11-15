@@ -6,6 +6,7 @@ import 'package:sentry/sentry.dart';
 import '../../common.dart';
 import '../../data/session_data.dart';
 
+/// Tab for all widgets about the user
 class ProfileTab extends StatefulWidget {
   const ProfileTab({Key? key}) : super(key: key);
 
@@ -56,6 +57,7 @@ class _ProfileTabState extends State<ProfileTab> {
     );
   }
 
+  /// Builds the proper view when there is no connected user
   Widget _buildNoProfile(BuildContext context){
     return Center(
       child: Padding(
@@ -73,6 +75,7 @@ class _ProfileTabState extends State<ProfileTab> {
     );
   }
 
+  /// Navigates to the connection widgets
   void _launchConnection() async{
     await AutoRouter.of(context).navigateNamed(
       '/connection',

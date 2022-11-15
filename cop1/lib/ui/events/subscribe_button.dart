@@ -10,6 +10,7 @@ import 'package:cop1/data/session_data.dart';
 import 'package:flutter/material.dart';
 import 'package:sentry/sentry.dart';
 
+/// Button to subscribe and unsubscribe from an event
 class SubscribeButton extends StatefulWidget {
   const SubscribeButton({Key? key, required this.event}) : super(key: key);
   final Cop1Event event;
@@ -48,6 +49,7 @@ class _SubscribeButtonState extends State<SubscribeButton> {
     );
   }
 
+  /// Changes the user's participation in the direction of [participate]
   void _toggleParticipation(BuildContext context, bool participate) async {
     SessionData s = session(context);
     if (participate){
@@ -89,6 +91,9 @@ class _SubscribeButtonState extends State<SubscribeButton> {
     setState((){});
   }
 
+  /// Builds a button depending on the state of the event
+  ///
+  /// [participate] is to know in what direction to toggle the participation
   Widget _buildButton(BuildContext context, bool participated) {
     final String text = widget.event.isAvailable? (widget.event.isPast? AppLocalizations.of(context)!.subButton_past:
         (participated? AppLocalizations.of(context)!.subButton_unSub: AppLocalizations.of(context)!.subButton_sub)):
@@ -106,6 +111,7 @@ class _SubscribeButtonState extends State<SubscribeButton> {
     );
   }
 
+  /// Builds an unusable button
   Widget _buildDisabledButton(BuildContext context){
     final String text = widget.event.isAvailable?
       widget.event.isPast? AppLocalizations.of(context)!.subButton_past: AppLocalizations.of(context)!.subButton_sub :
@@ -123,6 +129,7 @@ class _SubscribeButtonState extends State<SubscribeButton> {
     );
   }
 
+  /// Shows something in case the event of the [widget] is conflicting with the conflicting [Cop1Event]
   void _showEventConflict(BuildContext context, EventConflictError error) {
     ScaffoldMessenger.of(context)
       ..removeCurrentSnackBar()

@@ -5,13 +5,17 @@ import 'package:rxdart/rxdart.dart';
 import 'package:timezone/data/latest.dart' as tz_init;
 import 'package:timezone/timezone.dart' as tz;
 
+/// Class to manage the app notifications scheduling
 class NotificationAPI {
   static final _notifications = FlutterLocalNotificationsPlugin();
+  /// Stream used to add a reaction to opening the app through a notification
   static final onNotifications = BehaviorSubject<String?>();
   static late final tz.Location _location;
 
+  /// Tells if the app has been launched through clicking a notification
   static Future<String?> get hasLaunchedApp async => (await _notifications.getNotificationAppLaunchDetails())?.payload;
 
+  /// Initializes all the notifications API
   static Future<bool?> initialize() async {
     const android = AndroidInitializationSettings('@mipmap/ic_launcher');
     const iOS = IOSInitializationSettings();
@@ -22,25 +26,33 @@ class NotificationAPI {
     tz.setLocalLocation(_location);
     return await _notifications.initialize(
       initSettings,
-      onSelectNotification: (String? payload){
-        onNotifications.add(payload);
-      }
+      onSelectNotification: onSelectNotification
     );
   }
 
-  static Future<NotificationDetails> _notificationDetails() async {
+  /// Adds a notification to react to, by providing the [payload]
+  static void onSelectNotification(String? payload){
+    onNotifications.add(payload);
+  }
+
+  /// Returns details about the notification channel for the app
+  static NotificationDetails _notificationDetails() {
      return const NotificationDetails(
       android: AndroidNotificationDetails(
         'C0P1',
         'COP1 channel',
         channelDescription: 'Notification channel for COP1 events.',
-        importance: Importance.max,
-        styleInformation: BigTextStyleInformation('')
+        importance: Importance.max, // Enables the banner display and the sounds for the notifications
+        styleInformation: BigTextStyleInformation('') // To have all the text visible
       ),
       iOS: IOSNotificationDetails(),
     );
   }
 
+  /// Immediately shows a notification with [title], [body].
+  ///
+  /// [payload] provides information to the notification API if the app launched through clicking the notification
+  /// [id] is used to identify the notification to the operating system.
   static Future<void> showNotif({
     int id=0,
     String? title,
@@ -48,9 +60,13 @@ class NotificationAPI {
     String? payload,
   }) async {
      if ((await NotificationPermissions.getNotificationPermissionStatus()) == PermissionStatus.denied) return;
-      _notifications.show(id, title, body, await _notificationDetails(), payload: payload);
+      _notifications.show(id, title, body, _notificationDetails(), payload: payload);
   }
 
+  /// Schedules a notification with [title] and [text] as the body, on the [scheduledDate]
+  ///
+  /// [payload] provides information to the notification API if the app launched through clicking the notification.
+  /// [id] is used to identify the notification to the operating system.
   static Future<void> scheduleEventNotification({
     int id=0,
     required String title,
@@ -64,15 +80,17 @@ class NotificationAPI {
        title,
        text ,
        tz.TZDateTime.from(scheduledDate, _location),
-       await _notificationDetails(),
+       _notificationDetails(),
        androidAllowWhileIdle: true,
        uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.wallClockTime,
        payload: payload
     );
   }
 
- static void cancel(int id) => _notifications.cancel(id);
+  /// Cancels the notification identified by [id]
+  static void cancel(int id) => _notifications.cancel(id);
 
- static void cancelAll() => _notifications.cancelAll();
+  /// Cancels all notifications from this app
+  static void cancelAll() => _notifications.cancelAll();
 
 }

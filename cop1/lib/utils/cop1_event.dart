@@ -6,6 +6,7 @@ import 'maps_launcher.dart';
 
 part 'cop1_event.g.dart';
 
+/// Class for events organized by COP1
 @HiveType(typeId: 0)
 class Cop1Event extends HiveObject {
   @HiveField(0)
@@ -47,6 +48,7 @@ class Cop1Event extends HiveObject {
   @override
   int get hashCode => Object.hash(id, title);
 
+  /// Creates a [Cop1Event] object from the provided [json]
   static Cop1Event fromJSON(Map<String, dynamic> json){
     return Cop1Event(
         int.tryParse(json["id"])??-1,
@@ -60,6 +62,7 @@ class Cop1Event extends HiveObject {
     );
   }
 
+  /// Adds the [Cop1Event] to the phone's agenda
   void addToCalendar(){
     final Event event = Event(
       title: title,
@@ -72,14 +75,21 @@ class Cop1Event extends HiveObject {
     Add2Calendar.addEvent2Cal(event);
   }
 
+  /// Researches the [location] on a maps app
   void lookoutLocationOnMaps(){
     MapsLauncher.launchQuery(location);
   }
 
+  /// Schedules all notifications for the event
+  ///
+  /// [localizations] are for translation
   void scheduleNotifications(AppLocalizations localizations){
     if (scheduleHourPriorNotification(localizations)) scheduleDayPriorNotification(localizations);
   }
 
+  /// Immediately show a notification for the event
+  ///
+  /// [localizations] are for translation
   void showImmediateNotification(AppLocalizations localizations){
     final text = localizations.notificationsMessage(title, date, date);
     if (!isPast) {
@@ -92,6 +102,9 @@ class Cop1Event extends HiveObject {
     }
   }
 
+  /// Schedules a notifications for the event, 2 hours before the [date]
+  ///
+  /// [localizations] are for translation
   bool scheduleHourPriorNotification(AppLocalizations localizations) {
     final text = localizations.notificationsMessage(title, date, date);
     final notifyDate = date.subtract(const Duration(hours: 2));
@@ -111,6 +124,9 @@ class Cop1Event extends HiveObject {
     }
   }
 
+  /// Schedules a notifications for the event, 1 day before the [date]
+  ///
+  /// [localizations] are for translation
   bool scheduleDayPriorNotification(AppLocalizations localizations){
     final text = localizations.notificationsMessage(title, date, date);
     final notifyDate = date.subtract(const Duration(days: 1));
@@ -130,6 +146,7 @@ class Cop1Event extends HiveObject {
     }
   }
 
+  /// Cancels all notifications related to this event
   void cancelNotifications(){
     NotificationAPI.cancel(10*id+3);
     NotificationAPI.cancel(10*id+1);

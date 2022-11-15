@@ -1,6 +1,6 @@
 {
     "@@locale": "en",
-    "@@last_modified": "2022-09-30T22:22:13+00:00",
+    "@@last_modified": "2022-10-02T21:36:48+00:00",
     "newsFeed": "Events",
     "@newsFeed": {
         "description": "Title for the events list page"
@@ -63,12 +63,12 @@
     "@connection": {
         "description": "Title for connection page"
     },
-    "phoneNumber": "Phone number*",
+    "phoneNumber": "Phone number",
     "invalidPhoneNumber": "Invalid phone number.",
     "invalidFirstName": "Please give a first name",
     "invalidLastName": "Please give a last name",
     "invalidEmail": "Email format does not comply.",
-    "rgdpDisclaimer": "I consent that my data will be used on the Weezevent platform for the registration to events organised by the association COP1. *",
+    "rgdpDisclaimer": "I consent that my data will be used on the Weezevent platform for the registration to events organised by the association COP1.",
     "@rgdpDisclaimer": {
         "description": "Message for rgdp consent"
     },
@@ -135,5 +135,9 @@
     "unsubscribeFailureMessage": "Could not unregister you from the event \"{title}\". Try again later.",
     "@unsubscribeFailureMessage": {
         "description": "Message when the server could not unsubscribe the user."
+    },
+    "mandatoryField": "{symbol} Mandatory field",
+    "@mandatoryField": {
+        "description": "Explains that the fields marked with {symbol} are mandatory"
     }
 }
