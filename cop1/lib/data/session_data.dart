@@ -9,6 +9,7 @@ import 'package:provider/provider.dart';
 import 'package:sentry/sentry.dart';
 import '../utils/cop1_event.dart';
 
+import '../utils/ticket.dart';
 import 'api.dart';
 
 class EventConflictError implements Exception {
@@ -86,6 +87,27 @@ class SessionData with ChangeNotifier {
   Future<Cop1Event> getEvent(int eventId) async {
     if (_events.isEmpty) await refreshEvents();
     return _events.firstWhere((Cop1Event element) => element.id == eventId);
+  }
+
+  Future<List<Ticket>> getTickets(int eventId) async {
+    List<Ticket> tickets = [];
+    List<dynamic>? ticketsJson;
+    try {
+      ticketsJson = await API.tickets(eventId) ?? [];
+    }
+    on SocketException {
+      rethrow;
+    }
+    catch (e, sT){
+      Sentry.captureException(e, stackTrace: sT);
+    }
+    if (ticketsJson == null) return [];
+
+    tickets = ticketsJson.map((item){
+      return Ticket.fromJSON(eventId, item);
+    }).toList();
+
+    return tickets;
   }
 
   /// Connects the user profile using the [token]
