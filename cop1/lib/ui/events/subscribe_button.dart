@@ -65,6 +65,7 @@ class _SubscribeButtonState extends State<SubscribeButton> {
       }
       if (!mounted) return;
 
+      // If it is not associated to a ticket, it opens the ticket selector
       if (widget.ticketId == -1){
         await showDialog(context: context,
           builder: (BuildContext alertContext){

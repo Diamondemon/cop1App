@@ -13,6 +13,7 @@ import '../../utils/ticket.dart';
 import '../common/socket_exception_widget.dart';
 import '../common/unknown_error_widget.dart';
 
+/// Widget that displays all ticket options available for the provided [event]
 class TicketPicker extends StatefulWidget {
   const TicketPicker({Key? key, required this.event}) : super(key: key);
   final Cop1Event event;

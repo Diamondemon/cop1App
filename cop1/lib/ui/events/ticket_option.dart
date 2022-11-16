@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../../utils/ticket.dart';
 
+/// List tile displaying information about an available ticket for an event
 class TicketOption extends StatelessWidget {
   const TicketOption({Key? key, required this.ticket, required this.event}) : super(key: key);
   final Ticket ticket;

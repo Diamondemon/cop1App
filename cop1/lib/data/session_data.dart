@@ -83,12 +83,15 @@ class SessionData with ChangeNotifier {
     eventsChangedListenable.value = !eventsChangedListenable.value;
   }
 
-  /// Returns the event according to its Weezevent [id]
+  /// Returns the event according to its Weezevent [eventId]
   Future<Cop1Event> getEvent(int eventId) async {
     if (_events.isEmpty) await refreshEvents();
     return _events.firstWhere((Cop1Event element) => element.id == eventId);
   }
 
+  /// Retrieves the list of tickets associated to the event identified by [eventId]
+  ///
+  /// Rethrow any [SocketException]
   Future<List<Ticket>> getTickets(int eventId) async {
     List<Ticket> tickets = [];
     List<dynamic>? ticketsJson;

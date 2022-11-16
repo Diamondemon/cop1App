@@ -237,6 +237,8 @@ class API {
   }
 
   /// Retrieves all the tickets associated to the event n°[eventId]
+  ///
+  /// Throw a [SocketException] if the server is somehow unreachable.
   static Future<List<dynamic>?> tickets(int eventId, [Duration timeLimit = const Duration(seconds: 5)]) async {
     String request = "$apiURL/events/billets/$eventId";
     try {
