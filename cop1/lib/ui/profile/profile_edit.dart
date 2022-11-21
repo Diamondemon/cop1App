@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:auto_route/auto_route.dart';
 import 'package:cop1/data/session_data.dart';
 import 'package:cop1/ui/common/loading_widget.dart';
 import 'package:cop1/ui/common/socket_exception_widget.dart';
@@ -18,7 +19,7 @@ import '../../utils/connected_widget_state.dart';
 /// [onFinished] is used if some specific action is to be taken after editing
 class ProfileEdit extends StatefulWidget {
   const ProfileEdit({Key? key, this.onFinished}) : super(key: key);
-  final void Function()? onFinished;
+  final void Function(BuildContext)? onFinished;
 
   @override
   State<ProfileEdit> createState() => _ProfileEditState();
@@ -111,11 +112,8 @@ class _ProfileEditState extends State<ProfileEdit> implements ConnectedWidgetSta
       try{
         final bool result = await session(context).modifyUser(_firstName, _lastName, _email);
         if (result && mounted) {
-          Navigator.of(context).pop();
-          if (widget.onFinished != null){
-            widget.onFinished!();
-          }
-          return;
+          AutoRouter.of(context).pop();
+          widget.onFinished?.call(context);
         }
       }
       on SocketException{
