@@ -1,6 +1,6 @@
 {
     "@@locale": "en",
-    "@@last_modified": "2022-10-02T21:36:48+00:00",
+    "@@last_modified": "2022-11-15T17:06:21+00:00",
     "newsFeed": "Events",
     "@newsFeed": {
         "description": "Title for the events list page"
@@ -139,5 +139,7 @@
     "mandatoryField": "{symbol} Mandatory field",
     "@mandatoryField": {
         "description": "Explains that the fields marked with {symbol} are mandatory"
-    }
+    },
+    "pullToRefresh": "Pull down to refresh list",
+    "ticketSelectionTitle": "Choose your time slot"
 }

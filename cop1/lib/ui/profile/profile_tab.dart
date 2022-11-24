@@ -22,10 +22,17 @@ class _ProfileTabState extends State<ProfileTab> {
     if (!session(context).isConnected){
       WidgetsBinding.instance
           .addPostFrameCallback((_) {
-            _launchConnection();
+            _launchConnection(context);
       });
     }
   }
+
+  @override
+  void dispose(){
+    Sentry.captureMessage("Profile Tab gets destroyed!");
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder(
@@ -68,7 +75,7 @@ class _ProfileTabState extends State<ProfileTab> {
             Text(
                 AppLocalizations.of(context)!.loggedOutMessage
             ),
-            ElevatedButton(onPressed: _launchConnection, child: Text(AppLocalizations.of(context)!.connect)),
+            ElevatedButton(onPressed: () => _launchConnection(context), child: Text(AppLocalizations.of(context)!.connect)),
           ]
         )
       )
@@ -76,9 +83,9 @@ class _ProfileTabState extends State<ProfileTab> {
   }
 
   /// Navigates to the connection widgets
-  void _launchConnection() async{
+  void _launchConnection(BuildContext context) async{
     await AutoRouter.of(context).navigateNamed(
-      '/connection',
+      '/connection/',
       onFailure: (NavigationFailure failure)=> Sentry.captureException(failure)
     );
     if (mounted) setState((){});

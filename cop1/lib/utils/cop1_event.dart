@@ -49,18 +49,16 @@ class Cop1Event extends HiveObject {
   int get hashCode => Object.hash(id, title);
 
   /// Creates a [Cop1Event] object from the provided [json]
-  static Cop1Event fromJSON(Map<String, dynamic> json){
-    return Cop1Event(
-        int.tryParse(json["id"])??-1,
-        json["title"]??"Sans titre",
-        json["desc"]??"Sans description",
-        DateTime.parse(json["date"]),
-        json["duration"]??"01:00",
-        json["loc"],
-        json["img"]??"",
-        json["is_available"]??true
-    );
-  }
+  Cop1Event.fromJSON(Map<String, dynamic> json):
+        id = int.tryParse(json["id"])??-1,
+        title = json["title"]??"Sans titre",
+        description = json["desc"]??"Sans description",
+        date = DateTime.parse(json["date"]),
+        duration = json["duration"]??"01:00",
+        location = json["loc"],
+        imageLink = json["img"]??"",
+        isAvailable = json["is_available"]??true
+  ;
 
   /// Adds the [Cop1Event] to the phone's agenda
   void addToCalendar(){

@@ -23,11 +23,11 @@ class _ProfileCreationPageState extends State<ProfileCreationPage> {
         leading: BackButton(
           onPressed: (){
             session(context).deleteUser();
-            Navigator.of(context).pop();
+            AutoRouter.of(context).pop();
           },
         ),
       ),
-      body: ProfileEdit(onFinished: () => finalizeCreation(context)),
+      body: ProfileEdit(onFinished: finalizeCreation),
     );
   }
 

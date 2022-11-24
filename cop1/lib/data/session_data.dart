@@ -9,6 +9,7 @@ import 'package:provider/provider.dart';
 import 'package:sentry/sentry.dart';
 import '../utils/cop1_event.dart';
 
+import '../utils/ticket.dart';
 import 'api.dart';
 
 class EventConflictError implements Exception {
@@ -82,10 +83,34 @@ class SessionData with ChangeNotifier {
     eventsChangedListenable.value = !eventsChangedListenable.value;
   }
 
-  /// Returns the event according to its Weezevent [id]
+  /// Returns the event according to its Weezevent [eventId]
   Future<Cop1Event> getEvent(int eventId) async {
     if (_events.isEmpty) await refreshEvents();
     return _events.firstWhere((Cop1Event element) => element.id == eventId);
+  }
+
+  /// Retrieves the list of tickets associated to the event identified by [eventId]
+  ///
+  /// Rethrow any [SocketException]
+  Future<List<Ticket>> getTickets(int eventId) async {
+    List<Ticket> tickets = [];
+    List<dynamic>? ticketsJson;
+    try {
+      ticketsJson = await API.tickets(eventId) ?? [];
+    }
+    on SocketException {
+      rethrow;
+    }
+    catch (e, sT){
+      Sentry.captureException(e, stackTrace: sT);
+    }
+    if (ticketsJson == null) return [];
+
+    tickets = ticketsJson.map((item){
+      return Ticket.fromJSON(eventId, item);
+    }).toList();
+
+    return tickets;
   }
 
   /// Connects the user profile using the [token]
@@ -177,14 +202,14 @@ class SessionData with ChangeNotifier {
   /// Throws a [FullEventError] if the event is already full.
   /// Rethrows any [SocketException]
   /// Should any other error occur, it is silenced an the app returns false.
-  Future<bool> subscribe(Cop1Event event) async {
+  Future<bool> subscribe(Cop1Event event, int ticketId) async {
     final int conflictingId = _localUser!.checkEventConflicts(event, _events);
     if (conflictingId != -1){
       throw EventConflictError(_events.firstWhere((evt) => evt.id == conflictingId), _localUser!.minDelayDays);
     }
     final Map<String, dynamic> subscription;
     try{
-      subscription = await API.subscribeToEvent(token, event.id);
+      subscription = await API.subscribeToEvent(token, event.id, ticketId);
     }
     on SocketException {
       rethrow;
@@ -234,8 +259,7 @@ class SessionData with ChangeNotifier {
       return false;
     }
     if (!successful) return successful;
-
-    event.isAvailable = false;
+    event.isAvailable = true;
     _localUser?.unsubscribeFromEvent(event);
     event.cancelNotifications();
     return successful;

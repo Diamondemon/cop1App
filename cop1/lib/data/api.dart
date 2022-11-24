@@ -172,12 +172,12 @@ class API {
     }
   }
 
-  /// Subscribes the account associated to the [token] to the event n°[id]
+  /// Subscribes the account associated to the [token] to the event n°[eventId] using the ticket n°[ticketId]
   ///
   /// Throw a [SocketException] if the server is somehow unreachable.
   /// Relays any other [Exception] happening.
-  static Future<Map<String, dynamic>> subscribeToEvent(String token, int id) async {
-    String request = "$apiURL/events/subscribe/$id";
+  static Future<Map<String, dynamic>> subscribeToEvent(String token, int eventId, int ticketId) async {
+    String request = "$apiURL/events/subscribe/$eventId/$ticketId";
     Map<String,String> headers = {"bearer":token};
     try {
       return await _post(request,{}, headers);
@@ -236,11 +236,32 @@ class API {
     }
   }
 
-  /// Checks if the account associated to the [token] has missed event n°[id]
+  /// Retrieves all the tickets associated to the event n°[eventId]
   ///
   /// Throw a [SocketException] if the server is somehow unreachable.
-  static Future<Map<String, dynamic>?> unscanned(String token,int id) async {
-    String request = "$apiURL/unscanned/$id";
+  static Future<List<dynamic>?> tickets(int eventId, [Duration timeLimit = const Duration(seconds: 5)]) async {
+    String request = "$apiURL/events/billets/$eventId";
+    try {
+      List<dynamic> retVal = await _get(request, null, timeLimit);
+      return retVal;
+    }
+    on TimeoutException {
+      throw const SocketException("Server is unreachable.");
+    }
+    on SocketException {
+      rethrow;
+    }
+    catch (e, sT){
+      Sentry.captureException(e, stackTrace: sT);
+      return null;
+    }
+  }
+
+  /// Checks if the account associated to the [token] has missed event n°[eventId]
+  ///
+  /// Throw a [SocketException] if the server is somehow unreachable.
+  static Future<Map<String, dynamic>?> unscanned(String token,int eventId) async {
+    String request = "$apiURL/unscanned/$eventId";
     try {
       Map<String, dynamic> retVal = await _get(request, {"bearer": token});
       return retVal;
@@ -262,7 +283,7 @@ class API {
   /// Throws a [HTTP401Exception] in case of 401 errors, a [HTTP409Exception] for 409 code errors,
   /// and a simple [Exception] in case any other status code than 200, 401 and 409 is returned.
   /// Will throw a [TimeoutError] if the request takes longer than [timeLimit].
-  static Future<Map<String, dynamic>> _post(String url, Map<String, dynamic> data, [Map<String, String>? headers, Duration timeLimit = const Duration(seconds: 15)]) async {
+  static Future<dynamic> _post(String url, Map<String, dynamic> data, [Map<String, String>? headers, Duration timeLimit = const Duration(seconds: 15)]) async {
     final response = await client
         .post(Uri.parse(url), headers: {"accept": "application/json", "Content-Type": "application/json", ...?headers}, body: jsonEncode(data), encoding: Encoding.getByName("UTF-8")).timeout(timeLimit);
     if (response.statusCode == 200) {
@@ -285,7 +306,7 @@ class API {
   /// Throws a [HTTP401Exception] in case of 401 errors, a [HTTP409Exception] for 409 code errors,
   /// and a simple [Exception] in case any other status code than 200, 401 and 409 is returned.
   /// Will throw a [TimeoutError] if the request takes longer than [timeLimit].
-  static Future<Map<String, dynamic>> _get(String url, [Map<String, String>? headers, Duration timeLimit = const Duration(seconds: 15)]) async {
+  static Future<dynamic> _get(String url, [Map<String, String>? headers, Duration timeLimit = const Duration(seconds: 15)]) async {
     final response = await http
         .get(Uri.parse(url), headers: {"accept": "application/json", ...?headers}).timeout(timeLimit);
 
@@ -310,7 +331,7 @@ class API {
   /// Throws a [HTTP401Exception] in case of 401 errors, a [HTTP409Exception] for 409 code errors,
   /// and a simple [Exception] in case any other status code than 200, 401 and 409 is returned.
   /// Will throw a [TimeoutError] if the request takes longer than [timeLimit].
-  static Future<Map<String, dynamic>> _delete(String url, [Map<String, String>? headers, Duration timeLimit = const Duration(seconds: 15)]) async {
+  static Future<dynamic> _delete(String url, [Map<String, String>? headers, Duration timeLimit = const Duration(seconds: 15)]) async {
     final response = await http
         .delete(Uri.parse(url), headers: {"accept": "application/json", ...?headers}, encoding: Encoding.getByName("UTF-8")).timeout(timeLimit);
 
@@ -327,7 +348,7 @@ class API {
       throw HTTP401Exception(jsonDecode(response.body)["detail"]);
     }
     else {
-      throw Exception('Error ${response.statusCode} on $url. Detail: ${jsonDecode(response.body)["detail"]}');
+      throw Exception('Error ${response.statusCode} on $url. Detail: ${response.body}');
     }
   }
 

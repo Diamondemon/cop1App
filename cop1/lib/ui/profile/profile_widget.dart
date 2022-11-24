@@ -28,49 +28,45 @@ class _ProfileWidgetState extends State<ProfileWidget> {
   @override
   Widget build(BuildContext context) {
 
-    return
-      ValueListenableBuilder(valueListenable: session(context).eventsChangedListenable, builder:
-        (BuildContext ctxt, bool value, _) {
-          return FutureBuilder(
-            future: getUserAndEvents(context),
-            builder: (BuildContext ctxt,
-                AsyncSnapshot<Tuple2<UserProfile?, List<Cop1Event>>> snapshot) {
-              if (snapshot.connectionState == ConnectionState.done) {
-                if (snapshot.hasError) {
-                  if (snapshot.error is SocketException) {
-                    WidgetsBinding.instance.addPostFrameCallback((_) {
-                      ConnectedWidgetState.displayConnectionAlert(ctxt);
-                    });
-                    return SocketExceptionWidget(callBack: (ctx) {
-                      setState(() {});
-                    });
-                  }
-                  Sentry.captureException(
-                      snapshot.error, stackTrace: snapshot.stackTrace);
-                  return UnknownErrorWidget(callBack: (ctx) {
+    return ValueListenableBuilder(valueListenable: session(context).eventsChangedListenable, builder:
+      (BuildContext ctxt, bool value, _) {
+        return FutureBuilder(
+          future: getUserAndEvents(ctxt),
+          builder: (BuildContext ctx, AsyncSnapshot<Tuple2<UserProfile?, List<Cop1Event>>> snapshot) {
+            if (snapshot.connectionState == ConnectionState.done) {
+              if (snapshot.hasError) {
+                if (snapshot.error is SocketException) {
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    ConnectedWidgetState.displayConnectionAlert(ctx);
+                  });
+                  return SocketExceptionWidget(callBack: (ct) {
                     setState(() {});
                   });
                 }
-                else if (snapshot.hasData) {
-                  if (snapshot.data!.item1 == null) {
-                    return const LoadingWidget();
-                  }
-                  return _buildListView(
-                      ctxt, snapshot.data!.item1!, snapshot.data!.item2);
+                Sentry.captureException( snapshot.error, stackTrace: snapshot.stackTrace);
+                return UnknownErrorWidget(callBack: (ct) {
+                  setState(() {});
+                });
+              }
+              else if (snapshot.hasData) {
+                if (snapshot.data!.item1 == null) {
+                  return const LoadingWidget();
                 }
-                else {
-                  return UnknownErrorWidget(callBack: (ctx) {
-                    setState(() {});
-                  });
-                }
+                return _buildListView(ctx, snapshot.data!.item1!, snapshot.data!.item2);
               }
               else {
-                return const LoadingWidget();
+                return UnknownErrorWidget(callBack: (ct) {
+                  setState(() {});
+                });
               }
             }
-          );
-        }
-      );
+            else {
+              return const LoadingWidget();
+            }
+          }
+        );
+      }
+    );
   }
 
   /// Builds a list view displaying all [events]  that the [user] is subscribed to.
