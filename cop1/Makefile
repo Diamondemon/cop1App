@@ -1,5 +1,5 @@
 
-PHONY: bundle apks build_runner intl install release bump patch_bump minor_bump major_bump patch_release minor_release major_release
+PHONY: bundle apks build_runner intl install release bump patch_bump minor_bump major_bump patch_release minor_release major_release clean
 
 install:
 	flutter install
@@ -20,13 +20,13 @@ bump:
 	cider bump build
 
 patch_bump:
-	cider bump patch
+	cider bump patch --bump-build
 
 minor_bump:
-	cider bump minor
+	cider bump minor --bump-build
 
 major_bump:
-	cider bump major
+	cider bump major --bump-build
 
 release: bump bundle
 
@@ -35,3 +35,6 @@ patch_release: patch_bump bundle
 minor_release: minor_bump bundle
 
 major_release: major_bump bundle
+
+clean:
+	flutter clean
